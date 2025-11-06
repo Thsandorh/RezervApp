@@ -226,26 +226,35 @@ vercel --prod
 **Or via GitHub:**
 1. Connect repository to Vercel
 2. Set root directory to `rezervapp`
-3. Add environment variables (see `.env.example`)
+3. Add environment variables (see below)
 4. Deploy!
 
-**Full deployment guide:** `rezervapp/DEPLOYMENT.md`
+**Full deployment guides:**
+- 📱 **[Phone Deployment (Zero Terminal!)](./DEPLOY_PHONE.md)** - Web UI only
+- 💻 **[CLI Deployment](./DEPLOY.md)** - Fly.io, Railway, Render
 
 ### Environment Variables Required
-```env
-DATABASE_URL=file:./dev.db
-NEXTAUTH_SECRET=your-secret-here
-NEXTAUTH_URL=https://your-app.vercel.app
-AUTH_TRUST_HOST=true
-RESEND_API_KEY=your-resend-key (optional)
-```
+
+Add these in **Vercel Dashboard → Settings → Environment Variables**:
+
+| Variable | Value | Notes |
+|----------|-------|-------|
+| `DATABASE_URL` | `file:./dev.db` | Use SQLite initially, upgrade to Postgres later |
+| `NEXTAUTH_SECRET` | (random string) | Click "Generate" button in Vercel |
+| `NEXTAUTH_URL` | (leave empty) | Vercel auto-detects this |
+| `AUTH_TRUST_HOST` | `true` | Required for NextAuth |
+| `RESEND_API_KEY` | (optional) | Only if you want email notifications |
+
+**After adding variables:** Click "Redeploy" for changes to take effect.
 
 ---
 
 ## 📚 Documentation
 
 - **[Main README](./rezervapp/README.md)** - Complete features & tech stack
-- **[Deployment Guide](./rezervapp/DEPLOYMENT.md)** - Vercel deployment steps
+- **[Phone Deployment Guide](./DEPLOY_PHONE.md)** - Zero terminal deployment
+- **[CLI Deployment Guide](./DEPLOY.md)** - Fly.io, Railway, Render
+- **[Docker Guide](./DOCKER.md)** - Local Docker deployment
 - **[Project Plan](./REZERVAPP_PLAN.md)** - Detailed MVP phases & roadmap
 - **[Database Schema](./rezervapp/prisma/schema.prisma)** - Full Prisma schema
 
