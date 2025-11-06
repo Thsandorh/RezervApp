@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
+import { sendBookingConfirmation } from "@/lib/email"
 
 const bookingRequestSchema = z.object({
   restaurantId: z.string(),
@@ -106,6 +107,31 @@ export async function POST(request: Request) {
         },
       },
     })
+
+    // Get restaurant name for email
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { id: data.restaurantId },
+    })
+
+    // Send confirmation email (if email provided and RESEND configured)
+    if (data.email && restaurant) {
+      await sendBookingConfirmation({
+        to: data.email,
+        guestName: `${data.firstName} ${data.lastName}`,
+        restaurantName: restaurant.name,
+        bookingDate: bookingDateTime,
+        partySize,
+        tableName: availableTable?.name,
+        specialRequests: data.specialRequests,
+        cancelToken: booking.cancelToken,
+      })
+
+      // Mark confirmation as sent
+      await prisma.booking.update({
+        where: { id: booking.id },
+        data: { confirmationSent: true },
+      })
+    }
 
     return NextResponse.json({
       id: booking.id,
