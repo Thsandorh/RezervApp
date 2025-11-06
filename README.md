@@ -1,265 +1,259 @@
-# 🍽️ RezervApp - Magyar Éttermi Foglalási Rendszer
+# 🍽️ RezervApp - Restaurant Reservation System
 
-Modern, teljes full-stack SaaS alkalmazás magyar éttermek számára online foglaláskezeléshez.
+> **Status: ✅ MVP Phase 1 Complete - Admin Core Features Ready**
 
-## 🎯 MVP Funkciók
+Modern, full-stack SaaS application for restaurant reservation management, built for Hungarian restaurants.
 
-### Admin Felület (`/admin/*`)
-- ✅ **Dashboard**: Mai foglalások, statisztikák, gyors áttekintés
-- ✅ **Foglalások**: Összes foglalás listája dátum, vendég, státusz szerint
-- ✅ **Asztalok**: Asztalkezelés lokáció szerint csoportosítva
-- ✅ **Vendégek**: Vendéglista statisztikákkal (foglalások száma, no-show rate)
-- ✅ **Beállítások**: Étterem adatok, nyitvatartás, foglalási beállítások
+## 📍 Project Location
 
-### Publikus Felület (`/book/[slug]`)
-- ✅ **Foglalási oldal**: Dátum, időpont, létszám választás
-- ✅ **Automatikus asztalfoglalás**: Létszám alapú asztalválasztás
-- ✅ **Ütközésellenőrzés**: Ugyanazon asztalra nem lehet dupla foglalás
-- ✅ **Sikeres foglalás oldal**: Megerősítés minden részlettel
-- ✅ **Magyar lokalizáció**: Dátumok, címkék, hibaüzenetek magyarul
+**Main Application:** `/rezervapp/` directory
 
-## 🚀 Gyors kezdés
+All source code, documentation, and deployment configuration is located in the `rezervapp` subfolder.
 
-### 1. Telepítés
+👉 **[View Full Documentation](./rezervapp/README.md)**
 
+---
+
+## ✅ What's Complete (Phase 1)
+
+### Admin Dashboard & Management
+- ✅ **Authentication** - NextAuth.js with email/password
+- ✅ **Dashboard** - Today's bookings overview with statistics
+- ✅ **Booking Management** - List and calendar views (FullCalendar)
+- ✅ **Table Management** - Full CRUD operations with location grouping
+- ✅ **Guest Tracking** - Automatic profile creation, VIP status, no-show tracking
+- ✅ **Email Notifications** - Resend API integration with Hungarian templates
+- ✅ **Public Cancellation** - Token-based secure cancellation page
+- ✅ **Deployment Ready** - Vercel configuration included
+
+### Technical Stack
+- **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui
+- **Backend:** Next.js API Routes, Prisma ORM
+- **Database:** SQLite (dev), PostgreSQL ready (production)
+- **Auth:** NextAuth.js v5
+- **Email:** Resend + React Email
+- **Calendar:** FullCalendar with Hungarian localization
+
+---
+
+## 🚧 What's NOT Complete Yet
+
+### Phase 2: Public Booking System (Priority Next)
+- [ ] Public booking form (guest-facing website)
+- [ ] Date & time picker with real-time availability
+- [ ] Table availability validation
+- [ ] Booking conflict prevention
+- [ ] Operating hours management
+
+### Phase 3: Extended Features
+- [ ] SMS notifications (Twilio)
+- [ ] Advanced analytics & reporting
+- [ ] Waitlist functionality
+- [ ] Multi-tenant support
+- [ ] Manual booking creation (admin)
+- [ ] Payment integration (Stripe)
+
+**Full roadmap:** See `rezervapp/README.md`
+
+---
+
+## 🚀 Quick Start
+
+### 1. Navigate to App Directory
 ```bash
 cd rezervapp
+```
+
+### 2. Install Dependencies
+```bash
 npm install
 ```
 
-### 2. Adatbázis inicializálás
-
+### 3. Setup Environment
 ```bash
-# Migráció futtatása
-DATABASE_URL="file:./dev.db" npm run db:migrate
-
-# Teszt adatok betöltése
-DATABASE_URL="file:./dev.db" npm run db:seed
+cp .env.example .env
+# Edit .env with your values
 ```
 
-### 3. Futtatás
+### 4. Initialize Database
+```bash
+npx prisma generate
+npx prisma db push
+npx prisma db seed
+```
 
+### 5. Start Development Server
 ```bash
 npm run dev
 ```
 
-Az alkalmazás elérhető: **http://localhost:3000**
-
-## 📱 Használat
-
-### Admin bejelentkezés
-- Email: `admin@pizzeriaromana.hu`
-- Jelszó: `password123`
-- URL: http://localhost:3000/admin/dashboard
-
-### Teszt foglalás
-- URL: http://localhost:3000/book/pizzeria-romana
-- Bármilyen adatot megadhatsz, a rendszer kezeli
-
-## 🗄️ Adatbázis Séma
-
-```
-Restaurant (Étterem)
-├── Tables (Asztalok)
-├── Bookings (Foglalások)
-├── Guests (Vendégek)
-└── Staff (Személyzet)
-```
-
-### Fő modellek:
-- **Restaurant**: Étterem adatok, nyitvatartás, beállítások
-- **Table**: Asztalok (név, kapacitás, lokáció)
-- **Booking**: Foglalások (dátum, létszám, státusz, megjegyzések)
-- **Guest**: Vendégek (név, telefon, email, statisztikák)
-- **Staff**: Személyzet (admin user-ek)
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Database**: SQLite + Prisma ORM
-- **Styling**: Tailwind CSS + shadcn/ui
-- **Forms**: React Hook Form + Zod validáció
-- **Icons**: Lucide React
-- **Date handling**: date-fns (magyar locale)
-
-## 📂 Projekt Struktúra
-
-```
-rezervapp/
-├── app/
-│   ├── admin/              # Admin felület
-│   │   ├── dashboard/      # Dashboard
-│   │   ├── bookings/       # Foglalások
-│   │   ├── tables/         # Asztalok
-│   │   ├── guests/         # Vendégek
-│   │   └── settings/       # Beállítások
-│   ├── api/
-│   │   └── bookings/       # API endpoints
-│   └── book/[slug]/        # Publikus foglalás
-├── components/
-│   ├── admin/              # Admin komponensek
-│   ├── booking/            # Foglalási komponensek
-│   └── ui/                 # UI komponensek
-├── lib/
-│   ├── prisma.ts           # Prisma client
-│   └── utils.ts            # Utility funkciók
-└── prisma/
-    ├── schema.prisma       # Adatbázis séma
-    └── seed.ts             # Seed script
-```
-
-## 🎨 Funkcionalitások részletesen
-
-### 1. Foglalási folyamat
-1. Vendég kiválasztja a dátumot, időpontot, létszámot
-2. Rendszer automatikusan talál megfelelő asztalt
-3. Ellenőrzi, hogy nincs-e ütközés
-4. Létrehozza vagy frissíti a vendég profilt
-5. Létrehozza a foglalást
-6. Sikeres oldal megjelenítése
-
-### 2. Asztal kiválasztás logika
-- Létszám alapján választja ki a legkisebb megfelelő asztalt
-- Preferencia: capacity >= partySize
-- Ha van már foglalás ugyanabban az időpontban, másik asztalt választ
-
-### 3. Vendég kezelés
-- Telefonszám alapján automatikus vendégkeresés
-- Első foglalás esetén új vendég létrehozása
-- Statisztikák automatikus frissítése (totalBookings++)
-
-## 📊 Demo Adatok
-
-### Étterem: Pizzeria Romana
-- **Slug**: `pizzeria-romana`
-- **Cím**: Budapest, Fő utca 12, 1011
-- **Nyitvatartás**: H-V 11:00-22:00, Szo-V 12:00-23:00
-
-### Asztalok (8 db):
-- 2 db 2 fős (Belső terem)
-- 2 db 4 fős (Belső terem)
-- 1 db 6 fős (Belső terem)
-- 2 db 2-4 fős (Terasz)
-- 1 db 8 fős (VIP szoba)
-
-### Vendégek (4 db):
-- Kovács János (gluténérzékeny)
-- Nagy Anna (VIP)
-- Szabó Péter
-- Kiss Éva (vegetáriánus)
-
-### Foglalások (4 db):
-- Ma 18:00 - Kovács János (2 fő)
-- Ma 18:00 - Nagy Anna (4 fő)
-- Holnap 19:00 - Szabó Péter (2 fő)
-- Jövő hét 20:00 - Kiss Éva (6 fő, születésnapi vacsora)
-
-## 🔜 Következő lépések (Post-MVP)
-
-### Hitelesítés
-- [ ] NextAuth.js integráció
-- [ ] Login/logout funkciók
-- [ ] Role-based access control (Owner, Manager, Staff)
-
-### Foglaláskezelés
-- [ ] Foglalás szerkesztése (admin)
-- [ ] Foglalás lemondása (vendég link-ből)
-- [ ] Státusz változtatás (Seated, Completed, No-show)
-- [ ] Időpont módosítás
-
-### Értesítések
-- [ ] Email integráció (Resend/SendGrid)
-- [ ] SMS integráció (Twilio magyar számokhoz)
-- [ ] Foglalás visszaigazolás
-- [ ] 24h emlékeztető
-- [ ] Lemondási link
-
-### Asztalkezelés
-- [ ] Új asztal hozzáadása
-- [ ] Asztal szerkesztése/törlése
-- [ ] Padlótérkép (drag & drop)
-- [ ] Asztal blokkolás (karbantartás)
-
-### Vendégkezelés
-- [ ] Vendég részletes profil
-- [ ] Foglalási előzmények
-- [ ] Preferenciák mentése
-- [ ] VIP jelölés
-- [ ] Blacklist (no-show miatt)
-
-### Analitika
-- [ ] Foglalási trendek grafikonok
-- [ ] Népszerű időpontok
-- [ ] Asztal kihasználtság
-- [ ] Revenue előrejelzés
-- [ ] Export (CSV/PDF)
-
-### UX Fejlesztések
-- [ ] Naptár nézet (FullCalendar)
-- [ ] Waitlist funkció
-- [ ] Mobil app (React Native)
-- [ ] Dark mode
-- [ ] Multi-language (EN, DE)
-
-### Integr��ciók
-- [ ] Google Calendar szinkron
-- [ ] POS rendszer integráció
-- [ ] Stripe fizetés (előleg)
-- [ ] Google/Facebook SSO
-
-## 🐛 Ismert limitációk (MVP)
-
-- Nincs valódi email/SMS küldés
-- Nincs authentikáció (bárki eléri az admin-t)
-- Nincs foglalás szerkesztés/törlés
-- Nincs időpont intelligens ajánlás
-- Nincs capacity checking (max vendég / nap)
-- SQLite production-re nem ajánlott (PostgreSQL kellene)
-
-## 📝 Deployment
-
-### Vercel (ajánlott)
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel --prod
-
-# Add DATABASE_URL környezeti változót a Vercel dashboard-on
-```
-
-### PostgreSQL átállás (production)
-1. Módosítsd `prisma/schema.prisma`:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-2. Frissítsd `.env`:
-   ```
-   DATABASE_URL="postgresql://user:password@host:5432/database"
-   ```
-3. Futtasd a migrációt:
-   ```bash
-   npx prisma migrate dev
-   npx prisma db seed
-   ```
-
-## 📄 Licenc
-
-MIT License - Szabadon felhasználható, módosítható.
-
-## 👨‍💻 Készítette
-
-**Thsandorh** - [GitHub](https://github.com/Thsandorh)
-
-Modern SaaS megoldás magyar éttermek számára.
+Application available at: **http://localhost:3000**
 
 ---
 
-**Jó étvágyat és sok foglalást! 🍕🍝**
+## 🔐 Demo Credentials
 
-*Ha tetszik a projekt, adj egy ⭐ csillagot a GitHub-on!*
+After running the seed script:
+
+- **Admin Login:** `admin@pizzeriaromana.hu` / `admin123`
+- **Admin Dashboard:** http://localhost:3000/admin
+- **Public Cancellation:** Any booking will have a cancellation link in email
+
+**Test Restaurant:** Pizzeria Romana (demo data included)
+
+---
+
+## 📂 Project Structure
+
+```
+rezervapp/                    # Main application folder
+├── app/
+│   ├── admin/               # ✅ Admin dashboard (COMPLETE)
+│   │   ├── page.tsx         # ✅ Dashboard homepage
+│   │   ├── bookings/        # ✅ List + calendar views
+│   │   └── tables/          # ✅ Table management
+│   ├── api/                 # ✅ API endpoints (COMPLETE)
+│   │   ├── bookings/        # ✅ Booking CRUD
+│   │   └── tables/          # ✅ Table CRUD
+│   ├── booking/
+│   │   └── cancel/[token]   # ✅ Public cancellation (COMPLETE)
+│   └── login/               # ✅ Login page (COMPLETE)
+├── components/
+│   ├── admin/               # ✅ Admin components
+│   ├── modals/              # ✅ Booking/Table modals
+│   └── ui/                  # ✅ shadcn/ui components
+├── emails/                   # ✅ Email templates
+├── lib/                      # ✅ Utilities (auth, email, prisma)
+├── prisma/                   # ✅ Database schema + seed
+├── .env.example              # ✅ Environment template
+├── vercel.json               # ✅ Deployment config
+├── DEPLOYMENT.md             # ✅ Deployment guide
+└── README.md                 # ✅ Full documentation
+```
+
+---
+
+## 🗄️ Database Schema
+
+```
+Restaurant (Restaurant info)
+├── Tables (capacity, location)
+├── Bookings (date, status, party size)
+├── Guests (VIP status, no-show tracking)
+├── Staff (admin users, roles)
+└── Waitlist (schema ready, UI not implemented)
+```
+
+**6 Prisma models** fully implemented. See `rezervapp/prisma/schema.prisma`
+
+---
+
+## 📊 Demo Data
+
+### Restaurant: Pizzeria Romana
+- **Location:** Budapest, Hungary
+- **Tables:** 8 tables (2-8 capacity)
+- **Guests:** 4 sample guests with booking history
+- **Bookings:** 4 sample bookings with various statuses
+
+All data created by seed script. Safe to reset anytime.
+
+---
+
+## 🚢 Deployment
+
+### Vercel (Recommended)
+
+**Quick Deploy:**
+```bash
+cd rezervapp
+vercel --prod
+```
+
+**Or via GitHub:**
+1. Connect repository to Vercel
+2. Set root directory to `rezervapp`
+3. Add environment variables (see `.env.example`)
+4. Deploy!
+
+**Full deployment guide:** `rezervapp/DEPLOYMENT.md`
+
+### Environment Variables Required
+```env
+DATABASE_URL=file:./dev.db
+NEXTAUTH_SECRET=your-secret-here
+NEXTAUTH_URL=https://your-app.vercel.app
+AUTH_TRUST_HOST=true
+RESEND_API_KEY=your-resend-key (optional)
+```
+
+---
+
+## 📚 Documentation
+
+- **[Main README](./rezervapp/README.md)** - Complete features & tech stack
+- **[Deployment Guide](./rezervapp/DEPLOYMENT.md)** - Vercel deployment steps
+- **[Project Plan](./REZERVAPP_PLAN.md)** - Detailed MVP phases & roadmap
+- **[Database Schema](./rezervapp/prisma/schema.prisma)** - Full Prisma schema
+
+---
+
+## 🎯 Current Status Summary
+
+| Feature | Status |
+|---------|--------|
+| Admin Authentication | ✅ Complete |
+| Booking Management (Admin) | ✅ Complete |
+| Calendar View | ✅ Complete |
+| Table Management | ✅ Complete |
+| Guest Tracking | ✅ Complete |
+| Email Notifications | ✅ Complete |
+| Public Cancellation | ✅ Complete |
+| Deployment Config | ✅ Complete |
+| **Public Booking Form** | ❌ Not Started |
+| SMS Notifications | ❌ Not Started |
+| Advanced Analytics | ❌ Not Started |
+| Waitlist UI | ❌ Not Started |
+| Multi-tenant | ❌ Not Started |
+
+**✅ Phase 1 (Admin Core):** COMPLETE - Ready for internal restaurant use
+**🚧 Phase 2 (Public Booking):** Planned - Will enable guest self-service
+
+---
+
+## 🛠️ Tech Stack Summary
+
+**Frontend:** Next.js 14 • TypeScript • Tailwind CSS • shadcn/ui • FullCalendar
+**Backend:** Prisma ORM • NextAuth.js • Resend Email • React Email
+**Database:** SQLite (dev) • PostgreSQL ready (prod)
+**Deployment:** Vercel • Auto-deploy on push
+
+---
+
+## 📝 License
+
+MIT License - Free to use in your own projects.
+
+---
+
+## 👨‍💻 Developer
+
+**Thsandorh** - [GitHub Profile](https://github.com/Thsandorh)
+
+Built with ❤️ for Hungarian restaurants.
+
+---
+
+## ⭐ Support This Project
+
+If you find this project useful, please consider:
+- Giving it a **star** on GitHub
+- Sharing it with other restaurant owners
+- Contributing to the codebase
+- Reporting bugs and suggesting features
+
+---
+
+**🎉 Phase 1 Complete!** The admin core is ready for restaurant staff to manage bookings manually. Phase 2 will add the public-facing booking form for guests.
+
+**Questions?** Open an issue on GitHub or check the documentation in `/rezervapp/README.md`
