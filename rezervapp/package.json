@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run db:setup && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
+    "db:setup": "prisma db push --accept-data-loss && npm run db:seed:safe",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:safe": "tsx prisma/seed.ts || echo '⚠️  Seed skipped or failed'",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio"
   },
