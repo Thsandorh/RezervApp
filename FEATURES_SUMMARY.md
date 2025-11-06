@@ -1,6 +1,6 @@
 # 🎉 RezervApp - Features Summary
 
-## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (3/9)
+## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (4/9)
 
 ### 1️⃣ API Kulcsok Kezelése (Settings) ✅
 
@@ -66,18 +66,32 @@
 
 ---
 
-## ⏳ HIÁNYZÓ FUNKCIÓK (6/9)
+### 4️⃣ Keresés & Szűrés (Bookings) ✅
 
-### 4️⃣ Keresés & Szűrés (Bookings) ❌ TODO
+**Hol:** `/admin/bookings` → Szűrők a lista felett
 
-**Mit kellene:**
-- Keresés vendég név/telefon szerint
-- Dátum szűrő (mai, holnapi, jövő hét)
-- Státusz szűrő dropdown
+**Mit csinál:**
+- Keresés vendég név vagy telefon szerint (élő keresés)
+- Dátum szűrő dropdown (összes, ma, holnap, következő 7 nap, elmúlt foglalások)
+- Státusz szűrő dropdown (összes, PENDING, CONFIRMED, SEATED, COMPLETED, CANCELLED, NO_SHOW)
+- Találatok száma megjelenítése (szűrt/összes)
+- Több szűrő kombinálható egyszerre
 
-**Időigény:** ~30 perc
+**Hogyan használd:**
+1. Admin → Bookings
+2. Írj be nevet vagy telefonszámot a keresőbe
+3. Válassz dátum szűrőt (pl. "Ma" vagy "Következő 7 nap")
+4. Válassz státusz szűrőt (pl. "CONFIRMED")
+5. A lista azonnal frissül a szűrők alapján
+
+**Technika:**
+- Client-side szűrés (gyors, nincs server round-trip)
+- useMemo hook optimalizáláshoz
+- date-fns könyvtár a dátum összehasonlításokhoz
 
 ---
+
+## ⏳ HIÁNYZÓ FUNKCIÓK (5/9)
 
 ### 5️⃣ Calendar View (Admin) ❌ TODO
 
@@ -176,14 +190,14 @@
 | ✅ API Keys Management | DONE | ⭐⭐⭐⭐⭐ |
 | ✅ Booking Management | DONE | ⭐⭐⭐⭐⭐ |
 | ✅ Email Notifications | DONE | ⭐⭐⭐⭐⭐ |
-| ❌ Search & Filters | TODO | ⭐⭐⭐⭐ |
+| ✅ Search & Filters | DONE | ⭐⭐⭐⭐ |
 | ❌ Calendar View | TODO | ⭐⭐⭐ |
 | ❌ Public Booking Edit | TODO | ⭐⭐⭐ |
 | ❌ Analytics | TODO | ⭐⭐ |
 | ❌ SMS Notifications | TODO | ⭐⭐ |
 | ❌ Waitlist | TODO | ⭐ |
 
-**3/9 feature KÉSZ!** A legfontosabbak mind megvannak! 🎉
+**4/9 feature KÉSZ!** A legfontosabbak mind megvannak! 🎉
 
 ---
 
@@ -191,4 +205,4 @@
 
 **Most teszteld az új funkciókat**, aztán ha kell a többi, szólj és folytatjuk! 😊
 
-A keresés/szűrés lenne a következő legfontosabb (10 perc alatt kész).
+A Calendar View lenne a következő funkció (naptáras nézet a foglalásokról).
