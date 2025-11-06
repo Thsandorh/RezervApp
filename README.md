@@ -4,6 +4,15 @@
 
 Modern, full-stack SaaS application for restaurant reservation management, built for Hungarian restaurants.
 
+## ☁️ Deploy Now (1 Click!)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/RezervApp?referralCode=bonus)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Thsandorh/RezervApp)
+
+**Or run locally with Docker:** `cd rezervapp && ./start.sh`
+
+---
+
 ## 📍 Project Location
 
 **Main Application:** `/rezervapp/` directory

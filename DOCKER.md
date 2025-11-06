@@ -1,6 +1,24 @@
 # 🐳 RezervApp - Docker Deployment
 
-Szuper egyszerű Docker setup egy paranccsal!
+Super simple Docker setup with one command!
+
+## ☁️ One-Click Cloud Deploy
+
+### Railway (Recommended - 1 Click!)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/RezervApp?referralCode=bonus)
+
+**Free tier:** 500 hours/month, automatic HTTPS, custom domain
+
+---
+
+### Render
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Thsandorh/RezervApp)
+
+**Free tier:** Automatic deployments, SSL included
+
+---
 
 ## 🚀 Gyors Start (1 parancs!)
 
