@@ -11,6 +11,7 @@ import {
   Utensils,
   Settings,
   LogOut,
+  BarChart3,
 } from "lucide-react"
 
 const routes = [
@@ -37,6 +38,12 @@ const routes = [
     icon: Users,
     href: "/admin/guests",
     color: "text-orange-700",
+  },
+  {
+    label: "Analytics",
+    icon: BarChart3,
+    href: "/admin/analytics",
+    color: "text-emerald-500",
   },
   {
     label: "Beállítások",

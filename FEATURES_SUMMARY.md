@@ -1,6 +1,6 @@
 # 🎉 RezervApp - Features Summary
 
-## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (7/9)
+## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (8/9)
 
 ### 1️⃣ API Kulcsok Kezelése (Settings) ✅
 
@@ -180,19 +180,45 @@
 
 ---
 
-## ⏳ HIÁNYZÓ FUNKCIÓK (2/9)
+### 7️⃣ Analytics & Riportok ✅
 
-### 7️⃣ Analytics & Riportok ❌ TODO
+**Hol:** `/admin/analytics` → Analytics menüpont
 
-**Mit kellene:**
-- Havi foglalások száma grafikon
-- Top vendégek (legtöbb foglalás)
-- Kihasználtság (asztalok foglaltsága)
-- Dashboard charts
+**Mit csinál:**
+- Havi foglalások trendje (12 hónap bar chart)
+- Aktuális hónap összefoglaló (összes, megerősített, lemondott, no-show)
+- Top 10 vendég (legtöbb foglalás alapján)
+- Asztal kihasználtság statisztika (30 nap)
+- Státusz megoszlás (30 nap)
+- Vizuális grafikonok és progress barok
+- Real-time adatok a dashboard-on
 
-**Időigény:** ~2-3 óra
+**Hogyan használd:**
+1. Admin → Analytics
+2. Nézd meg a statisztikákat:
+   - Havi trend (melyik hónapban volt a legtöbb foglalás)
+   - Top vendégek (törzsvásárlók azonosítása)
+   - Asztal kihasználtság (melyik asztal a legnépszerűbb)
+   - Státusz megoszlás (hány foglalás lett lemondva/no-show)
+
+**Metriek:**
+- Foglalások száma havonta (utolsó 12 hónap)
+- Vendégek rangsora (totalBookings szerint)
+- Asztalok foglaltsága (utolsó 30 nap)
+- Státusz breakdown (PENDING, CONFIRMED, CANCELLED, etc.)
+- Lemondási arány
+- No-show arány
+
+**Technika:**
+- Server-side számítások (Prisma aggregations)
+- Client-side rendering (vizuális komponensek)
+- Progress bar chart implementáció
+- Color-coded státuszok
+- Responsive grid layout
 
 ---
+
+## ⏳ HIÁNYZÓ FUNKCIÓK (1/9)
 
 ### 9️⃣ Waitlist (Várólistás foglalás) ❌ TODO
 
@@ -249,15 +275,15 @@
 | ✅ Calendar View | DONE | ⭐⭐⭐ |
 | ✅ Public Booking Edit | DONE | ⭐⭐⭐ |
 | ✅ SMS Notifications | DONE | ⭐⭐ |
-| ❌ Analytics | TODO | ⭐⭐ |
+| ✅ Analytics | DONE | ⭐⭐ |
 | ❌ Waitlist | TODO | ⭐ |
 
-**7/9 feature KÉSZ!** Szinte minden elkészült! 🎉
+**8/9 feature KÉSZ!** Már csak 1 funkció hiányzik! 🎉
 
 ---
 
 ## 💡 JAVASLAT
 
-**Most teszteld az új funkciókat**, aztán ha kell a többi, szólj és folytatjuk! 😊
+**Most teszteld az új funkciókat**, aztán ha kell a Waitlist funkció is, szólj és befejezem! 😊
 
-Hátra van még: Analytics és Waitlist funkció.
+Egyetlen funkció maradt: Waitlist (várólistás foglalás).
