@@ -1,4 +1,4 @@
-# 📱 RezervApp - Deploy from Phone (Zero Config!)
+# 📱 RezervApp - Deploy from Phone (No Terminal Needed!)
 
 ## 🎯 Vercel - Easiest (100% Web-Based!)
 
@@ -15,7 +15,7 @@ If you don't have one:
 
 ✅ Authorize access
 
-### 3️⃣ Deploy (3 Clicks!)
+### 3️⃣ Configure and Deploy
 
 **A.) On Vercel Dashboard:**
 
