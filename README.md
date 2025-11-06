@@ -1,6 +1,6 @@
 # 🍽️ RezervApp - Restaurant Reservation System
 
-> **Status: ✅ MVP Phase 1 Complete - Admin Core Features Ready**
+> **Status: ✅ MVP Phase 2 Complete - Public Booking System Ready!**
 
 Modern, full-stack SaaS application for restaurant reservation management, built for Hungarian restaurants.
 
@@ -36,14 +36,16 @@ All source code, documentation, and deployment configuration is located in the `
 
 ---
 
-## 🚧 What's NOT Complete Yet
+## ✅ Phase 2: Public Booking System (COMPLETE!)
 
-### Phase 2: Public Booking System (Priority Next)
-- [ ] Public booking form (guest-facing website)
-- [ ] Date & time picker with real-time availability
-- [ ] Table availability validation
-- [ ] Booking conflict prevention
-- [ ] Operating hours management
+- [x] **Public booking form** - Guest-facing booking page with restaurant info
+- [x] **Date & time picker** - Dynamic time slots with real-time availability
+- [x] **Table availability validation** - Smart table assignment based on capacity
+- [x] **Booking conflict prevention** - Duration-aware overlap detection
+- [x] **Operating hours management** - Validates bookings against restaurant hours
+- [x] **Advanced booking limits** - Min/max advance booking time validation
+
+## 🚧 What's NOT Complete Yet
 
 ### Phase 3: Extended Features
 - [ ] SMS notifications (Twilio)
@@ -210,14 +212,17 @@ RESEND_API_KEY=your-resend-key (optional)
 | Email Notifications | ✅ Complete |
 | Public Cancellation | ✅ Complete |
 | Deployment Config | ✅ Complete |
-| **Public Booking Form** | ❌ Not Started |
+| **Public Booking Form** | ✅ Complete |
+| Real-time Availability | ✅ Complete |
+| Operating Hours Validation | ✅ Complete |
 | SMS Notifications | ❌ Not Started |
 | Advanced Analytics | ❌ Not Started |
 | Waitlist UI | ❌ Not Started |
 | Multi-tenant | ❌ Not Started |
 
 **✅ Phase 1 (Admin Core):** COMPLETE - Ready for internal restaurant use
-**🚧 Phase 2 (Public Booking):** Planned - Will enable guest self-service
+**✅ Phase 2 (Public Booking):** COMPLETE - Guests can now self-book online!
+**🚧 Phase 3 (Extended Features):** Next - SMS, Analytics, Waitlist
 
 ---
 
@@ -254,6 +259,6 @@ If you find this project useful, please consider:
 
 ---
 
-**🎉 Phase 1 Complete!** The admin core is ready for restaurant staff to manage bookings manually. Phase 2 will add the public-facing booking form for guests.
+**🎉 Phase 2 Complete!** The system is now fully functional with both admin management AND public-facing booking! Guests can self-book online with real-time availability checking.
 
 **Questions?** Open an issue on GitHub or check the documentation in `/rezervapp/README.md`

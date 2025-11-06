@@ -1,6 +1,6 @@
 # RezervApp - Magyar Éttermi Foglalási Rendszer
 
-> **📍 MVP STATUS: ✅ CORE FEATURES COMPLETE - Phase 1 Done!**
+> **📍 MVP STATUS: ✅ PHASE 2 COMPLETE - Public Booking System Live!**
 
 ## 🎯 Áttekintés (Executive Summary)
 
@@ -100,14 +100,22 @@
 
 ---
 
-## 🚧 NEM ELKÉSZÜLT FUNKCIÓK (Future Roadmap)
+## ✅ ELKÉSZÜLT FUNKCIÓK (Phase 2 Added!)
 
-### Vendég Oldali Funkciók (Public Booking)
-- [ ] Publikus foglalási form (vendég oldal böngészőben)
-- [ ] Időpont választás (dátum, időpont, létszám)
-- [ ] Elérhető időpontok megjelenítése
-- [ ] Asztaltípus választás
-- [ ] Real-time foglalhatóság ellenőrzés
+### 10. **Vendég Oldali Foglalási Rendszer** 🌐
+- ✅ Publikus foglalási form (`/book/[restaurant-slug]`)
+- ✅ Időpont választás (dátum, időpont, létszám)
+- ✅ Elérhető időpontok real-time lekérdezés
+- ✅ Automatikus asztal választás kapacitás szerint
+- ✅ Real-time foglalhatóság ellenőrzés
+- ✅ Nyitvatartási idők validáció
+- ✅ Min/max előrefoglalási idő limitek
+- ✅ Duration-alapú ütközés detektálás
+- ✅ Instant visszaigazolás success oldalon
+
+---
+
+## 🚧 NEM ELKÉSZÜLT FUNKCIÓK (Future Roadmap)
 
 ### Értesítések & Kommunikáció
 - [ ] SMS értesítések (Twilio integráció)
@@ -216,12 +224,14 @@ Részletes séma: `prisma/schema.prisma`
 - ✅ Publikus foglalás lemondás
 - ✅ Vercel deployment setup
 
-### 🚧 **Fázis 2: Publikus Foglalási Rendszer** (NEM KEZDŐDÖTT)
-- [ ] Publikus foglalási form
-- [ ] Időpont választás UI
-- [ ] Elérhető asztalok validáció
-- [ ] Foglalás ütközés ellenőrzés
-- [ ] Nyitvatartási idők figyelembevétele
+### ✅ **Fázis 2: Publikus Foglalási Rendszer** (KÉSZ!)
+- ✅ Publikus foglalási form
+- ✅ Időpont választás UI (dinamikus)
+- ✅ Elérhető asztalok validáció
+- ✅ Foglalás ütközés ellenőrzés (duration-alapú)
+- ✅ Nyitvatartási idők figyelembevétele
+- ✅ Availability API endpoint (`/api/availability`)
+- ✅ Real-time slot betöltés a frontend-en
 
 ### 🚧 **Fázis 3: Értesítési Rendszer Bővítés** (RÉSZBEN KÉSZ)
 - ✅ Email integráció (Resend) - KÉSZ
@@ -374,14 +384,19 @@ npm run dev
 
 ## 🎉 Összefoglalás
 
-**✅ KÉSZ:** Admin dashboard, foglaláskezelés (lista + naptár), asztalkezelés, email értesítések, publikus lemondás, authentication, deployment setup
+**✅ KÉSZ (Phase 1+2):**
+- Admin dashboard, foglaláskezelés, asztalkezelés
+- Email értesítések, publikus lemondás, authentication
+- **Publikus foglalási form teljes real-time availability-vel**
+- Nyitvatartási idők validáció, duration-alapú ütközés detektálás
+- Deployment setup
 
-**🚧 KÖVETKEZŐ:** Publikus foglalási form, SMS értesítések, nyitvatartási idők, analitika, waitlist UI
+**🚧 KÖVETKEZŐ (Phase 3):** SMS értesítések, analitika dashboard, waitlist UI, manual booking creation
 
-**🚀 LAUNCH READY:** A jelenlegi MVP alkalmas éttermek számára manuális foglaláskezelésre. Publikus foglalási form hozzáadásával teljes értékű SaaS lesz!
+**🚀 PRODUCTION READY:** A rendszer most már teljes értékű SaaS! Vendégek önállóan tudnak foglalni real-time elérhetőség alapján, és az étterem személyzete admin felületen kezeli ezeket!
 
 ---
 
 **Készítette:** [Thsandorh](https://github.com/Thsandorh)
 **Utolsó frissítés:** 2025. november 6.
-**Verzió:** MVP Phase 1 Complete ✅
+**Verzió:** MVP Phase 2 Complete ✅ - Public Booking System Live!
