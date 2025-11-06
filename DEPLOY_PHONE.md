@@ -30,11 +30,20 @@ Root Directory: rezervapp
 ```
 ☝️ **Type this:** `rezervapp` (very important!)
 
-**C.) Deploy!**
+**C.) Environment Variables:**
+
+Click **"Environment Variables"** and add:
+
+| Name | Value |
+|------|-------|
+| `DATABASE_URL` | `file:./dev.db` |
+| `NEXTAUTH_SECRET` | (click "Generate" or use any random string) |
+| `NEXTAUTH_URL` | (leave empty - Vercel auto-detects) |
+| `AUTH_TRUST_HOST` | `true` |
+
+**D.) Deploy!**
 
 Click: **"Deploy"** 🚀
-
-**That's it!** No environment variables needed - everything is automatic! ✨
 
 ---
 
@@ -44,7 +53,7 @@ Vercel automatically:
 - ✅ Builds the app
 - ✅ Deploys it
 - ✅ Gives you a URL (e.g., rezervapp.vercel.app)
-- ✅ Sets up all environment variables automatically!
+- ✅ Sets up the database on first run
 
 ---
 
@@ -99,9 +108,8 @@ If Vercel doesn't work:
 2. Click: **"Start a New Project"**
 3. Select: **"Deploy from GitHub repo"**
 4. Search: `RezervApp`
-5. Click: **Deploy** 🚀
-
-**No environment variables needed!** Everything auto-configures!
+5. Set the same environment variables as Vercel (step C above)
+6. Click: **Deploy** 🚀
 
 ---
 
@@ -153,15 +161,16 @@ If Vercel doesn't work:
 
 ---
 
-## 🚀 What's Auto-Configured?
+## 🚀 Required Environment Variables
 
-✅ **NEXTAUTH_SECRET** - Auto-generated secure key
-✅ **NEXTAUTH_URL** - Auto-detected from platform
-✅ **DATABASE_URL** - Pre-configured
-✅ **AUTH_TRUST_HOST** - Set to true
-✅ **Database setup** - First run initializes everything
+You need to set these in Vercel (see step C above):
 
-**Zero configuration needed!** Just click deploy! ✨
+✅ **DATABASE_URL** - Start with `file:./dev.db` (SQLite)
+✅ **NEXTAUTH_SECRET** - Random string (use Vercel's Generate button)
+✅ **NEXTAUTH_URL** - Auto-detected by Vercel (can leave empty)
+✅ **AUTH_TRUST_HOST** - Set to `true`
+
+**After first deploy:** Upgrade to Vercel Postgres for production use!
 
 ---
 

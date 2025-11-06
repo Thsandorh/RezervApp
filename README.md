@@ -97,14 +97,14 @@ All source code, documentation, and deployment configuration is located in the `
 
 ## 🚀 Quick Start
 
-### 🐳 Option 1: Docker (Legegyszerűbb!)
+### 🐳 Option 1: Docker (Easiest!)
 
 ```bash
 cd rezervapp
 ./start.sh
 ```
 
-**Kész!** 🎉 → http://localhost:3000
+**Done!** 🎉 → http://localhost:3000
 
 👉 **[Docker Deployment Guide](./DOCKER.md)**
 
@@ -148,7 +148,7 @@ Application available at: **http://localhost:3000**
 
 After running the seed script:
 
-- **Admin Login:** `admin@pizzeriaromana.hu` / `admin123`
+- **Admin Login:** `admin@pizzeriaromana.hu` / `password123`
 - **Admin Dashboard:** http://localhost:3000/admin
 - **Public Cancellation:** Any booking will have a cancellation link in email
 
