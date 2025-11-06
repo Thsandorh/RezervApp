@@ -1,6 +1,6 @@
 # 🎉 RezervApp - Features Summary
 
-## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (4/9)
+## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (5/9)
 
 ### 1️⃣ API Kulcsok Kezelése (Settings) ✅
 
@@ -91,18 +91,36 @@
 
 ---
 
-## ⏳ HIÁNYZÓ FUNKCIÓK (5/9)
+### 5️⃣ Calendar View (Admin) ✅
 
-### 5️⃣ Calendar View (Admin) ❌ TODO
+**Hol:** `/admin/bookings` → "Naptár" gomb
 
-**Mit kellene:**
-- FullCalendar integration (már telepítve!)
-- Foglalások naptárban
-- Drag & drop időpont változtatás (optional)
+**Mit csinál:**
+- Naptáras nézet a foglalásokról (FullCalendar integration)
+- Havi, heti és napi nézet közötti váltás
+- Színkódolt státuszok (zöld: CONFIRMED, sárga: PENDING, kék: SEATED, szürke: COMPLETED, piros: CANCELLED/NO_SHOW)
+- Kattintható események - megnyílik a részletek modal
+- Lista/Naptár közötti váltás egy gombbal
+- Magyar nyelvű naptár
+- 8:00-23:00 időablak megjelenítés
+- Jelenlegi idő jelzés (now indicator)
 
-**Időigény:** ~1-2 óra
+**Hogyan használd:**
+1. Admin → Bookings
+2. Kattints a "Naptár" gombra
+3. Válassz nézeteket: Hónap / Hét / Nap
+4. Kattints egy foglalásra a részletekért
+5. Vissza a listához: "Lista" gomb
+
+**Technika:**
+- FullCalendar React integration
+- dayGrid, timeGrid, interaction pluginok
+- Booking click → modal megnyitás
+- Router.refresh() frissítéshez
 
 ---
+
+## ⏳ HIÁNYZÓ FUNKCIÓK (4/9)
 
 ### 6️⃣ Foglalás Szerkesztés (Public) ❌ TODO
 
@@ -191,13 +209,13 @@
 | ✅ Booking Management | DONE | ⭐⭐⭐⭐⭐ |
 | ✅ Email Notifications | DONE | ⭐⭐⭐⭐⭐ |
 | ✅ Search & Filters | DONE | ⭐⭐⭐⭐ |
-| ❌ Calendar View | TODO | ⭐⭐⭐ |
+| ✅ Calendar View | DONE | ⭐⭐⭐ |
 | ❌ Public Booking Edit | TODO | ⭐⭐⭐ |
 | ❌ Analytics | TODO | ⭐⭐ |
 | ❌ SMS Notifications | TODO | ⭐⭐ |
 | ❌ Waitlist | TODO | ⭐ |
 
-**4/9 feature KÉSZ!** A legfontosabbak mind megvannak! 🎉
+**5/9 feature KÉSZ!** Több mint a fele elkészült! 🎉
 
 ---
 
@@ -205,4 +223,4 @@
 
 **Most teszteld az új funkciókat**, aztán ha kell a többi, szólj és folytatjuk! 😊
 
-A Calendar View lenne a következő funkció (naptáras nézet a foglalásokról).
+A következő funkció: Public Booking Edit (vendégek módosíthatják foglalásaikat).

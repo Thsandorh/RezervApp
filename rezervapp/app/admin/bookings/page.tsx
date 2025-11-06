@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookingsList } from "@/components/admin/bookings-list"
+import { BookingsView } from "@/components/admin/bookings-view"
 
 async function getBookings() {
   return await prisma.booking.findMany({
@@ -33,24 +33,11 @@ export default async function BookingsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Foglalások</h1>
         <p className="text-muted-foreground">
-          Összes foglalás kezelése
+          Összes foglalás kezelése és megtekintése
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Foglalások listája ({bookings.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <BookingsList
-            bookings={serializedBookings as any}
-            onUpdate={() => {
-              // This will trigger a revalidation
-              // In practice, you might want to use router.refresh() here
-            }}
-          />
-        </CardContent>
-      </Card>
+      <BookingsView bookings={serializedBookings as any} />
     </div>
   )
 }
