@@ -1,14 +1,14 @@
 # 🚀 RezervApp - Deployment Guide
 
-## ☁️ Legegyszerűbb: Fly.io (AJÁNLOTT!)
+## ☁️ Easiest: Fly.io (RECOMMENDED!)
 
-**Miért Fly.io?**
-- ✅ Teljesen INGYENES
-- ✅ 3 parancs és kész
-- ✅ Automatikus HTTPS
+**Why Fly.io?**
+- ✅ Completely FREE
+- ✅ 3 commands and done
+- ✅ Automatic HTTPS
 - ✅ Global CDN
 
-### Telepítés (egyszer)
+### Installation (one-time)
 
 ```bash
 # Linux/macOS
@@ -18,33 +18,33 @@ curl -L https://fly.io/install.sh | sh
 powershell -Command "iwr https://fly.io/install.ps1 -useb | iex"
 ```
 
-### Deployment (3 parancs!)
+### Deployment (3 commands!)
 
 ```bash
-# 1. Login (megnyit egy böngészőt)
+# 1. Login (opens browser)
 fly auth login
 
 # 2. Deploy!
 cd rezervapp
 fly launch --now
 
-# KÉSZ! 🎉
+# DONE! 🎉
 ```
 
-Fly automatikusan:
-- ✅ Felismeri a Dockerfile-t
-- ✅ Létrehozza az app-ot
-- ✅ Hozzáad egy persistent volume-ot az adatbázisnak
-- ✅ Deploy-ol és ad egy URL-t (pl: rezervapp.fly.dev)
+Fly automatically:
+- ✅ Detects Dockerfile
+- ✅ Creates the app
+- ✅ Adds persistent volume for database
+- ✅ Deploys and gives you a URL (e.g., rezervapp.fly.dev)
 
-### Environment változók beállítása
+### Set environment variables
 
 ```bash
 fly secrets set NEXTAUTH_SECRET=$(openssl rand -base64 32)
 fly secrets set NEXTAUTH_URL=https://your-app.fly.dev
 ```
 
-### Újra deploy
+### Redeploy
 
 ```bash
 fly deploy
@@ -52,7 +52,7 @@ fly deploy
 
 ---
 
-## 🚂 Railway (alternatíva)
+## 🚂 Railway (alternative)
 
 ```bash
 # 1. Install Railway CLI
@@ -61,18 +61,18 @@ npm install -g @railway/cli
 # 2. Login
 railway login
 
-# 3. Init projekt
+# 3. Init project
 cd rezervapp
 railway init
 
 # 4. Deploy
 railway up
 
-# 5. URL generálás
+# 5. Generate URL
 railway domain
 ```
 
-**Environment változók:**
+**Environment variables:**
 ```bash
 railway variables set NEXTAUTH_SECRET=$(openssl rand -base64 32)
 railway variables set DATABASE_URL=file:/app/data/dev.db
@@ -80,9 +80,9 @@ railway variables set DATABASE_URL=file:/app/data/dev.db
 
 ---
 
-## 🌐 Render (GUI alapú)
+## 🌐 Render (GUI-based)
 
-1. **Menj:** https://dashboard.render.com/
+1. **Go to:** https://dashboard.render.com/
 2. **New** → **Web Service**
 3. **Connect GitHub repo:** `Thsandorh/RezervApp`
 4. **Settings:**
@@ -99,12 +99,12 @@ railway variables set DATABASE_URL=file:/app/data/dev.db
 
 ---
 
-## 🐳 Docker (Saját szerver)
+## 🐳 Docker (Own Server)
 
-Ha van saját szervert (VPS, Hetzner, DigitalOcean):
+If you have your own server (VPS, Hetzner, DigitalOcean):
 
 ```bash
-# 1. SSH a szerverre
+# 1. SSH to server
 ssh user@your-server.com
 
 # 2. Clone repo
@@ -131,88 +131,47 @@ server {
 
 ---
 
-## 📱 Telefonról Deploy (Termux Android)
+## 📊 Comparison
 
-```bash
-# 1. Install Termux from F-Droid
-# 2. Install dependencies
-pkg install git nodejs
-
-# 3. Install Fly CLI
-curl -L https://fly.io/install.sh | sh
-
-# 4. Clone & deploy
-git clone https://github.com/Thsandorh/RezervApp
-cd RezervApp/rezervapp
-fly auth login
-fly launch --now
-```
+| Platform | Free | Simplicity | Time |
+|----------|------|------------|------|
+| **Fly.io** | ✅ Yes | ⭐⭐⭐⭐⭐ | 2 min |
+| Railway | ✅ 500h/mo | ⭐⭐⭐⭐ | 3 min |
+| Render | ✅ Yes | ⭐⭐⭐ | 5 min |
+| Docker (VPS) | ❌ Need VPS | ⭐⭐ | 10 min |
 
 ---
 
-## 🔧 Post-Deployment Setup
+## 💡 Tips
 
-### 1. Első belépés után:
-
-Admin URL: `https://your-app.com/login`
-- Email: `admin@pizzeriaromana.hu`
-- Password: `password123`
-
-### 2. Változtasd meg az admin jelszót!
-
-### 3. Publikus booking URL:
-```
-https://your-app.com/book/pizzeria-romana
-```
-
-### 4. Hozz létre saját éttermet:
-- Admin → Beállítások
-- Módosítsd a restaurant slug-ot
-- Új booking URL: `https://your-app.com/book/your-slug`
-
----
-
-## 📊 Összehasonlítás
-
-| Platform | Ingyenes | Egyszerűség | Idő |
-|----------|----------|-------------|-----|
-| **Fly.io** | ✅ Igen | ⭐⭐⭐⭐⭐ | 2 perc |
-| Railway | ✅ 500h/hó | ⭐⭐⭐⭐ | 3 perc |
-| Render | ✅ Igen | ⭐⭐⭐ | 5 perc |
-| Docker (VPS) | ❌ VPS kell | ⭐⭐ | 10 perc |
-
----
-
-## 💡 Tippek
-
-### Költségek minimalizálása:
-- Fly.io: 3 kis gépet ad ingyen (elég!)
-- Railway: 500 óra/hó ingyen
-- Render: Alszik 15 perc után (lassú első load)
+### Minimize costs:
+- Fly.io: 3 small machines free (enough!)
+- Railway: 500 hours/month free
+- Render: Sleeps after 15 min (slow first load)
 
 ### Production-ready checklist:
-- [ ] Változtasd meg az admin jelszót
-- [ ] Állítsd be a NEXTAUTH_SECRET-et erősre
-- [ ] Add hozzá a RESEND_API_KEY-t email-hez
-- [ ] Custom domain beállítása
-- [ ] Regular backup az adatbázisról
+- [ ] Change admin password
+- [ ] Set strong NEXTAUTH_SECRET
+- [ ] Add RESEND_API_KEY for emails
+- [ ] Set up custom domain
+- [ ] Regular database backups
 
 ---
 
 ## ❓ Troubleshooting
 
-### "Database is locked" hiba
-→ SQLite egyidejű írásokat nem tud. Production-ben használj PostgreSQL-t:
+### "Database is locked" error
+→ SQLite doesn't handle concurrent writes. Use PostgreSQL in production:
 ```bash
 # Fly.io Postgres
 fly postgres create
 
 # Railway
 railway add
-→ választ Postgres
+→ select Postgres
 ```
 
-### App nem indul
+### App won't start
 ```bash
 fly logs  # Fly.io
 railway logs  # Railway
@@ -220,7 +179,7 @@ railway logs  # Railway
 
 ---
 
-**Ajánlott:** Kezdd **Fly.io**-val - 2 perc és megy! 🚀
+**Recommended:** Start with **Fly.io** - 2 minutes and it works! 🚀
 
 ```bash
 fly auth login && cd rezervapp && fly launch --now
