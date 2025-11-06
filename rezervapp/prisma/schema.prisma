@@ -1,0 +1,159 @@
+// RezervApp - Éttermi Foglalási Rendszer
+// Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// === MODELLEK ===
+
+model Restaurant {
+  id              String   @id @default(cuid())
+  name            String
+  slug            String   @unique  // pl: pizzeria-romana
+  email           String
+  phone           String
+  address         String
+  city            String
+  postalCode      String
+
+  // Konfigurációk
+  timeZone        String   @default("Europe/Budapest")
+  currency        String   @default("HUF")
+
+  // Nyitvatartás (JSON formátum)
+  // { monday: { open: "11:00", close: "22:00", closed: false }, ... }
+  openingHours    String   @default("{}")
+
+  // Foglalási beállítások
+  slotDuration    Int      @default(30)  // perc
+  maxAdvanceDays  Int      @default(60)  // Hány nappal előre lehet foglalni
+  minAdvanceHours Int      @default(2)   // Min hány órával előre kell foglalni
+
+  // Kapcsolatok
+  tables          Table[]
+  bookings        Booking[]
+  staff           Staff[]
+  guests          Guest[]
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Table {
+  id            String   @id @default(cuid())
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  name          String   // pl: "Asztal 1", "Terasz 4"
+  capacity      Int      // Hány fős
+  location      String?  // "Belső terem", "Terasz", "VIP"
+
+  // Pozíció (padlótérképhez)
+  positionX     Float?
+  positionY     Float?
+
+  isActive      Boolean  @default(true)
+
+  bookings      Booking[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([restaurantId, name])
+}
+
+model Guest {
+  id            String   @id @default(cuid())
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  firstName     String
+  lastName      String
+  email         String?
+  phone         String   // Magyar formátum: +36301234567
+
+  // Vendég preferenciák
+  notes         String?  // Allergiák, különleges kérések
+  vip           Boolean  @default(false)
+
+  // Statisztikák
+  totalBookings Int      @default(0)
+  noShowCount   Int      @default(0)
+
+  bookings      Booking[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([restaurantId, phone])
+}
+
+model Booking {
+  id              String   @id @default(cuid())
+  restaurantId    String
+  restaurant      Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  guestId         String
+  guest           Guest    @relation(fields: [guestId], references: [id])
+
+  tableId         String?
+  table           Table?   @relation(fields: [tableId], references: [id])
+
+  // Foglalás részletei
+  bookingDate     DateTime // Foglalás dátuma és időpontja
+  partySize       Int      // Hány fős
+  duration        Int      @default(120) // Perc
+
+  status          String   @default("PENDING") // PENDING, CONFIRMED, SEATED, COMPLETED, CANCELLED, NO_SHOW
+
+  // Kommunikáció
+  specialRequests String?
+  internalNotes   String?  // Csak staff látja
+
+  // Értesítések
+  confirmationSent Boolean @default(false)
+  reminderSent     Boolean @default(false)
+
+  // Lemondás/módosítás token
+  cancelToken     String   @unique @default(cuid())
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Staff {
+  id            String   @id @default(cuid())
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  name          String
+  email         String   @unique
+  password      String   // Hashed password
+  role          String   @default("STAFF") // OWNER, MANAGER, STAFF
+
+  isActive      Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Waitlist {
+  id            String   @id @default(cuid())
+  restaurantId  String
+
+  guestName     String
+  guestPhone    String
+  partySize     Int
+
+  status        String   @default("WAITING") // WAITING, NOTIFIED, SEATED, CANCELLED
+
+  createdAt     DateTime @default(now())
+  notifiedAt    DateTime?
+  seatedAt      DateTime?
+}
