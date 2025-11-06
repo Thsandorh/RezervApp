@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -8,7 +8,7 @@ import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calendar, Users, Clock } from "lucide-react"
+import { Calendar, Users, Clock, Loader2 } from "lucide-react"
 import { format, addDays, setHours, setMinutes } from "date-fns"
 import { hu } from "date-fns/locale"
 
@@ -33,14 +33,53 @@ export function BookingForm({ restaurant }: BookingFormProps) {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [availableSlots, setAvailableSlots] = useState<string[]>([])
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<string>("")
+  const [selectedPartySize, setSelectedPartySize] = useState<string>("")
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
   })
+
+  const watchedDate = watch("date")
+  const watchedPartySize = watch("partySize")
+
+  // Load available time slots when date or party size changes
+  useEffect(() => {
+    const loadAvailableSlots = async () => {
+      if (!watchedDate || !watchedPartySize) {
+        setAvailableSlots([])
+        return
+      }
+
+      setIsLoadingSlots(true)
+      try {
+        const response = await fetch(
+          `/api/availability?restaurantId=${restaurant.id}&date=${watchedDate}&partySize=${watchedPartySize}`
+        )
+
+        if (response.ok) {
+          const data = await response.json()
+          setAvailableSlots(data.availableSlots || [])
+        } else {
+          setAvailableSlots([])
+        }
+      } catch (error) {
+        console.error("Failed to load available slots:", error)
+        setAvailableSlots([])
+      } finally {
+        setIsLoadingSlots(false)
+      }
+    }
+
+    loadAvailableSlots()
+  }, [watchedDate, watchedPartySize, restaurant.id])
 
   const onSubmit = async (data: BookingFormData) => {
     setIsSubmitting(true)
@@ -70,24 +109,15 @@ export function BookingForm({ restaurant }: BookingFormProps) {
     }
   }
 
-  // Generate available dates (next 60 days)
-  const availableDates = Array.from({ length: 60 }, (_, i) => {
+  // Generate available dates based on restaurant settings
+  const maxDays = restaurant.maxAdvanceDays || 60
+  const availableDates = Array.from({ length: maxDays }, (_, i) => {
     const date = addDays(new Date(), i)
     return {
       value: format(date, "yyyy-MM-dd"),
       label: format(date, "yyyy. MMMM d. (EEEE)", { locale: hu }),
     }
   })
-
-  // Generate time slots (11:00 - 22:00, every 30 minutes)
-  const timeSlots = []
-  for (let hour = 11; hour <= 22; hour++) {
-    for (let minute = 0; minute < 60; minute += 30) {
-      if (hour === 22 && minute > 0) break
-      const time = `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`
-      timeSlots.push(time)
-    }
-  }
 
   const partySizes = Array.from({ length: 12 }, (_, i) => i + 1)
 
@@ -127,14 +157,24 @@ export function BookingForm({ restaurant }: BookingFormProps) {
           <Label htmlFor="time" className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
             Időpont
+            {isLoadingSlots && <Loader2 className="h-3 w-3 animate-spin ml-2" />}
           </Label>
           <select
             id="time"
             {...register("time")}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            disabled={!watchedDate || !watchedPartySize || isLoadingSlots}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <option value="">Válassz időpontot</option>
-            {timeSlots.map((time) => (
+            <option value="">
+              {!watchedDate || !watchedPartySize
+                ? "Először válassz dátumot és létszámot"
+                : isLoadingSlots
+                ? "Elérhető időpontok betöltése..."
+                : availableSlots.length === 0
+                ? "Nincs elérhető időpont"
+                : "Válassz időpontot"}
+            </option>
+            {availableSlots.map((time) => (
               <option key={time} value={time}>
                 {time}
               </option>
@@ -142,6 +182,11 @@ export function BookingForm({ restaurant }: BookingFormProps) {
           </select>
           {errors.time && (
             <p className="text-sm text-destructive">{errors.time.message}</p>
+          )}
+          {!isLoadingSlots && watchedDate && watchedPartySize && availableSlots.length === 0 && (
+            <p className="text-sm text-amber-600">
+              Ezen a napon nincs elérhető időpont erre a létszámra. Kérlek válassz másik dátumot!
+            </p>
           )}
         </div>
       </div>

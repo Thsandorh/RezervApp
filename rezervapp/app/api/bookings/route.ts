@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { sendBookingConfirmation } from "@/lib/email"
+import { addMinutes, isAfter, isBefore, parseISO, format } from "date-fns"
 
 const bookingRequestSchema = z.object({
   restaurantId: z.string(),
@@ -19,6 +20,79 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const data = bookingRequestSchema.parse(body)
+
+    // Get restaurant with settings
+    const restaurant = await prisma.restaurant.findUnique({
+      where: { id: data.restaurantId },
+    })
+
+    if (!restaurant) {
+      return NextResponse.json(
+        { error: "Étterem nem található" },
+        { status: 404 }
+      )
+    }
+
+    // Create booking date/time
+    const bookingDateTime = new Date(`${data.date}T${data.time}:00`)
+    const now = new Date()
+
+    // Validate minimum advance booking time
+    const minBookingTime = addMinutes(now, restaurant.minAdvanceHours * 60)
+    if (isBefore(bookingDateTime, minBookingTime)) {
+      return NextResponse.json(
+        { error: `Foglalás legalább ${restaurant.minAdvanceHours} órával előre szükséges` },
+        { status: 400 }
+      )
+    }
+
+    // Validate maximum advance booking time
+    const maxBookingDate = new Date()
+    maxBookingDate.setDate(maxBookingDate.getDate() + restaurant.maxAdvanceDays)
+    if (isAfter(bookingDateTime, maxBookingDate)) {
+      return NextResponse.json(
+        { error: `Foglalás legfeljebb ${restaurant.maxAdvanceDays} nappal előre lehetséges` },
+        { status: 400 }
+      )
+    }
+
+    // Validate opening hours
+    let openingHours: any = {}
+    try {
+      openingHours = JSON.parse(restaurant.openingHours)
+    } catch {
+      // Use default if not set
+      openingHours = {
+        monday: { open: '11:00', close: '22:00', closed: false },
+        tuesday: { open: '11:00', close: '22:00', closed: false },
+        wednesday: { open: '11:00', close: '22:00', closed: false },
+        thursday: { open: '11:00', close: '22:00', closed: false },
+        friday: { open: '11:00', close: '22:00', closed: false },
+        saturday: { open: '11:00', close: '22:00', closed: false },
+        sunday: { open: '11:00', close: '22:00', closed: false },
+      }
+    }
+
+    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+    const dayName = dayNames[bookingDateTime.getDay()]
+    const dayHours = openingHours[dayName]
+
+    if (!dayHours || dayHours.closed) {
+      return NextResponse.json(
+        { error: "Az étterem ezen a napon zárva tart" },
+        { status: 400 }
+      )
+    }
+
+    const bookingTime = format(bookingDateTime, 'HH:mm')
+    const bookingEndTime = format(addMinutes(bookingDateTime, restaurant.slotDuration), 'HH:mm')
+
+    if (bookingTime < dayHours.open || bookingEndTime > dayHours.close) {
+      return NextResponse.json(
+        { error: `Az étterem nyitvatartása: ${dayHours.open} - ${dayHours.close}` },
+        { status: 400 }
+      )
+    }
 
     // Find or create guest
     let guest = await prisma.guest.findUnique({
@@ -46,7 +120,11 @@ export async function POST(request: Request) {
 
     // Find available table for the party size
     const partySize = parseInt(data.partySize)
-    const availableTable = await prisma.table.findFirst({
+    const duration = 120 // Default 2 hours
+    const bookingEndDateTime = addMinutes(bookingDateTime, duration)
+
+    // Find all suitable tables
+    const suitableTables = await prisma.table.findMany({
       where: {
         restaurantId: data.restaurantId,
         isActive: true,
@@ -59,27 +137,50 @@ export async function POST(request: Request) {
       },
     })
 
-    // Create booking date/time
-    const bookingDateTime = new Date(`${data.date}T${data.time}:00`)
+    if (suitableTables.length === 0) {
+      return NextResponse.json(
+        { error: "Nincs megfelelő asztal erre a létszámra" },
+        { status: 400 }
+      )
+    }
 
-    // Check for conflicts
-    if (availableTable) {
-      const conflictingBooking = await prisma.booking.findFirst({
+    // Check for conflicts with proper duration handling
+    let availableTable = null
+    for (const table of suitableTables) {
+      const conflictingBookings = await prisma.booking.findMany({
         where: {
-          tableId: availableTable.id,
-          bookingDate: bookingDateTime,
+          tableId: table.id,
           status: {
             in: ['PENDING', 'CONFIRMED', 'SEATED'],
           },
         },
       })
 
-      if (conflictingBooking) {
-        return NextResponse.json(
-          { error: "Ez az időpont már foglalt" },
-          { status: 400 }
-        )
+      let hasConflict = false
+      for (const booking of conflictingBookings) {
+        const existingEnd = addMinutes(booking.bookingDate, booking.duration)
+
+        // Check if there's any overlap
+        const startsBeforeExistingEnds = isBefore(bookingDateTime, existingEnd) || bookingDateTime.getTime() === existingEnd.getTime()
+        const endsAfterExistingStarts = isAfter(bookingEndDateTime, booking.bookingDate) || bookingEndDateTime.getTime() === booking.bookingDate.getTime()
+
+        if (startsBeforeExistingEnds && endsAfterExistingStarts) {
+          hasConflict = true
+          break
+        }
       }
+
+      if (!hasConflict) {
+        availableTable = table
+        break
+      }
+    }
+
+    if (!availableTable) {
+      return NextResponse.json(
+        { error: "Ez az időpont már foglalt. Kérlek válassz másik időpontot!" },
+        { status: 400 }
+      )
     }
 
     // Create booking
@@ -87,10 +188,10 @@ export async function POST(request: Request) {
       data: {
         restaurantId: data.restaurantId,
         guestId: guest.id,
-        tableId: availableTable?.id || null,
+        tableId: availableTable.id,
         bookingDate: bookingDateTime,
         partySize,
-        duration: 120, // Default 2 hours
+        duration, // Use the validated duration
         status: "CONFIRMED",
         specialRequests: data.specialRequests || null,
         confirmationSent: false,
@@ -108,11 +209,6 @@ export async function POST(request: Request) {
       },
     })
 
-    // Get restaurant name for email
-    const restaurant = await prisma.restaurant.findUnique({
-      where: { id: data.restaurantId },
-    })
-
     // Send confirmation email (if email provided and RESEND configured)
     if (data.email && restaurant) {
       await sendBookingConfirmation({
@@ -121,7 +217,7 @@ export async function POST(request: Request) {
         restaurantName: restaurant.name,
         bookingDate: bookingDateTime,
         partySize,
-        tableName: availableTable?.name,
+        tableName: availableTable.name,
         specialRequests: data.specialRequests,
         cancelToken: booking.cancelToken,
       })

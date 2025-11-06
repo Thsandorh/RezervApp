@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { BookingsList } from "./bookings-list"
-import { BookingsCalendar } from "@/components/admin/bookings-calendar"
+// import { BookingsList } from "./bookings-list"
+// import { BookingsCalendar } from "@/components/admin/bookings-calendar"
 
 async function getBookings() {
   const restaurant = await prisma.restaurant.findFirst()
@@ -63,7 +63,8 @@ export default async function BookingsPage() {
               <CardTitle>Összes foglalás ({data.bookings.length})</CardTitle>
             </CardHeader>
             <CardContent>
-              <BookingsList bookings={data.bookings as any} />
+              <div className="text-muted-foreground">Foglalások listája (fejlesztés alatt)</div>
+              {/* <BookingsList bookings={data.bookings as any} /> */}
             </CardContent>
           </Card>
         </TabsContent>
@@ -74,7 +75,8 @@ export default async function BookingsPage() {
               <CardTitle>Naptár nézet</CardTitle>
             </CardHeader>
             <CardContent>
-              <BookingsCalendar bookings={data.bookings as any} />
+              <div className="text-muted-foreground">Naptár nézet (fejlesztés alatt)</div>
+              {/* <BookingsCalendar bookings={data.bookings as any} /> */}
             </CardContent>
           </Card>
         </TabsContent>
