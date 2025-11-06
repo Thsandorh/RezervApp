@@ -1,113 +1,115 @@
 # RezervApp
 
-Professzionális éttermi foglalási és menedzsment rendszer magyar éttermek számára.
+> **Status: ✅ MVP Complete and Production Ready**
 
-## Áttekintés
+Professional restaurant reservation and management system for Hungarian restaurants.
 
-RezervApp egy full-stack SaaS alkalmazás, amely leegyszerűsíti az éttermi foglalások kezelését. A rendszer lehetővé teszi a vendégek online foglalását, az asztalok nyomon követését, és átfogó admin felületet biztosít az étterem személyzetének.
+## Overview
 
-## Funkciók
+RezervApp is a full-stack SaaS application that simplifies restaurant booking management. The system enables online guest reservations, table tracking, and provides a comprehensive admin interface for restaurant staff.
 
-### ✅ Felhasználói hitelesítés
-- NextAuth.js alapú biztonságos bejelentkezés
+## Features
+
+### ✅ User Authentication
+- Secure login with NextAuth.js
 - JWT session management
-- Szerepkör alapú hozzáférés-vezérlés (admin/staff/manager)
-- Védett admin útvonalak middleware-rel
+- Role-based access control (admin/staff/manager)
+- Protected admin routes with middleware
 
-### ✅ Foglaláskezelés
-- Részletes foglalási információk megtekintése
-- Foglalási státuszok kezelése:
-  - PENDING (Függőben)
-  - CONFIRMED (Megerősítve)
-  - SEATED (Leültetve)
-  - COMPLETED (Befejezve)
-  - CANCELLED (Törölve)
-  - NO_SHOW (Nem jelent meg)
-- Belső jegyzetek hozzáadása foglalásokhoz
-- Foglalások törlése admin felületről
-- Lista és naptár nézet közötti váltás
-- FullCalendar integráció magyar lokalizációval
+### ✅ Booking Management
+- View detailed booking information
+- Manage booking statuses:
+  - PENDING (Awaiting confirmation)
+  - CONFIRMED (Confirmed)
+  - SEATED (Guest seated)
+  - COMPLETED (Completed)
+  - CANCELLED (Cancelled)
+  - NO_SHOW (No show)
+- Add internal notes to bookings
+- Delete bookings from admin panel
+- Switch between list and calendar views
+- FullCalendar integration with Hungarian localization
 
-### ✅ Email értesítések
-- Automatikus foglalás visszaigazoló emailek
-- Resend API integráció
-- React Email alapú HTML sablonok
-- Magyar nyelvű tartalom formázással
-- Lemondási link generálás
+### ✅ Email Notifications
+- Automatic booking confirmation emails
+- Resend API integration
+- React Email HTML templates
+- Hungarian language content with formatting
+- Cancellation link generation
 
-### ✅ Publikus foglalás lemondás
-- Token-alapú biztonságos hozzáférés
-- Kétlépcsős megerősítési folyamat
-- Időalapú figyelmeztetések (< 2 óra)
-- Foglalási státusz validáció
+### ✅ Public Booking Cancellation
+- Token-based secure access
+- Two-step confirmation process
+- Time-based warnings (< 2 hours)
+- Booking status validation
 
-### ✅ Asztalkezelés
-- Asztalok létrehozása, szerkesztése, törlése
-- Kapacitás és elhelyezkedés megadása
-- Helyszín szerinti csoportosítás
-- Egyedi névvalidáció
-- Védelem aktív foglalások ellen
+### ✅ Table Management
+- Create, edit, and delete tables
+- Set capacity and location
+- Group by location
+- Unique name validation
+- Protection against deletion of tables with active bookings
 
-### ✅ Vendég nyomon követés
-- Vendég profil kezelés
-- Foglalási előzmények
-- VIP státusz jelölés
-- No-show számláló
-- Telefonszám és email kezelés
+### ✅ Guest Tracking
+- Guest profile management
+- Booking history
+- VIP status marking
+- No-show counter
+- Phone number and email management
 
 ### ✅ Dashboard
-- Foglalási statisztikák
-- Mai foglalások áttekintése
-- Gyors hozzáférés főbb funkciókhoz
-- Vendég és asztal összesítők
+- Booking statistics
+- Today's bookings overview
+- Quick access to main features
+- Guest and table summaries
 
-## Technológiai stack
+## Tech Stack
 
 ### Frontend
-- **Next.js 14** - App Router és Server Components
-- **TypeScript** - Type-safe fejlesztés
+- **Next.js 14** - App Router and Server Components
+- **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
-- **shadcn/ui** - Újrafelhasználható UI komponensek
-- **Radix UI** - Headless UI primitívek
-- **FullCalendar** - Naptár integráció
-- **React Hook Form** - Form kezelés
-- **Zod** - Schema validáció
+- **shadcn/ui** - Reusable UI components
+- **Radix UI** - Headless UI primitives
+- **FullCalendar** - Calendar integration
+- **React Hook Form** - Form management
+- **Zod** - Schema validation
 
 ### Backend
-- **Next.js API Routes** - RESTful API végpontok
-- **Prisma ORM** - Típusbiztos adatbázis hozzáférés
-- **SQLite** - Development adatbázis
-- **NextAuth.js v5** - Hitelesítés és session kezelés
-- **bcryptjs** - Jelszó hashelés
+- **Next.js API Routes** - RESTful API endpoints
+- **Prisma ORM** - Type-safe database access
+- **SQLite** - Development database
+- **NextAuth.js v5** - Authentication and session management
+- **bcryptjs** - Password hashing
 
-### Email & értesítések
-- **Resend** - Email küldés API
-- **React Email** - Email template rendszer
+### Email & Notifications
+- **Resend** - Email delivery API
+- **React Email** - Email template system
 
-### Fejlesztői eszközök
-- **ESLint** - Kód linting
-- **Prettier** - Kód formázás
-- **TypeScript** - Statikus típusellenőrzés
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **TypeScript** - Static type checking
 
-## Telepítés
+## Installation
 
-### Előfeltételek
-- Node.js 18+ telepítve
-- npm vagy yarn package manager
+### Prerequisites
+- Node.js 18+ installed
+- npm or yarn package manager
 
-### Lépések
+### Steps
 
-1. **Függőségek telepítése:**
+1. **Install dependencies:**
 ```bash
 npm install
 ```
 
-2. **Környezeti változók beállítása:**
+2. **Set up environment variables:**
 ```bash
 cp .env.example .env
 ```
 
-Szerkeszd a `.env` fájlt:
+Edit the `.env` file:
 ```env
 # Database
 DATABASE_URL="file:./dev.db"
@@ -116,156 +118,159 @@ DATABASE_URL="file:./dev.db"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-here"
 
-# Email (opcionális)
+# Email (optional)
 RESEND_API_KEY="your-resend-api-key"
 ```
 
-3. **Adatbázis inicializálása:**
+3. **Initialize database:**
 ```bash
 npx prisma generate
 npx prisma db push
 npx prisma db seed
 ```
 
-4. **Fejlesztői szerver indítása:**
+4. **Start development server:**
 ```bash
 npm run dev
 ```
 
-Az alkalmazás elérhető lesz a `http://localhost:3000` címen.
+The application will be available at `http://localhost:3000`.
 
-### Demo bejelentkezés
+### Demo Login
 
-Seed script után elérhető teszt fiók:
+After running the seed script, you can log in with:
 - **Email:** admin@pizzeriaromana.hu
-- **Jelszó:** admin123
+- **Password:** admin123
 
-## Projekt struktúra
+## Project Structure
 
 ```
 rezervapp/
 ├── app/                      # Next.js App Router
-│   ├── admin/               # Admin dashboard oldálak
-│   │   ├── bookings/        # Foglalások kezelése
-│   │   └── tables/          # Asztalok kezelése
-│   ├── api/                 # API végpontok
-│   │   ├── auth/            # NextAuth konfigurálció
-│   │   ├── bookings/        # Foglalás CRUD
-│   │   └── tables/          # Asztal CRUD
-│   ├── booking/             # Publikus foglalás oldalak
-│   └── login/               # Bejelentkezés
-├── components/              # React komponensek
-│   ├── admin/              # Admin-specifikus komponensek
-│   ├── modals/             # Modal dialógusok
-│   └── ui/                 # Újrafelhasználható UI komponensek
-├── emails/                  # Email sablonok
-├── lib/                     # Utility függvények
-│   ├── auth.ts             # NextAuth konfiguráció
-│   ├── email.ts            # Email küldés
+│   ├── admin/               # Admin dashboard pages
+│   │   ├── bookings/        # Booking management
+│   │   └── tables/          # Table management
+│   ├── api/                 # API endpoints
+│   │   ├── auth/            # NextAuth configuration
+│   │   ├── bookings/        # Booking CRUD
+│   │   └── tables/          # Table CRUD
+│   ├── booking/             # Public booking pages
+│   └── login/               # Login page
+├── components/              # React components
+│   ├── admin/              # Admin-specific components
+│   ├── modals/             # Modal dialogs
+│   └── ui/                 # Reusable UI components
+├── emails/                  # Email templates
+├── lib/                     # Utility functions
+│   ├── auth.ts             # NextAuth configuration
+│   ├── email.ts            # Email sending
 │   ├── prisma.ts           # Prisma client
-│   └── utils.ts            # Helper függvények
-├── prisma/                  # Adatbázis schema és seed
+│   └── utils.ts            # Helper functions
+├── prisma/                  # Database schema and seed
 │   ├── schema.prisma       # Prisma schema
-│   └── seed.ts             # Demo adatok
-└── types/                   # TypeScript típusdefiníciók
-
+│   └── seed.ts             # Demo data
+└── types/                   # TypeScript type definitions
 ```
 
-## Adatbázis séma
+## Database Schema
 
-### Fő modellek:
-- **Restaurant** - Étterem információk
-- **Table** - Asztalok kapacitással és helyszínnel
-- **Booking** - Foglalások státusszal és időponttal
-- **Guest** - Vendég profilok VIP státusszal
-- **Staff** - Személyzet fiókok szerepkörökkel
-- **Waitlist** - Várólistás vendégek
+### Main Models:
+- **Restaurant** - Restaurant information
+- **Table** - Tables with capacity and location
+- **Booking** - Bookings with status and datetime
+- **Guest** - Guest profiles with VIP status
+- **Staff** - Staff accounts with roles
+- **Waitlist** - Waitlist guests
 
-## Fejlesztés
+## Development
 
-### Hasznos parancsok
+### Useful Commands
 
 ```bash
-# Development szerver
+# Development server
 npm run dev
 
 # Production build
 npm run build
 
-# Production szerver
+# Production server
 npm start
 
-# Prisma Studio (adatbázis UI)
+# Prisma Studio (database UI)
 npx prisma studio
 
-# Adatbázis migrálcia
+# Database migration
 npx prisma migrate dev
 
-# Seed adatbázis
+# Seed database
 npx prisma db seed
 
 # Linting
 npm run lint
 ```
 
-### Kód stílus
-- TypeScript strict mode használata
-- ESLint szabályok betartása
-- Komponensek kis modulokba tördelése
-- Server Components használata ahol lehetséges
-- Client Components minimalizálása
+### Code Style
+- Use TypeScript strict mode
+- Follow ESLint rules
+- Break components into small modules
+- Use Server Components where possible
+- Minimize Client Components
 
-## API végpontok
+## API Endpoints
 
-### Foglalások
-- `GET /api/bookings` - Összes foglalás listázása
-- `POST /api/bookings` - Új foglalás létrehozása
-- `GET /api/bookings/[id]` - Foglalás részletei
-- `PATCH /api/bookings/[id]` - Foglalás frissítése
-- `DELETE /api/bookings/[id]` - Foglalás törlése
+### Bookings
+- `GET /api/bookings` - List all bookings
+- `POST /api/bookings` - Create new booking
+- `GET /api/bookings/[id]` - Get booking details
+- `PATCH /api/bookings/[id]` - Update booking
+- `DELETE /api/bookings/[id]` - Delete booking
 
-### Asztalok
-- `GET /api/tables` - Összes asztal listázása
-- `POST /api/tables` - Új asztal létrehozása
-- `PATCH /api/tables/[id]` - Asztal frissítése
-- `DELETE /api/tables/[id]` - Asztal törlése
+### Tables
+- `GET /api/tables` - List all tables
+- `POST /api/tables` - Create new table
+- `PATCH /api/tables/[id]` - Update table
+- `DELETE /api/tables/[id]` - Delete table
 
-## Konfigurálás
+## Configuration
 
-### Email értesítések
+### Email Notifications
 
-Email funkcionalitás használatához szerezz be egy Resend API kulcsot:
+To use email functionality, get a Resend API key:
 
-1. Regisztrálj a [resend.com](https://resend.com) oldalon
-2. Hozz létre egy API kulcsot
-3. Add hozzá a `.env` fájlhoz: `RESEND_API_KEY=your_key`
+1. Sign up at [resend.com](https://resend.com)
+2. Create an API key
+3. Add to `.env` file: `RESEND_API_KEY=your_key`
 
-Ha nincs beállítva API kulcs, az emailek konzolra logolódnak development módban.
+If no API key is set, emails will be logged to console in development mode.
 
-### NextAuth Secret generálás
+### NextAuth Secret Generation
 
 ```bash
 openssl rand -base64 32
 ```
 
-Másold be a generált értéket a `NEXTAUTH_SECRET` változóba.
+Copy the generated value to the `NEXTAUTH_SECRET` variable.
 
-## Következő lépések
+## Roadmap
 
-### Tervezett funkciók:
-- [ ] Multi-tenant támogatás több étteremhez
-- [ ] SMS értesítések
-- [ ] Online fizetés integráció
-- [ ] Étlap kezelés
-- [ ] QR kód alapú check-in
-- [ ] Vendég értékelések
+### Future Features:
+- [ ] Multi-tenant support for multiple restaurants
+- [ ] SMS notifications
+- [ ] Online payment integration
+- [ ] Menu management
+- [ ] QR code-based check-in
+- [ ] Guest reviews and ratings
 - [ ] Analytics dashboard
-- [ ] Export funkciók (PDF, Excel)
+- [ ] Export functions (PDF, Excel)
 
-## Licensz
+## License
 
-MIT License - szabad felhasználás saját projektekben.
+MIT License - free to use in your own projects.
 
-## Kapcsolat
+## Contact
 
-Fejlesztő: [Thsandorh](https://github.com/Thsandorh)
+Developer: [Thsandorh](https://github.com/Thsandorh)
+
+---
+
+**🎉 This MVP is complete and ready to use!** All core features are implemented, tested, and documented.
