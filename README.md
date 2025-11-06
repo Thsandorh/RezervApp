@@ -323,3 +323,5 @@ If you find this project useful, please consider:
 **🎉 Phase 2 Complete!** The system is now fully functional with both admin management AND public-facing booking! Guests can self-book online with real-time availability checking.
 
 **Questions?** Open an issue on GitHub or check the documentation in `/rezervapp/README.md`
+
+
