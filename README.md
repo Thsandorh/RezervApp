@@ -6,16 +6,17 @@ Modern, full-stack SaaS application for restaurant reservation management, built
 
 ## ☁️ Deploy (Choose Your Way!)
 
-### 📱 From Phone (Zero Config!)
+### 📱 From Phone (No Terminal!)
 
 👉 **[Vercel Deploy Guide - Phone-Friendly!](./DEPLOY_PHONE.md)**
 
 1. Open: https://vercel.com/signup (GitHub login)
 2. Import GitHub repo: `RezervApp`
 3. Root Directory: `rezervapp`
-4. Deploy! ✅
+4. Add environment variables (see deployment guide)
+5. Deploy! ✅
 
-**100% web-based, no terminal!** Auto-deploys on GitHub push!
+**100% web-based, no terminal needed!** Auto-deploys on GitHub push!
 
 ---
 
