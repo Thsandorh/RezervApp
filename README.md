@@ -254,8 +254,12 @@ MIT License - Szabadon felhasználható, módosítható.
 
 ## 👨‍💻 Készítette
 
-Antropic Claude - 2025
+**Thsandorh** - [GitHub](https://github.com/Thsandorh)
+
+Modern SaaS megoldás magyar éttermek számára.
 
 ---
 
 **Jó étvágyat és sok foglalást! 🍕🍝**
+
+*Ha tetszik a projekt, adj egy ⭐ csillagot a GitHub-on!*
