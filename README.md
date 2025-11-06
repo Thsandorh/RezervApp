@@ -4,18 +4,31 @@
 
 Modern, full-stack SaaS application for restaurant reservation management, built for Hungarian restaurants.
 
-## ☁️ Deploy in 2 Minutes!
+## ☁️ Deploy (Choose Your Way!)
 
-### 🚀 Cloud (Ingyen!)
+### 📱 Telefonról (Kattintással!)
+
+👉 **[Vercel Deploy Guide - Telefonbarát!](./DEPLOY_PHONE.md)**
+
+1. Nyisd meg: https://vercel.com/signup (GitHub login)
+2. Import GitHub repo: `RezervApp`
+3. Root Directory: `rezervapp`
+4. Deploy! ✅
+
+**100% webes, nincs terminal!** Automatic deployments GitHub push után!
+
+---
+
+### 💻 Számítógépről (Command Line)
 
 ```bash
 fly auth login
 cd rezervapp && fly launch --now
 ```
 
-**Kész!** Automatic HTTPS + Free tier ✅
+👉 **[CLI Deployment Guide](./DEPLOY.md)** - Fly.io, Railway, Render
 
-👉 **[Complete Deployment Guide](./DEPLOY.md)** - Fly.io, Railway, Render options
+---
 
 ### 🐳 Local Docker
 
