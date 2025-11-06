@@ -14,12 +14,15 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="h-full relative">
-      <div className="hidden h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-80 bg-gray-900">
+    <div className="h-screen flex overflow-hidden bg-gray-100">
+      {/* Sidebar */}
+      <div className="w-72 flex-shrink-0 bg-gray-900">
         <Sidebar />
       </div>
-      <main className="md:pl-72 h-full">
-        <div className="h-full">
+
+      {/* Main content */}
+      <main className="flex-1 overflow-auto">
+        <div className="p-8">
           {children}
         </div>
       </main>
