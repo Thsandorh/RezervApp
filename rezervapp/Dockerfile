@@ -47,6 +47,10 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=deps /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=deps /app/node_modules/@prisma ./node_modules/@prisma
 
+# Copy entrypoint script
+COPY --chown=nextjs:nodejs entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
 # Create directory for SQLite database
 RUN mkdir -p /app/data && chown nextjs:nodejs /app/data
 
@@ -57,5 +61,5 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Start the application
-CMD ["node", "server.js"]
+# Auto-configure environment variables on startup
+ENTRYPOINT ["./entrypoint.sh"]

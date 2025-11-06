@@ -20,52 +20,52 @@ Super simple Docker setup with one command!
 
 ---
 
-## 🚀 Gyors Start (1 parancs!)
+## 🚀 Quick Start (1 command!)
 
 ```bash
 cd rezervapp
 ./start.sh
 ```
 
-**Kész! 🎉** Megnyílik: http://localhost:3000
+**Done! 🎉** Opens at: http://localhost:3000
 
 ---
 
-## 📋 Mi történik a háttérben?
+## 📋 What happens behind the scenes?
 
-A `start.sh` script automatikusan:
-1. ✅ Ellenőrzi, hogy a Docker fut-e
-2. ✅ Első futáskor létrehozza az adatbázist
-3. ✅ Seedel demo adatokat
-4. ✅ Elindítja az alkalmazást
+The `start.sh` script automatically:
+1. ✅ Checks if Docker is running
+2. ✅ Creates database on first run
+3. ✅ Seeds demo data
+4. ✅ Starts the application
 
 ---
 
-## 🎯 Használat
+## 🎯 Usage
 
-### Első indítás után:
+### After first startup:
 
 ```bash
-# Indítás
+# Start
 docker-compose up -d
 
-# Leállítás
+# Stop
 docker-compose down
 
-# Logok megtekintése
+# View logs
 docker-compose logs -f
 
-# Újraindítás
+# Restart
 docker-compose restart
 ```
 
 ---
 
-## 🌐 URL-ek
+## 🌐 URLs
 
-- **Főoldal:** http://localhost:3000
+- **Homepage:** http://localhost:3000
 - **Admin Login:** http://localhost:3000/login
-- **Publikus Foglalás:** http://localhost:3000/book/pizzeria-romana
+- **Public Booking:** http://localhost:3000/book/pizzeria-romana
 
 ### 🔐 Demo Login
 
@@ -74,51 +74,51 @@ docker-compose restart
 
 ---
 
-## ⚙️ Konfiguráció
+## ⚙️ Configuration
 
-### Environment változók módosítása
+### Modify environment variables
 
-Szerkeszd a `docker-compose.yml` fájlt:
+Edit `docker-compose.yml`:
 
 ```yaml
 environment:
   - DATABASE_URL=file:/app/data/dev.db
   - NEXTAUTH_SECRET=your-secret
   - NEXTAUTH_URL=http://localhost:3000
-  - RESEND_API_KEY=your-resend-key  # Opcionális
+  - RESEND_API_KEY=your-resend-key  # Optional
 ```
 
-### Port módosítása
+### Change port
 
-A `docker-compose.yml`-ben:
+In `docker-compose.yml`:
 
 ```yaml
 ports:
-  - "8080:3000"  # Bal oldal = külső port
+  - "8080:3000"  # Left side = external port
 ```
 
 ---
 
-## 🗄️ Adatbázis
+## 🗄️ Database
 
-Az SQLite adatbázis a `data/` mappában van mentve:
+SQLite database is saved in `data/` folder:
 
 ```
 rezervapp/
   ├── data/
-  │   └── dev.db  ← Itt van az adatbázis
+  │   └── dev.db  ← Database is here
 ```
 
-### Adatbázis törlése és újrakezdés
+### Reset database
 
 ```bash
-# Leállítás
+# Stop
 docker-compose down
 
-# Adatbázis törlése
+# Delete database
 rm -rf data/
 
-# Újraindítás (új adatbázissal)
+# Restart (new database)
 ./start.sh
 ```
 
@@ -126,25 +126,25 @@ rm -rf data/
 
 ## 🔧 Troubleshooting
 
-### "Docker nem fut" hiba
+### "Docker not running" error
 
 ```bash
 # Linux/macOS
 sudo systemctl start docker
 
-# Vagy egyszerűen indítsd el a Docker Desktop-ot
+# Or simply start Docker Desktop
 ```
 
-### Port már használatban
+### Port already in use
 
-Ha a 3000-es port foglalt, módosítsd a `docker-compose.yml`-ben:
+If port 3000 is occupied, modify in `docker-compose.yml`:
 
 ```yaml
 ports:
-  - "3001:3000"  # Most a 3001-en fog futni
+  - "3001:3000"  # Will run on 3001
 ```
 
-### Build újrafuttatása
+### Rebuild
 
 ```bash
 docker-compose down
@@ -184,7 +184,7 @@ fly launch
 
 ### Digital Ocean / AWS / Azure
 
-Használd a Docker image-et és deploy-old a választott platform-ra:
+Use Docker image and deploy to your chosen platform:
 
 ```bash
 # Build image
@@ -197,22 +197,22 @@ docker push your-registry/rezervapp:latest
 
 ---
 
-## 📦 Tartalom
+## 📦 Contents
 
-- `Dockerfile` - Docker image konfiguráció
+- `Dockerfile` - Docker image configuration
 - `docker-compose.yml` - Docker Compose setup
-- `.dockerignore` - Kizárt fájlok
-- `start.sh` - Egyszerű indító script
+- `.dockerignore` - Excluded files
+- `start.sh` - Simple startup script
 
 ---
 
-## ✨ Előnyök
+## ✨ Advantages
 
-✅ **Egy parancs** - Minden automatikus
-✅ **Izolált** - Nem kell Node.js/npm telepítés
-✅ **Hordozható** - Bárhol fut (Windows/Mac/Linux)
-✅ **Production-ready** - Ugyanez megy production-ben is
+✅ **One command** - Everything automatic
+✅ **Isolated** - No need for Node.js/npm installation
+✅ **Portable** - Runs anywhere (Windows/Mac/Linux)
+✅ **Production-ready** - Same setup works in production
 
 ---
 
-**Készítette:** [Thsandorh](https://github.com/Thsandorh)
+**Created by:** [Thsandorh](https://github.com/Thsandorh)
