@@ -1,6 +1,8 @@
 # RezervApp - Magyar Éttermi Foglalási Rendszer
 
-## 🎯 概概 (Executive Summary)
+> **📍 MVP STATUS: ✅ CORE FEATURES COMPLETE - Phase 1 Done!**
+
+## 🎯 Áttekintés (Executive Summary)
 
 **Probléma**: Magyar éttermek, kávézók és bárok nagy része még mindig telefonon, Facebook üzenetben vagy papíron kezeli a foglalásokat. Ez időigényes, hibázásra ad lehetőséget, és rossz vendégélményt eredményez.
 
@@ -13,422 +15,373 @@
 
 ---
 
-## ✨ Főbb Funkciók (MVP)
+## ✅ ELKÉSZÜLT FUNKCIÓK (MVP Phase 1)
 
-### 1. **Vendég Oldali Funkciók** 👥
-- ✅ Online foglalási rendszer (publikus link)
-- ✅ Időpont választás (dátum, időpont, létszám)
-- ✅ Asztaltípus választás (normál, kinti terasz, VIP, stb.)
-- ✅ Vendégadatok megadása (név, telefon, email)
-- ✅ Foglalás visszaigazolás email-ben és SMS-ben (magyarul!)
-- ✅ Emlékeztető SMS 24 órával a foglalás előtt
-- ✅ Foglalás lemondása/módosítása egyedi linkkel
-
-### 2. **Éttermi Admin Funkciók** 🍽️
+### 1. **Admin Dashboard & Felhasználókezelés** 🔐
+- ✅ NextAuth.js alapú hitelesítés (email/password)
+- ✅ JWT session management
+- ✅ Szerepkör alapú hozzáférés (admin/staff/manager)
+- ✅ Védett admin útvonalak middleware-rel
 - ✅ Dashboard: Mai foglalások áttekintése
-- ✅ Naptár nézet: Heti/havi foglalások
-- ✅ Asztal layout konfiguráció (padlótérkép)
+- ✅ Sidebar navigáció
+
+### 2. **Foglaláskezelés** 📅
+- ✅ Foglalási lista nézet (összes foglalás)
+- ✅ Naptár nézet (FullCalendar integráció, magyar lokalizáció)
+- ✅ Tab navigáció lista és naptár között
+- ✅ Foglalás részletek megtekintése (modal)
 - ✅ Foglalás státusz kezelés:
-  - Függőben (új foglalás)
-  - Megerősítve
-  - Vendég megérkezett
-  - Lezárva
-  - Lemondva / No-show
-- ✅ Manuális foglalás rögzítés (telefonos foglalások számára)
-- ✅ Vendéglista (vendég történet, preferenciák, allergiák)
-- ✅ Nyitvatartási idők és blokkolható időpontok kezelése
-- ✅ Waitlist (várólistára tévő vendégek)
+  - ✅ PENDING (Függőben)
+  - ✅ CONFIRMED (Megerősítve)
+  - ✅ SEATED (Vendég megérkezett)
+  - ✅ COMPLETED (Lezárva)
+  - ✅ CANCELLED (Lemondva)
+  - ✅ NO_SHOW (Nem jelent meg)
+- ✅ Belső jegyzetek hozzáadása foglalásokhoz
+- ✅ Foglalások törlése admin felületről
+- ✅ Foglalási statisztikák dashboard-on
 
-### 3. **Értesítési Rendszer** 📲
-- ✅ SMS küldés (magyar mobilszámokra)
-- ✅ Email értesítések
-- ✅ Valós idejű admin push értesítések
-- ✅ Sablonok magyar nyelven (személyre szabható)
+### 3. **Asztalkezelés** 🍽️
+- ✅ Asztalok létrehozása, szerkesztése, törlése (CRUD)
+- ✅ Kapacitás beállítás (1-50 fő)
+- ✅ Helyszín megadás (pl. "Belső terem", "Terasz")
+- ✅ Helyszín szerinti csoportosítás
+- ✅ Egyedi név validáció
+- ✅ Védelem aktív foglalások ellen (nem törölhető)
 
-### 4. **Analitika** 📊
-- ✅ Foglalási statisztikák
-- ✅ Asztal kihasználtság
-- ✅ No-show ráta
-- ✅ Csúcsidők elemzése
-- ✅ Bevétel előrejelzés (asztalforgalom alapján)
+### 4. **Vendégkezelés** 👥
+- ✅ Vendég profil automatikus létrehozás foglaláskor
+- ✅ Vendég információk: név, email, telefon
+- ✅ VIP státusz jelölés
+- ✅ Foglalási előzmények
+- ✅ No-show számláló automatikus növelés
+- ✅ Vendég adatok megjelenítése foglalás részletekben
+
+### 5. **Email Értesítések** 📧
+- ✅ Resend API integráció
+- ✅ React Email HTML sablonok
+- ✅ Automatikus foglalás visszaigazolás
+- ✅ Magyar nyelvű tartalom formázással
+- ✅ Lemondási link generálás emailben
+- ✅ Graceful degradation (console log ha nincs API key)
+
+### 6. **Publikus Foglalás Lemondás** 🔗
+- ✅ Token-alapú biztonságos hozzáférés
+- ✅ Egyedi lemondási URL minden foglaláshoz
+- ✅ Kétlépcsős megerősítési folyamat
+- ✅ Időalapú figyelmeztetések (< 2 óra a foglalásig)
+- ✅ Foglalási státusz validáció
+- ✅ Vendég statisztikák frissítése (ne növelje no-show-t)
+
+### 7. **Adatbázis & Backend** 🗄️
+- ✅ Prisma ORM setup
+- ✅ SQLite (development)
+- ✅ PostgreSQL ready (production)
+- ✅ Teljes adatbázis séma (6 model)
+- ✅ Seed script demo adatokkal
+- ✅ Next.js API Routes (RESTful)
+- ✅ Server Components & Server Actions
+
+### 8. **Deployment & DevOps** 🚀
+- ✅ Vercel deployment konfiguráció
+- ✅ vercel.json build setup
+- ✅ .env.example template
+- ✅ DEPLOYMENT.md útmutató
+- ✅ Production-ready build pipeline
+
+### 9. **UI/UX Components** 🎨
+- ✅ shadcn/ui komponens library
+- ✅ Tailwind CSS styling
+- ✅ Responsive design
+- ✅ Modal dialógusok (booking details, table form)
+- ✅ Form validáció hibakezeléssel
+- ✅ Loading states
+- ✅ Magyar dátum/idő formázás
+
+---
+
+## 🚧 NEM ELKÉSZÜLT FUNKCIÓK (Future Roadmap)
+
+### Vendég Oldali Funkciók (Public Booking)
+- [ ] Publikus foglalási form (vendég oldal böngészőben)
+- [ ] Időpont választás (dátum, időpont, létszám)
+- [ ] Elérhető időpontok megjelenítése
+- [ ] Asztaltípus választás
+- [ ] Real-time foglalhatóság ellenőrzés
+
+### Értesítések & Kommunikáció
+- [ ] SMS értesítések (Twilio integráció)
+- [ ] Emlékeztető SMS 24 órával előre
+- [ ] Push értesítések admin felületre
+- [ ] Email sablonok személyre szabása
+
+### Waitlist & Várakozósor
+- [ ] Waitlist funkció (várólistára tevés)
+- [ ] Automata értesítés felszabadult asztalról
+- [ ] Waitlist admin kezelőfelület
+
+### Analitika & Riportok
+- [ ] Részletes foglalási statisztikák
+- [ ] Asztal kihasználtsági elemzés
+- [ ] No-show ráta tracking
+- [ ] Csúcsidők elemzése
+- [ ] Bevétel előrejelzés
+- [ ] Export funkciók (CSV, PDF)
+
+### Konfigurációk & Beállítások
+- [ ] Nyitvatartási idők kezelése
+- [ ] Blokkolható időpontok
+- [ ] Asztal layout konfiguráció (drag & drop padlótérkép)
+- [ ] Foglalási szabályok (min/max előrefoglalás)
+- [ ] Slot duration beállítás
+
+### Multi-tenant & Scaling
+- [ ] Több étterem támogatás
+- [ ] Étterem regisztráció & onboarding flow
+- [ ] Étterem-specifikus branding
+- [ ] Szerepkör-alapú hozzáférés finomítás
+
+### Egyéb
+- [ ] Manuális foglalás létrehozás (admin)
+- [ ] Foglalás módosítás (dátum/idő/asztal)
+- [ ] Vendég preferenciák & allergiák
+- [ ] QR kód menü integráció
+- [ ] Online előleg fizetés (Stripe)
+- [ ] Mobil app
 
 ---
 
 ## 🏗️ Technikai Architektúra
 
-### **Tech Stack**
+### **Tech Stack (ELKÉSZÜLT)**
 
-#### **Frontend**
-- **Framework**: Next.js 14 (App Router)
-- **Styling**: Tailwind CSS
-- **State Management**: React Context + Zustand
-- **UI Components**: shadcn/ui (magyar lokalizációval)
-- **Forms**: React Hook Form + Zod validáció
-- **Calendar**: React Big Calendar / FullCalendar
-- **Charts**: Recharts
+#### Frontend
+- ✅ **Next.js 14** - App Router és Server Components
+- ✅ **TypeScript** - Type-safe fejlesztés
+- ✅ **Tailwind CSS** - Utility-first styling
+- ✅ **shadcn/ui** - Reusable UI components
+- ✅ **Radix UI** - Headless UI primitives
+- ✅ **FullCalendar** - Calendar integration (magyar locale)
+- ✅ **React Hook Form** - Form management
+- ✅ **Zod** - Schema validation
+- ✅ **date-fns** - Date utilities (Hungarian formatting)
 
-#### **Backend**
-- **Runtime**: Node.js (v20+)
-- **Framework**: Next.js API Routes / Express.js
-- **ORM**: Prisma
-- **Validation**: Zod
-- **Authentication**: NextAuth.js (email/password + Google SSO)
+#### Backend
+- ✅ **Next.js API Routes** - RESTful API
+- ✅ **Prisma ORM** - Type-safe database access
+- ✅ **SQLite** - Development database
+- ✅ **NextAuth.js v5** - Authentication (Credentials provider)
+- ✅ **bcryptjs** - Password hashing
 
-#### **Database**
-- **Primary**: PostgreSQL (via Supabase vagy Railway)
-- **Caching**: Redis (foglalás ütközések kezelésére)
+#### Integrations
+- ✅ **Resend** - Email delivery API
+- ✅ **React Email** - HTML email templates
 
-#### **Integrations**
-- **SMS**: Twilio (magyar számokhoz) vagy Vonage
-- **Email**: Resend vagy SendGrid
-- **Payments**: Stripe (későbbi premium funkciókhoz)
-- **File Storage**: Cloudflare R2 vagy AWS S3 (étterem logók, menük)
-
-#### **Deployment**
-- **Hosting**: Vercel (frontend + API routes)
-- **Database**: Supabase (PostgreSQL + Auth)
-- **CDN**: Cloudflare
+#### Deployment
+- ✅ **Vercel** - Hosting (frontend + API routes)
+- ✅ **Vercel Postgres** ready - Production database
+- ⏳ **PostgreSQL/MySQL** - Migration ready
 
 ---
 
-## 🗄️ Adatbázis Séma
+## 🗄️ Adatbázis Séma (IMPLEMENTED)
 
-### **Fő Táblák**
+### Elkészült Modellek:
 
 ```prisma
-// prisma/schema.prisma
+✅ Restaurant  - Étterem információk
+✅ Table       - Asztalok (capacity, location)
+✅ Booking     - Foglalások (status, date, party size)
+✅ Guest       - Vendég profilok (VIP, no-show tracking)
+✅ Staff       - Személyzet (role-based access)
+✅ Waitlist    - Várólistás vendégek (schema ready, UI not implemented)
+```
 
-model Restaurant {
-  id              String   @id @default(cuid())
-  name            String
-  slug            String   @unique  // pl: pizzeria-romana
-  email           String
-  phone           String
-  address         String
-  city            String
-  postalCode      String
+Részletes séma: `prisma/schema.prisma`
 
-  // Konfigurációk
-  timeZone        String   @default("Europe/Budapest")
-  currency        String   @default("HUF")
+---
 
-  // Nyitvatartás
-  openingHours    Json     // { monday: { open: "11:00", close: "22:00", closed: false }, ... }
+## 🚀 MVP Fejlesztési Terv - STÁTUSZ
 
-  // Foglalási beállítások
-  slotDuration    Int      @default(30)  // perc
-  maxAdvanceDays  Int      @default(60)  // Hány nappal előre lehet foglalni
-  minAdvanceHours Int      @default(2)   // Min hány órával előre kell foglalni
+### ✅ **Fázis 1: Admin Core & Foglaláskezelés** (KÉSZ)
+- ✅ Projekt setup (Next.js + Prisma + SQLite)
+- ✅ Adatbázis séma implementálása
+- ✅ Admin login (NextAuth)
+- ✅ Dashboard: Mai foglalások listája
+- ✅ Foglalás státusz változtatás
+- ✅ Naptár nézet (FullCalendar)
+- ✅ Asztal CRUD műveletek
+- ✅ Foglalás részletek modal
+- ✅ Email értesítések
+- ✅ Publikus foglalás lemondás
+- ✅ Vercel deployment setup
 
-  // Kapcsolatok
-  tables          Table[]
-  bookings        Booking[]
-  staff           Staff[]
-  guests          Guest[]
+### 🚧 **Fázis 2: Publikus Foglalási Rendszer** (NEM KEZDŐDÖTT)
+- [ ] Publikus foglalási form
+- [ ] Időpont választás UI
+- [ ] Elérhető asztalok validáció
+- [ ] Foglalás ütközés ellenőrzés
+- [ ] Nyitvatartási idők figyelembevétele
 
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
+### 🚧 **Fázis 3: Értesítési Rendszer Bővítés** (RÉSZBEN KÉSZ)
+- ✅ Email integráció (Resend) - KÉSZ
+- [ ] SMS integráció (Twilio magyar számokhoz)
+- [ ] 24h emlékeztető automatizmus
+- [ ] Sablonok személyre szabhatósága
 
-model Table {
-  id            String   @id @default(cuid())
-  restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+### 🚧 **Fázis 4: További Funkciók** (NEM KEZDŐDÖTT)
+- ✅ Foglalás lemondása (vendég oldal) - KÉSZ
+- [ ] Foglalás módosítása
+- [ ] Waitlist UI implementálás
+- [ ] Analitika dashboard bővítés
+- [ ] Exportálás (CSV/PDF)
 
-  name          String   // pl: "Asztal 1", "Terasz 4"
-  capacity      Int      // Hány fős
-  location      String?  // "Belső terem", "Terasz", "VIP"
+### 🚧 **Fázis 5: Polish & Launch** (NEM KEZDŐDÖTT)
+- [ ] UI/UX finomítás
+- [ ] Mobil responsiveness tesztelés
+- [ ] Dokumentáció (magyar)
+- [ ] Beta tesztelés éttermekkel
+- [ ] Marketing landing page
 
-  // Pozíció (padlótérképhez)
-  positionX     Float?
-  positionY     Float?
+---
 
-  isActive      Boolean  @default(true)
+## 📂 Projekt Struktúra
 
-  bookings      Booking[]
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@unique([restaurantId, name])
-}
-
-model Guest {
-  id            String   @id @default(cuid())
-  restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-
-  firstName     String
-  lastName      String
-  email         String?
-  phone         String   // Magyar formátum: +36301234567
-
-  // Vendég preferenciák
-  notes         String?  // Allergiák, különleges kérések
-  vip           Boolean  @default(false)
-
-  // Statisztikák
-  totalBookings Int      @default(0)
-  noShowCount   Int      @default(0)
-
-  bookings      Booking[]
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  @@unique([restaurantId, phone])
-  @@index([email])
-}
-
-model Booking {
-  id              String   @id @default(cuid())
-  restaurantId    String
-  restaurant      Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-
-  guestId         String
-  guest           Guest    @relation(fields: [guestId], references: [id])
-
-  tableId         String?
-  table           Table?   @relation(fields: [tableId], references: [id])
-
-  // Foglalás részletei
-  bookingDate     DateTime // Foglalás dátuma és időpontja
-  partySize       Int      // Hány fős
-  duration        Int      @default(120) // Perc
-
-  status          BookingStatus @default(PENDING)
-
-  // Kommunikáció
-  specialRequests String?
-  internalNotes   String?  // Csak staff látja
-
-  // Értesítések
-  confirmationSent Boolean @default(false)
-  reminderSent     Boolean @default(false)
-
-  // Lemondás/módosítás token
-  cancelToken     String   @unique @default(cuid())
-
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@index([restaurantId, bookingDate])
-  @@index([status])
-}
-
-enum BookingStatus {
-  PENDING       // Új foglalás, még nem megerősített
-  CONFIRMED     // Megerősítve
-  SEATED        // Vendég megérkezett
-  COMPLETED     // Lezárva
-  CANCELLED     // Lemondva (vendég által)
-  NO_SHOW       // Nem jelent meg
-}
-
-model Staff {
-  id            String   @id @default(cuid())
-  restaurantId  String
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-
-  name          String
-  email         String   @unique
-  role          StaffRole @default(STAFF)
-
-  // Auth (NextAuth user connection)
-  userId        String?  @unique
-
-  isActive      Boolean  @default(true)
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
-enum StaffRole {
-  OWNER         // Tulajdonos (teljes hozzáférés)
-  MANAGER       // Menedzser (majdnem minden)
-  STAFF         // Személyzet (alap funkciók)
-}
-
-model Waitlist {
-  id            String   @id @default(cuid())
-  restaurantId  String
-
-  guestName     String
-  guestPhone    String
-  partySize     Int
-
-  status        WaitlistStatus @default(WAITING)
-
-  createdAt     DateTime @default(now())
-  notifiedAt    DateTime?
-  seatedAt      DateTime?
-}
-
-enum WaitlistStatus {
-  WAITING
-  NOTIFIED
-  SEATED
-  CANCELLED
-}
+```
+rezervapp/
+├── app/                      # Next.js App Router
+│   ├── admin/               # ✅ Admin dashboard pages
+│   │   ├── bookings/        # ✅ Booking management (list + calendar)
+│   │   ├── page.tsx         # ✅ Dashboard homepage
+│   │   └── tables/          # ✅ Table management
+│   ├── api/                 # ✅ API endpoints
+│   │   ├── auth/            # ✅ NextAuth configuration
+│   │   ├── bookings/        # ✅ Booking CRUD
+│   │   └── tables/          # ✅ Table CRUD
+│   ├── booking/             # ✅ Public booking pages
+│   │   └── cancel/[token]   # ✅ Cancellation page
+│   └── login/               # ✅ Login page
+├── components/              # ✅ React components
+│   ├── admin/              # ✅ BookingsCalendar, Sidebar
+│   ├── modals/             # ✅ BookingDetailsModal, TableFormModal
+│   └── ui/                 # ✅ shadcn/ui components
+├── emails/                  # ✅ Email templates
+│   └── booking-confirmation.tsx
+├── lib/                     # ✅ Utility functions
+│   ├── auth.ts             # ✅ NextAuth configuration
+│   ├── email.ts            # ✅ Email sending (Resend)
+│   ├── prisma.ts           # ✅ Prisma client
+│   └── utils.ts            # ✅ Date/time formatting (Hungarian)
+├── prisma/                  # ✅ Database
+│   ├── schema.prisma       # ✅ Database schema
+│   └── seed.ts             # ✅ Demo data (Pizzeria Romana)
+├── types/                   # ✅ TypeScript definitions
+├── .env.example             # ✅ Environment template
+├── vercel.json              # ✅ Vercel configuration
+├── DEPLOYMENT.md            # ✅ Deployment guide
+├── README.md                # ✅ Project documentation
+└── REZERVAPP_PLAN.md        # ✅ This file (master plan)
 ```
 
 ---
 
-## 🚀 MVP Fejlesztési Terv
+## 🎯 Következő Lépések
 
-### **Fázis 1: Alap Foglalási Rendszer** (1-2 hét)
-- [ ] Projekt setup (Next.js + Prisma + PostgreSQL)
-- [ ] Adatbázis séma implementálása
-- [ ] Étterem regisztráció és setup flow
-- [ ] Asztal konfiguráció UI
-- [ ] Nyitvatartás és időpont kezelés
-- [ ] Publikus foglalási oldal
-- [ ] Foglalás form validáció
+### Prioritás 1: Publikus Foglalási Oldal
+**Cél:** Vendégek tudják használni a rendszert böngészőből
 
-### **Fázis 2: Admin Dashboard** (1 hét)
-- [ ] Admin login (NextAuth)
-- [ ] Dashboard: Mai foglalások listája
-- [ ] Foglalás státusz változtatás
-- [ ] Naptár nézet (heti/havi)
-- [ ] Manuális foglalás hozzáadása
-- [ ] Vendéglista oldal
+**Feladatok:**
+1. Publikus foglalási form UI (`/book/[restaurant-slug]`)
+2. Dátum picker (magyar lokalizáció)
+3. Időpont választás (elérhető slotok)
+4. Asztal validáció (kapacitás, elérhetőség)
+5. Foglalás ütközés kezelés
+6. Automatikus email küldés után
 
-### **Fázis 3: Értesítési Rendszer** (3-5 nap)
-- [ ] Email integráció (Resend)
-- [ ] SMS integráció (Twilio magyar számokhoz)
-- [ ] Foglalás visszaigazolás küldés
-- [ ] 24h emlékeztető automatizmus
-- [ ] Email/SMS sablonok magyarul
+**Becsült idő:** 1-2 hét
 
-### **Fázis 4: További Funkciók** (1 hét)
-- [ ] Foglalás lemondása/módosítása (vendég oldal)
-- [ ] Waitlist funkció
-- [ ] Analitika dashboard
-- [ ] Exportálás (CSV/PDF)
+### Prioritás 2: SMS Értesítések
+**Cél:** Automatikus SMS-ek magyar vendégeknek
 
-### **Fázis 5: Polish & Launch** (3-5 nap)
-- [ ] UI/UX finomítás
-- [ ] Mobil responsiveness
-- [ ] Dokumentáció (magyar)
-- [ ] Beta tesztelés 2-3 étteremmel
-- [ ] Launch marketing oldal
+**Feladatok:**
+1. Twilio integráció
+2. Magyar telefonszám validáció
+3. SMS sablonok (visszaigazolás, emlékeztető)
+4. Automatikus emlékeztető 24h előtt
+
+**Becsült idő:** 3-5 nap
+
+### Prioritás 3: Nyitvatartás & Konfigurációk
+**Cél:** Étterem-specifikus beállítások
+
+**Feladatok:**
+1. Nyitvatartási idők UI
+2. Blokkolható időpontok
+3. Foglalási szabályok (min/max előrefoglalás)
+4. Slot duration beállítás
+
+**Becsült idő:** 1 hét
 
 ---
 
-## 💰 Üzleti Modell (Pricing)
+## 📞 Demo & Tesztelés
 
-### **Ingyenes Tier** (első 30 nap)
-- 1 étterem
-- Max 50 foglalás/hó
-- Max 10 asztal
-- Email support
+### Live Demo (Vercel)
+- **URL:** Deploy after Vercel setup
+- **Login:** admin@pizzeriaromana.hu / admin123
+- **Teszt étterem:** Pizzeria Romana (demo data)
 
-### **Starter** - 9.990 Ft/hó
-- 1 étterem
-- Max 200 foglalás/hó
-- Unlimited asztalok
-- SMS értesítések (100 SMS/hó)
-- Email + Chat support
+### Lokális Telepítés
 
-### **Professional** - 19.990 Ft/hó
-- 1 étterem
-- Unlimited foglalások
-- SMS értesítések (500 SMS/hó)
-- Analitika & Riportok
-- Waitlist
-- Prioritás support
+```bash
+# Clone repo
+git clone https://github.com/Thsandorh/Hexaflow.git
+cd rezervapp
 
-### **Enterprise** - Egyedi árazás
-- Több étterem (láncok számára)
-- API hozzáférés
-- Dedikált account manager
-- Custom integrations
+# Install dependencies
+npm install
 
----
+# Setup environment
+cp .env.example .env
+# Edit .env with your values
 
-## 🎨 UI/UX Tervek
+# Initialize database
+npx prisma generate
+npx prisma db push
+npx prisma db seed
 
-### **Vendég Oldal** (Publikus Foglalás)
-1. **Landing**: Étterem neve, kép, nyitvatartás
-2. **Dátum választás**: Calendar picker (magyar dátumformátum)
-3. **Időpont választás**: Elérhető időpontok grid-ben
-4. **Létszám & Speciális kérések**: Dropdown + textarea
-5. **Vendégadatok**: Név, telefon, email form
-6. **Visszaigazolás**: "Foglalás sikeresen rögzítve!" + instrukciók
+# Start dev server
+npm run dev
 
-### **Admin Dashboard**
-1. **Sidebar Navigation**:
-   - 📊 Dashboard
-   - 📅 Naptár
-   - 🍽️ Asztalok
-   - 👥 Vendégek
-   - 📈 Analitika
-   - ⚙️ Beállítások
-
-2. **Dashboard főoldal**:
-   - Mai foglalások timeline
-   - Gyors statisztikák (mai foglalások, kihasználtság)
-   - Waitlist widget
-   - Közeljövő foglalások
-
-3. **Naptár nézet**:
-   - FullCalendar integráció
-   - Foglalások színkódolva státusz szerint
-   - Kattintásra foglalás részletek modal
-   - Drag & drop asztal áthelyezés
+# Open http://localhost:3000
+```
 
 ---
 
-## 🔒 Biztonsági Megfontolások
+## 📈 Deployment Státusz
 
-- **GDPR Compliance**: Vendégadatok titkosítása, adattörlési funkció
-- **Rate Limiting**: Foglalási spam ellen
-- **CAPTCHA**: Bot foglalások ellen
-- **SMS Verification**: Telefonszám validáció
-- **Secure Tokens**: Foglalás lemondási linkek egyedi tokenekkel
+- ✅ Vercel konfiguráció kész
+- ✅ Build pipeline working
+- ✅ Environment variables template
+- ✅ Deployment dokumentáció
+- ⏳ Production database migration (PostgreSQL)
+- ⏳ Custom domain setup
+- ⏳ SSL certificate (auto by Vercel)
 
----
-
-## 📈 Jövőbeli Funkciók (Post-MVP)
-
-- [ ] QR kód menü integráció
-- [ ] Előleg/foglalási díj fizetés (Stripe)
-- [ ] Automata waitlist értesítés
-- [ ] Több nyelv támogatás
-- [ ] Mobil app (vendégeknek és staffnak)
-- [ ] POS integráció (számlakövetés)
-- [ ] Marketing automations (újrafoglalás kampányok)
-- [ ] Loyalty program integráció
+**Deployment Guide:** See `DEPLOYMENT.md`
 
 ---
 
-## 🧪 Tesztelési Terv
+## 🎉 Összefoglalás
 
-1. **Unit tesztek**: Kritikus business logika (foglalás ütközések, időpont validáció)
-2. **Integration tesztek**: API endpoints
-3. **E2E tesztek**: Teljes foglalási flow (Playwright)
-4. **Load testing**: 100 egyidejű foglalás kezelése
-5. **Beta tesztelés**: 3-5 valós étteremmel 2 héten keresztül
+**✅ KÉSZ:** Admin dashboard, foglaláskezelés (lista + naptár), asztalkezelés, email értesítések, publikus lemondás, authentication, deployment setup
 
----
+**🚧 KÖVETKEZŐ:** Publikus foglalási form, SMS értesítések, nyitvatartási idők, analitika, waitlist UI
 
-## 🚀 Go-To-Market Stratégia
-
-1. **Beta program**: 10 budapesti étteremnek ingyenes 3 hónapra
-2. **Tartalommarketing**: Blog magyar éttermeseknek (SEO)
-3. **Social media**: Instagram/Facebook - "Elég a papíros foglalókönyvből!"
-4. **Partnerségek**: Éttermes szövetségek, beszállítók
-5. **Referral program**: Ajánlj egy éttermet, kapj 1 hónap ingyen
+**🚀 LAUNCH READY:** A jelenlegi MVP alkalmas éttermek számára manuális foglaláskezelésre. Publikus foglalási form hozzáadásával teljes értékű SaaS lesz!
 
 ---
 
-## 📞 Következő Lépések
-
-Mit szeretnél elsőként látni implementálva?
-
-1. **Adatbázis + Backend API setup**
-2. **Publikus foglalási oldal (vendég oldal)**
-3. **Admin dashboard prototype**
-4. **Teljes MVP elkezdése**
-
-Mondd meg, és kezdjük el építeni! 🚀
+**Készítette:** [Thsandorh](https://github.com/Thsandorh)
+**Utolsó frissítés:** 2025. november 6.
+**Verzió:** MVP Phase 1 Complete ✅

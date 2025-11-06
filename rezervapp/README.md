@@ -251,17 +251,49 @@ openssl rand -base64 32
 
 Copy the generated value to the `NEXTAUTH_SECRET` variable.
 
-## Roadmap
+## MVP Status & Roadmap
 
-### Future Features:
-- [ ] Multi-tenant support for multiple restaurants
-- [ ] SMS notifications
-- [ ] Online payment integration
-- [ ] Menu management
-- [ ] QR code-based check-in
+### ✅ Phase 1: Core Admin Features (COMPLETE)
+All features listed above in the "Features" section are **complete and working**:
+- Admin authentication & dashboard
+- Booking management (list + calendar views)
+- Table management (CRUD)
+- Guest tracking
+- Email notifications
+- Public cancellation page
+- Deployment ready (Vercel)
+
+### 🚧 Phase 2: Public Booking System (IN PLANNING)
+**Priority 1 - Next to implement:**
+- [ ] Public booking form (guest-facing website)
+- [ ] Date & time picker with availability checking
+- [ ] Real-time table availability validation
+- [ ] Booking conflict prevention
+- [ ] Operating hours management
+
+### 📋 Phase 3: Extended Features (FUTURE)
+**Notifications & Communication:**
+- [ ] SMS notifications (Twilio integration)
+- [ ] 24-hour reminder automation
+- [ ] Customizable email templates
+
+**Analytics & Reporting:**
+- [ ] Detailed booking statistics
+- [ ] Table utilization analysis
+- [ ] No-show rate tracking
+- [ ] Peak hours analysis
+- [ ] Export functions (CSV, PDF)
+
+**Additional Features:**
+- [ ] Waitlist functionality
+- [ ] Multi-tenant support (multiple restaurants)
+- [ ] Manual booking creation (admin)
+- [ ] Booking modification (date/time/table)
+- [ ] Guest preferences & allergies
+- [ ] Online payment integration (Stripe)
+- [ ] QR code menu integration
 - [ ] Guest reviews and ratings
-- [ ] Analytics dashboard
-- [ ] Export functions (PDF, Excel)
+- [ ] Mobile app
 
 ## License
 
