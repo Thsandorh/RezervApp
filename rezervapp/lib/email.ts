@@ -4,7 +4,18 @@ import BookingConfirmationEmail from "@/emails/booking-confirmation"
 import { format } from "date-fns"
 import { hu } from "date-fns/locale"
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Resend only when needed (lazy initialization)
+let resend: Resend | null = null
+
+function getResendClient() {
+  if (!process.env.RESEND_API_KEY) {
+    return null
+  }
+  if (!resend) {
+    resend = new Resend(process.env.RESEND_API_KEY)
+  }
+  return resend
+}
 
 interface SendBookingConfirmationParams {
   to: string
@@ -27,8 +38,10 @@ export async function sendBookingConfirmation({
   specialRequests,
   cancelToken,
 }: SendBookingConfirmationParams) {
+  const resendClient = getResendClient()
+
   // Only send if RESEND_API_KEY is configured
-  if (!process.env.RESEND_API_KEY) {
+  if (!resendClient) {
     console.log("⚠️  RESEND_API_KEY not configured - email not sent")
     console.log("📧 Would send email to:", to)
     return { success: false, message: "Email service not configured" }
@@ -55,7 +68,7 @@ export async function sendBookingConfirmation({
       })
     )
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await resendClient.emails.send({
       from: `${restaurantName} <foglalasok@rezervapp.hu>`,
       to: [to],
       subject: `Foglalásod megerősítve - ${restaurantName}`,

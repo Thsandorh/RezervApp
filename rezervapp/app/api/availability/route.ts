@@ -248,7 +248,7 @@ export async function GET(request: Request) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: "Érvénytelen paraméterek", details: error.errors },
+        { error: "Érvénytelen paraméterek", details: error.issues },
         { status: 400 }
       )
     }
