@@ -1,6 +1,6 @@
 # 🎉 RezervApp - Features Summary
 
-## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (6/9)
+## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (7/9)
 
 ### 1️⃣ API Kulcsok Kezelése (Settings) ✅
 
@@ -148,7 +148,39 @@
 
 ---
 
-## ⏳ HIÁNYZÓ FUNKCIÓK (3/9)
+### 8️⃣ SMS Notifications (Twilio) ✅
+
+**Hol:** Automatic / Settings konfigurálva
+
+**Mit csinál:**
+- SMS megerősítés foglaláskor (automatikus)
+- SMS emlékeztető 24 órával előtte (cron job)
+- Twilio API kulcsok Settings-ből vagy environment variables-ből
+- Magyar nyelvű SMS szövegek
+- Fallback: ha nincs Twilio konfiguráció, csak log
+
+**Hogyan használd:**
+1. Settings → Twilio API kulcsok beállítása
+   - Twilio Account SID
+   - Twilio Auth Token
+   - Twilio Phone Number
+2. Foglaláskor automatikusan SMS megy ki
+3. Reminder SMS-hez: POST /api/reminders/send (cron job)
+
+**Funkciók:**
+- `sendBookingConfirmationSMS()` - Foglalás megerősítés
+- `sendBookingReminderSMS()` - 24 órás emlékeztető
+- `/api/reminders/send` - Batch reminder küldés (cron)
+
+**Technika:**
+- Twilio SDK integration
+- Settings API keys with env fallback
+- Cron job endpoint (Vercel Cron vagy external)
+- API key védelem a reminder endpoint-on
+
+---
+
+## ⏳ HIÁNYZÓ FUNKCIÓK (2/9)
 
 ### 7️⃣ Analytics & Riportok ❌ TODO
 
@@ -159,17 +191,6 @@
 - Dashboard charts
 
 **Időigény:** ~2-3 óra
-
----
-
-### 8️⃣ SMS Notifications (Twilio) ❌ TODO
-
-**Mit kellene:**
-- SMS küldés Twilio API-val
-- API kulcsok Settings-ből
-- SMS reminder 24 órával előtte
-
-**Időigény:** ~30 perc (hasonló mint email)
 
 ---
 
@@ -227,11 +248,11 @@
 | ✅ Search & Filters | DONE | ⭐⭐⭐⭐ |
 | ✅ Calendar View | DONE | ⭐⭐⭐ |
 | ✅ Public Booking Edit | DONE | ⭐⭐⭐ |
+| ✅ SMS Notifications | DONE | ⭐⭐ |
 | ❌ Analytics | TODO | ⭐⭐ |
-| ❌ SMS Notifications | TODO | ⭐⭐ |
 | ❌ Waitlist | TODO | ⭐ |
 
-**6/9 feature KÉSZ!** Majdnem kész vagyunk! 🎉
+**7/9 feature KÉSZ!** Szinte minden elkészült! 🎉
 
 ---
 
@@ -239,4 +260,4 @@
 
 **Most teszteld az új funkciókat**, aztán ha kell a többi, szólj és folytatjuk! 😊
 
-Hátra van még: Analytics, SMS értesítések, és Waitlist funkció.
+Hátra van még: Analytics és Waitlist funkció.

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 import { sendBookingConfirmation } from "@/lib/email"
+import { sendBookingConfirmationSMS } from "@/lib/sms"
 import { addMinutes, isAfter, isBefore, parseISO, format } from "date-fns"
 
 const bookingRequestSchema = z.object({
@@ -215,6 +216,7 @@ export async function POST(request: Request) {
         to: data.email,
         guestName: `${data.firstName} ${data.lastName}`,
         restaurantName: restaurant.name,
+        restaurantId: restaurant.id,
         bookingDate: bookingDateTime,
         partySize,
         tableName: availableTable.name,
@@ -226,6 +228,18 @@ export async function POST(request: Request) {
       await prisma.booking.update({
         where: { id: booking.id },
         data: { confirmationSent: true },
+      })
+    }
+
+    // Send confirmation SMS (if Twilio configured)
+    if (data.phone && restaurant) {
+      await sendBookingConfirmationSMS({
+        to: data.phone,
+        guestName: `${data.firstName} ${data.lastName}`,
+        restaurantName: restaurant.name,
+        restaurantId: restaurant.id,
+        bookingDate: bookingDateTime,
+        partySize,
       })
     }
 
