@@ -64,6 +64,7 @@ export async function sendBookingConfirmation({
     const formattedTime = format(bookingDate, "HH:mm")
 
     const cancelUrl = `${process.env.NEXTAUTH_URL}/booking/cancel/${cancelToken}`
+    const editUrl = `${process.env.NEXTAUTH_URL}/booking/edit/${cancelToken}`
 
     const emailHtml = await render(
       BookingConfirmationEmail({
@@ -75,6 +76,7 @@ export async function sendBookingConfirmation({
         tableName,
         specialRequests,
         cancelUrl,
+        editUrl,
       })
     )
 

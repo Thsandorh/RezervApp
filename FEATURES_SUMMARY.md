@@ -1,6 +1,6 @@
 # 🎉 RezervApp - Features Summary
 
-## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (5/9)
+## ✅ ÚJ FUNKCIÓK ELKÉSZÜLTEK (6/9)
 
 ### 1️⃣ API Kulcsok Kezelése (Settings) ✅
 
@@ -120,19 +120,35 @@
 
 ---
 
-## ⏳ HIÁNYZÓ FUNKCIÓK (4/9)
+### 6️⃣ Foglalás Szerkesztés (Public) ✅
 
-### 6️⃣ Foglalás Szerkesztés (Public) ❌ TODO
+**Hol:** Email linkből → `/booking/edit/[token]`
 
-**Mit kellene:**
-- Vendég módosíthassa a foglalását token linkkel (emailben)
-- Időpont változtatás
-- Létszám változtatás
-- Lemondás
+**Mit csinál:**
+- Vendégek módosíthatják saját foglalásaikat biztonságos token linkkel
+- Dátum és időpont változtatása (validációval)
+- Létszám változtatása (1-20 fő)
+- Foglalás lemondása (visszavonhatatlan)
+- Email megerősítés emailben található link
+- Minimum/maximum előrefoglalási idő ellenőrzése
+- Lemondás után megerősítő oldal
 
-**Időigény:** ~1 óra
+**Hogyan használd (vendég):**
+1. Kapsz egy email foglalás megerősítésről
+2. Kattints "Foglalás módosítása" gombra
+3. Válassz új dátumot/időpontot vagy létszámot
+4. Mentés vagy Lemondás
+
+**Technika:**
+- Secure token alapú autentikáció (cancelToken újrahasználva)
+- `/api/booking/edit/[token]` endpoint validációval
+- Booking status átáll PENDING-re ha időpont változik
+- Email frissítve edit linkkel
+- Not-found oldal érvénytelen tokenekhez
 
 ---
+
+## ⏳ HIÁNYZÓ FUNKCIÓK (3/9)
 
 ### 7️⃣ Analytics & Riportok ❌ TODO
 
@@ -210,12 +226,12 @@
 | ✅ Email Notifications | DONE | ⭐⭐⭐⭐⭐ |
 | ✅ Search & Filters | DONE | ⭐⭐⭐⭐ |
 | ✅ Calendar View | DONE | ⭐⭐⭐ |
-| ❌ Public Booking Edit | TODO | ⭐⭐⭐ |
+| ✅ Public Booking Edit | DONE | ⭐⭐⭐ |
 | ❌ Analytics | TODO | ⭐⭐ |
 | ❌ SMS Notifications | TODO | ⭐⭐ |
 | ❌ Waitlist | TODO | ⭐ |
 
-**5/9 feature KÉSZ!** Több mint a fele elkészült! 🎉
+**6/9 feature KÉSZ!** Majdnem kész vagyunk! 🎉
 
 ---
 
@@ -223,4 +239,4 @@
 
 **Most teszteld az új funkciókat**, aztán ha kell a többi, szólj és folytatjuk! 😊
 
-A következő funkció: Public Booking Edit (vendégek módosíthatják foglalásaikat).
+Hátra van még: Analytics, SMS értesítések, és Waitlist funkció.
