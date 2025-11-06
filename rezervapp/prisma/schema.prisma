@@ -6,11 +6,11 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
-  // For production deployment (Vercel, Railway):
-  // Change provider to "postgresql" and use:
-  // DATABASE_URL="${POSTGRES_PRISMA_URL}"
+  // For local development with SQLite, change to:
+  // provider = "sqlite"
+  // url      = "file:./dev.db"
 }
 
 // === MODELLEK ===
