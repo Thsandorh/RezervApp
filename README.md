@@ -4,6 +4,15 @@
 
 Modern, full-stack SaaS application for restaurant reservation management, built for Hungarian restaurants.
 
+## ☁️ Deploy Now (1 Click!)
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/RezervApp?referralCode=bonus)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Thsandorh/RezervApp)
+
+**Or run locally with Docker:** `cd rezervapp && ./start.sh`
+
+---
+
 ## 📍 Project Location
 
 **Main Application:** `/rezervapp/` directory
@@ -61,30 +70,45 @@ All source code, documentation, and deployment configuration is located in the `
 
 ## 🚀 Quick Start
 
-### 1. Navigate to App Directory
+### 🐳 Option 1: Docker (Legegyszerűbb!)
+
+```bash
+cd rezervapp
+./start.sh
+```
+
+**Kész!** 🎉 → http://localhost:3000
+
+👉 **[Docker Deployment Guide](./DOCKER.md)**
+
+---
+
+### 💻 Option 2: Local Development
+
+#### 1. Navigate to App Directory
 ```bash
 cd rezervapp
 ```
 
-### 2. Install Dependencies
+#### 2. Install Dependencies
 ```bash
 npm install
 ```
 
-### 3. Setup Environment
+#### 3. Setup Environment
 ```bash
 cp .env.example .env
 # Edit .env with your values
 ```
 
-### 4. Initialize Database
+#### 4. Initialize Database
 ```bash
 npx prisma generate
 npx prisma db push
 npx prisma db seed
 ```
 
-### 5. Start Development Server
+#### 5. Start Development Server
 ```bash
 npm run dev
 ```

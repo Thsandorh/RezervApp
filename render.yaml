@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: rezervapp
+    env: docker
+    dockerfilePath: ./rezervapp/Dockerfile
+    dockerContext: ./rezervapp
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        value: file:/app/data/dev.db
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NEXTAUTH_URL
+        sync: false
+      - key: AUTH_TRUST_HOST
+        value: true
+      - key: NODE_ENV
+        value: production
