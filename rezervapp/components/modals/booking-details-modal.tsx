@@ -131,7 +131,7 @@ export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: Book
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl w-full">
         <DialogHeader>
           <DialogTitle>Foglalás részletei</DialogTitle>
         </DialogHeader>
@@ -140,7 +140,7 @@ export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: Book
           {/* Guest Info */}
           <div className="space-y-3">
             <h3 className="font-semibold text-lg">Vendég információk</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Név</p>
                 <p className="font-medium">
@@ -169,7 +169,7 @@ export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: Book
           {/* Booking Info */}
           <div className="space-y-3">
             <h3 className="font-semibold text-lg">Foglalás adatok</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>

@@ -86,7 +86,7 @@ export function AddTableModal({ open, onOpenChange, onSuccess }: AddTableModalPr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-full sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Új asztal hozzáadása</DialogTitle>
         </DialogHeader>
