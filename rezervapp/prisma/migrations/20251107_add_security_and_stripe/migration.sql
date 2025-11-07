@@ -1,14 +1,14 @@
--- Add security fields to Staff table
+-- AlterTable: Add security fields to Staff
 ALTER TABLE "Staff" ADD COLUMN IF NOT EXISTS "failedLoginAttempts" INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE "Staff" ADD COLUMN IF NOT EXISTS "lockoutUntil" TIMESTAMP(3);
 ALTER TABLE "Staff" ADD COLUMN IF NOT EXISTS "lastLoginAt" TIMESTAMP(3);
 ALTER TABLE "Staff" ADD COLUMN IF NOT EXISTS "lastLoginIP" TEXT;
 
--- Add Stripe configuration to Restaurant table
+-- AlterTable: Add Stripe configuration to Restaurant
 ALTER TABLE "Restaurant" ADD COLUMN IF NOT EXISTS "stripeSecretKey" TEXT;
 ALTER TABLE "Restaurant" ADD COLUMN IF NOT EXISTS "stripeWebhookSecret" TEXT;
 
--- Create LoginAttempt table
+-- CreateTable: LoginAttempt for audit trail
 CREATE TABLE IF NOT EXISTS "LoginAttempt" (
     "id" TEXT NOT NULL,
     "ipAddress" TEXT NOT NULL,
