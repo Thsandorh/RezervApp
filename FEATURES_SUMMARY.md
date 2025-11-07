@@ -2,6 +2,24 @@
 
 ## ✅ MINDEN FUNKCIÓ ELKÉSZÜLT! (9/9) 🎉🎉🎉
 
+### 🆕 Latest Update: Responsive Collapsible Sidebar
+
+**Mobile-First Design:**
+- ✅ Hamburger menu button (top-left)
+- ✅ Full overlay sidebar on mobile
+- ✅ Click outside to close
+- ✅ No content blocking
+
+**Desktop Features:**
+- ✅ Icon-only mode (20px narrow)
+- ✅ Click to expand (full labels)
+- ✅ Smooth animations
+- ✅ Maintains state per session
+
+**Hol:** Minden `/admin/*` oldalon (dashboard, bookings, tables, etc.)
+
+---
+
 ### 1️⃣ API Kulcsok Kezelése (Settings) ✅
 
 **Hol:** `/admin/settings` → "API Kulcsok" tab
