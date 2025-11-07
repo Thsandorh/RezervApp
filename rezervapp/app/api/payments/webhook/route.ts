@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
-import { stripe, isStripeConfigured } from "@/lib/stripe"
+import { getStripeInstance, getStripeWebhookSecret } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import type Stripe from "stripe"
 
 export async function POST(request: Request) {
-  // Check if Stripe is configured
-  if (!isStripeConfigured || !stripe) {
+  // Get Stripe instance (from env or database)
+  const stripe = await getStripeInstance()
+
+  if (!stripe) {
     return NextResponse.json(
       { error: "Stripe is not configured" },
       { status: 503 }
@@ -23,7 +25,10 @@ export async function POST(request: Request) {
     )
   }
 
-  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+  // Get webhook secret (from env or database)
+  const webhookSecret = await getStripeWebhookSecret()
+
+  if (!webhookSecret) {
     return NextResponse.json(
       { error: "Webhook secret not configured" },
       { status: 503 }
@@ -36,7 +41,7 @@ export async function POST(request: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      webhookSecret
     )
   } catch (err: any) {
     console.error("Webhook signature verification failed:", err.message)

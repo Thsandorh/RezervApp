@@ -1,79 +1,83 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { CreditCard, Check, Shield } from "lucide-react"
+import { StripeConfigForm } from "@/components/admin/stripe-config-form"
+import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
-import { CreditCard, Check, X } from "lucide-react"
 
-export default function SettingsPage() {
-  const stripeConfigured = !!process.env.STRIPE_SECRET_KEY
-  const webhookConfigured = !!process.env.STRIPE_WEBHOOK_SECRET
+export default async function SettingsPage() {
+  const session = await auth()
+
+  // Only OWNER can access settings
+  if (!session?.user || session.user.role !== "OWNER") {
+    redirect("/admin")
+  }
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Beállítások</h2>
         <p className="text-muted-foreground">
-          Rendszer beállítások és konfiguráció
+          Rendszer beállítások és konfiguráció (csak tulajdonos)
         </p>
       </div>
+
+      {/* Security Info */}
+      <Card className="border-blue-200 bg-blue-50">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Shield className="h-5 w-5 text-blue-600" />
+            <div>
+              <CardTitle className="text-blue-900">Biztonsági Beállítások</CardTitle>
+              <CardDescription className="text-blue-700">
+                Az érzékeny adatok (API kulcsok) AES-256 titkosítással védettek
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="text-sm text-blue-800 space-y-2">
+          <ul className="space-y-1 ml-4">
+            <li className="flex items-start gap-2">
+              <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span><strong>Account Lockout:</strong> 5 sikertelen bejelentkezés után 30 perc zárolás</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span><strong>Titkosított tárolás:</strong> Minden API kulcs titkosítva van az adatbázisban</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span><strong>Login tracking:</strong> Sikertelen bejelentkezési kísérletek naplózása</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <span><strong>Brute force protection:</strong> Rate limiting és automatikus zárolás</span>
+            </li>
+          </ul>
+        </CardContent>
+      </Card>
 
       {/* Stripe Payment Configuration */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <CreditCard className="h-6 w-6" />
-              <div>
-                <CardTitle>Stripe Fizetési Integráció</CardTitle>
-                <CardDescription>Online bankkártyás fizetés kezelése (opcionális)</CardDescription>
-              </div>
+          <div className="flex items-center gap-3">
+            <CreditCard className="h-6 w-6" />
+            <div>
+              <CardTitle>Stripe Fizetési Integráció</CardTitle>
+              <CardDescription>Online bankkártyás fizetés kezelése (opcionális)</CardDescription>
             </div>
-            <Badge variant={stripeConfigured ? "success" : "secondary"}>
-              {stripeConfigured ? "Aktív" : "Nincs beállítva"}
-            </Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {!stripeConfigured && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
-              <p><strong>Megjegyzés:</strong> A Stripe integráció teljesen opcionális. Az alkalmazás Stripe nélkül is működik, ilyenkor a foglalások standard módon kerülnek rögzítésre fizetési funkció nélkül.</p>
-            </div>
-          )}
-          {/* API Keys Status */}
-          <div className="space-y-3">
-            <h3 className="font-semibold">API Kulcsok Állapota</h3>
-            <div className="grid gap-3">
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium">STRIPE_SECRET_KEY</span>
-                {stripeConfigured ? (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <Check className="h-4 w-4" />
-                    <span className="text-sm">Beállítva</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <X className="h-4 w-4" />
-                    <span className="text-sm">Nincs beállítva</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                <span className="text-sm font-medium">STRIPE_WEBHOOK_SECRET</span>
-                {webhookConfigured ? (
-                  <div className="flex items-center gap-2 text-green-600">
-                    <Check className="h-4 w-4" />
-                    <span className="text-sm">Beállítva</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <X className="h-4 w-4" />
-                    <span className="text-sm">Nincs beállítva</span>
-                  </div>
-                )}
-              </div>
-            </div>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+            <p><strong>Megjegyzés:</strong> A Stripe integráció teljesen opcionális. Az alkalmazás Stripe nélkül is működik.</p>
           </div>
 
+          {/* Stripe Configuration Form */}
+          <StripeConfigForm />
+
           {/* Setup Instructions */}
-          <div className="space-y-3">
+          <div className="space-y-3 border-t pt-6">
             <h3 className="font-semibold">Beállítási Útmutató</h3>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p><strong>1. Stripe Account létrehozása:</strong></p>
@@ -86,27 +90,21 @@ export default function SettingsPage() {
               <ul className="list-disc list-inside ml-4 space-y-1">
                 <li>Lépj be a Stripe Dashboard-ra</li>
                 <li>Developers → API keys menüpont</li>
-                <li>Másold ki a Secret key értéket</li>
+                <li>Másold ki a Secret key értéket (sk_test_... vagy sk_live_...)</li>
               </ul>
 
-              <p className="pt-2"><strong>3. Környezeti változók beállítása:</strong></p>
-              <div className="bg-gray-100 p-3 rounded-md font-mono text-xs overflow-x-auto">
-                STRIPE_SECRET_KEY=sk_test_... vagy sk_live_...<br/>
-                STRIPE_WEBHOOK_SECRET=whsec_...
-              </div>
-
-              <p className="pt-2"><strong>4. Webhook beállítása:</strong></p>
+              <p className="pt-2"><strong>3. Webhook beállítása (opcionális, de ajánlott):</strong></p>
               <ul className="list-disc list-inside ml-4 space-y-1">
                 <li>Stripe Dashboard → Developers → Webhooks</li>
                 <li>Add endpoint: yoursite.com/api/payments/webhook</li>
-                <li>Válaszd ki: checkout.session.completed</li>
-                <li>Másold ki a webhook signing secret-et</li>
+                <li>Válaszd ki: checkout.session.completed, checkout.session.expired</li>
+                <li>Másold ki a webhook signing secret-et (whsec_...)</li>
               </ul>
             </div>
           </div>
 
           {/* API Endpoints */}
-          <div className="space-y-3">
+          <div className="space-y-3 border-t pt-6">
             <h3 className="font-semibold">API Endpointok</h3>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
@@ -121,7 +119,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Features */}
-          <div className="space-y-3">
+          <div className="space-y-3 border-t pt-6">
             <h3 className="font-semibold">Funkciók</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
@@ -142,7 +140,7 @@ export default function SettingsPage() {
               </li>
               <li className="flex items-start gap-2">
                 <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
-                <span>Foglalás belső jegyzetekben rögzített fizetési információk</span>
+                <span>Titkosított kulcs tárolás az adatbázisban</span>
               </li>
             </ul>
           </div>

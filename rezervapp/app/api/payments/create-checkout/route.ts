@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { stripe, isStripeConfigured } from "@/lib/stripe"
+import { getStripeInstance } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import { z } from "zod"
 
@@ -11,8 +11,10 @@ const checkoutSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    // Check if Stripe is configured
-    if (!isStripeConfigured || !stripe) {
+    // Get Stripe instance (from env or database)
+    const stripe = await getStripeInstance()
+
+    if (!stripe) {
       return NextResponse.json(
         { error: "A fizetési szolgáltatás nincs beállítva" },
         { status: 503 }
