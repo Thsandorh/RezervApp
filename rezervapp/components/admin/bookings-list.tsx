@@ -8,23 +8,28 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BookingDetailsModal } from "@/components/modals/booking-details-modal"
 import { Eye, Search, Calendar, Filter } from "lucide-react"
 
+interface Guest {
+  firstName: string
+  lastName: string
+  email: string | null
+  phone: string
+}
+
+interface Table {
+  id: string
+  name: string
+}
+
 interface Booking {
   id: string
-  bookingDate: Date | string
+  bookingDate: string
   partySize: number
   duration: number
   status: string
-  specialRequests?: string | null
-  internalNotes?: string | null
-  guest: {
-    firstName: string
-    lastName: string
-    email?: string | null
-    phone: string
-  }
-  table?: {
-    name: string
-  } | null
+  specialRequests: string | null
+  internalNotes: string | null
+  guest: Guest
+  table: Table | null
 }
 
 interface BookingsListProps {
@@ -96,14 +101,7 @@ export function BookingsList({ bookings, onUpdate }: BookingsListProps) {
   }, [bookings, searchQuery, dateFilter, statusFilter])
 
   const handleOpenModal = (booking: Booking) => {
-    // Convert string dates to Date objects
-    const bookingWithDate = {
-      ...booking,
-      bookingDate: typeof booking.bookingDate === 'string'
-        ? new Date(booking.bookingDate)
-        : booking.bookingDate
-    }
-    setSelectedBooking(bookingWithDate)
+    setSelectedBooking(booking)
     setIsModalOpen(true)
   }
 
@@ -157,12 +155,12 @@ export function BookingsList({ bookings, onUpdate }: BookingsListProps) {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Összes státusz</SelectItem>
-              <SelectItem value="PENDING">PENDING</SelectItem>
-              <SelectItem value="CONFIRMED">CONFIRMED</SelectItem>
-              <SelectItem value="SEATED">SEATED</SelectItem>
-              <SelectItem value="COMPLETED">COMPLETED</SelectItem>
-              <SelectItem value="CANCELLED">CANCELLED</SelectItem>
-              <SelectItem value="NO_SHOW">NO_SHOW</SelectItem>
+              <SelectItem value="PENDING">Függőben</SelectItem>
+              <SelectItem value="CONFIRMED">Megerősítve</SelectItem>
+              <SelectItem value="SEATED">Megérkezett</SelectItem>
+              <SelectItem value="COMPLETED">Lezárva</SelectItem>
+              <SelectItem value="CANCELLED">Lemondva</SelectItem>
+              <SelectItem value="NO_SHOW">Nem jelent meg</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -179,6 +177,7 @@ export function BookingsList({ bookings, onUpdate }: BookingsListProps) {
         </div>
       </div>
 
+      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -247,7 +246,7 @@ export function BookingsList({ bookings, onUpdate }: BookingsListProps) {
             {bookings.length === 0 ? (
               <p>Még nincs foglalás.</p>
             ) : (
-              <p>Nincs találat a megadott szűrőkkel. Próbálj más keresési feltételeket!</p>
+              <p>Nincs találat a megadott szűrőkkel.</p>
             )}
           </div>
         )}

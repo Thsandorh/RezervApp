@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { format, isWithinInterval } from "date-fns"
 import { hu } from "date-fns/locale"
 
-interface Table {
+interface TableInfo {
   id: string
   name: string
   capacity: number
@@ -14,19 +14,21 @@ interface Table {
   isActive: boolean
 }
 
+interface Table {
+  id: string
+  name: string
+}
+
 interface Booking {
   id: string
-  bookingDate: Date | string
+  bookingDate: string
   duration: number
   status: string
-  table?: {
-    name: string
-    id?: string
-  } | null
+  table: Table | null
 }
 
 interface TableMapProps {
-  tables: Table[]
+  tables: TableInfo[]
   bookings: Booking[]
 }
 
@@ -35,7 +37,7 @@ type TableStatus = "free" | "occupied" | "soon" | "inactive"
 export function TableMap({ tables, bookings }: TableMapProps) {
   const now = new Date()
 
-  const getTableStatus = (table: Table): { status: TableStatus; nextBooking?: Booking } => {
+  const getTableStatus = (table: TableInfo): { status: TableStatus; nextBooking?: Booking } => {
     if (!table.isActive) {
       return { status: "inactive" }
     }
@@ -72,7 +74,7 @@ export function TableMap({ tables, bookings }: TableMapProps) {
 
   // Group tables by location
   const groupedTables = useMemo(() => {
-    const grouped: Record<string, Table[]> = {}
+    const grouped: Record<string, TableInfo[]> = {}
     tables.forEach((table) => {
       const location = table.location || "Egyéb"
       if (!grouped[location]) {
@@ -148,7 +150,7 @@ export function TableMap({ tables, bookings }: TableMapProps) {
     })
 
     return { free, occupied, soon, inactive, total: tables.length }
-  }, [tables, bookings, now])
+  }, [tables, bookings])
 
   return (
     <div className="space-y-6">

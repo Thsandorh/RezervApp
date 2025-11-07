@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,27 +9,31 @@ import { BookingsCalendar } from "@/components/admin/bookings-calendar"
 import { TableMap } from "@/components/admin/table-map"
 import { List, Calendar, LayoutGrid } from "lucide-react"
 
-interface Booking {
-  id: string
-  bookingDate: Date | string
-  partySize: number
-  duration: number
-  status: string
-  specialRequests?: string | null
-  internalNotes?: string | null
-  guest: {
-    firstName: string
-    lastName: string
-    email?: string | null
-    phone: string
-  }
-  table?: {
-    name: string
-    id?: string
-  } | null
+interface Guest {
+  firstName: string
+  lastName: string
+  email: string | null
+  phone: string
 }
 
 interface Table {
+  id: string
+  name: string
+}
+
+interface Booking {
+  id: string
+  bookingDate: string
+  partySize: number
+  duration: number
+  status: string
+  specialRequests: string | null
+  internalNotes: string | null
+  guest: Guest
+  table: Table | null
+}
+
+interface TableInfo {
   id: string
   name: string
   capacity: number
@@ -39,10 +43,10 @@ interface Table {
 
 interface BookingsViewProps {
   bookings: Booking[]
-  tables?: Table[]
+  tables: TableInfo[]
 }
 
-export function BookingsView({ bookings, tables = [] }: BookingsViewProps) {
+export function BookingsView({ bookings, tables }: BookingsViewProps) {
   const [view, setView] = useState<"list" | "calendar" | "map">("list")
   const router = useRouter()
 
@@ -67,7 +71,7 @@ export function BookingsView({ bookings, tables = [] }: BookingsViewProps) {
     <Card>
       <CardHeader>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <CardTitle className="text-lg sm:text-2xl break-words">{getTitle()}</CardTitle>
+          <CardTitle className="text-lg sm:text-2xl">{getTitle()}</CardTitle>
 
           <div className="flex gap-2 flex-wrap">
             <Button
@@ -98,11 +102,13 @@ export function BookingsView({ bookings, tables = [] }: BookingsViewProps) {
         </div>
       </CardHeader>
       <CardContent>
-        {view === "list" ? (
+        {view === "list" && (
           <BookingsList bookings={bookings} onUpdate={handleUpdate} />
-        ) : view === "calendar" ? (
+        )}
+        {view === "calendar" && (
           <BookingsCalendar bookings={bookings} onUpdate={handleUpdate} />
-        ) : (
+        )}
+        {view === "map" && (
           <TableMap tables={tables} bookings={bookings} />
         )}
       </CardContent>

@@ -5,7 +5,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/components/ui/use-toast"
 import { format } from "date-fns"
 import {
@@ -17,37 +16,44 @@ import {
 } from "@/components/ui/select"
 import { Calendar, Clock, Users, Utensils, Phone, Mail, MessageSquare, Trash2, Save } from "lucide-react"
 
+interface Guest {
+  firstName: string
+  lastName: string
+  email: string | null
+  phone: string
+}
+
+interface Table {
+  id: string
+  name: string
+}
+
+interface Booking {
+  id: string
+  bookingDate: string
+  partySize: number
+  duration: number
+  status: string
+  specialRequests: string | null
+  internalNotes: string | null
+  guest: Guest
+  table: Table | null
+}
+
 interface BookingDetailsModalProps {
-  booking: {
-    id: string
-    bookingDate: Date | string
-    partySize: number
-    duration: number
-    status: string
-    specialRequests?: string | null
-    internalNotes?: string | null
-    guest: {
-      firstName: string
-      lastName: string
-      email?: string | null
-      phone: string
-    }
-    table?: {
-      name: string
-    } | null
-  }
+  booking: Booking
   isOpen: boolean
   onClose: () => void
   onUpdate: () => void
 }
 
 const STATUS_OPTIONS = [
-  { value: "PENDING", label: "Függőben", variant: "warning" },
-  { value: "CONFIRMED", label: "Megerősítve", variant: "success" },
-  { value: "SEATED", label: "Megérkezett", variant: "default" },
-  { value: "COMPLETED", label: "Lezárva", variant: "secondary" },
-  { value: "CANCELLED", label: "Lemondva", variant: "destructive" },
-  { value: "NO_SHOW", label: "Nem jelent meg", variant: "destructive" },
+  { value: "PENDING", label: "Függőben" },
+  { value: "CONFIRMED", label: "Megerősítve" },
+  { value: "SEATED", label: "Megérkezett" },
+  { value: "COMPLETED", label: "Lezárva" },
+  { value: "CANCELLED", label: "Lemondva" },
+  { value: "NO_SHOW", label: "Nem jelent meg" },
 ]
 
 export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: BookingDetailsModalProps) {
@@ -81,7 +87,6 @@ export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: Book
       })
 
       onUpdate()
-      onClose()
     } catch (error: any) {
       toast({
         title: "Hiba",
@@ -115,7 +120,6 @@ export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: Book
       })
 
       onUpdate()
-      onClose()
     } catch (error: any) {
       toast({
         title: "Hiba",
@@ -127,11 +131,9 @@ export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: Book
     }
   }
 
-  const currentStatus = STATUS_OPTIONS.find(s => s.value === status)
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl w-full">
+      <DialogContent className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Foglalás részletei</DialogTitle>
         </DialogHeader>
@@ -257,7 +259,7 @@ export function BookingDetailsModal({ booking, isOpen, onClose, onUpdate }: Book
             </Button>
 
             <div className="flex gap-2">
-              <Button variant="outline" onClick={onClose}>
+              <Button variant="outline" onClick={onClose} disabled={isLoading}>
                 Mégse
               </Button>
               <Button onClick={handleSave} disabled={isLoading}>
