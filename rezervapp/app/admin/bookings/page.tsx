@@ -1,44 +1,57 @@
 import { prisma } from "@/lib/prisma"
-import { BookingsList } from "@/components/admin/bookings-list"
+import { BookingsView } from "@/components/admin/bookings-view"
 import { CreateBookingDialog } from "@/components/admin/create-booking-dialog"
 
 async function getData() {
   const restaurant = await prisma.restaurant.findFirst()
 
   if (!restaurant) {
-    return { bookings: [], restaurant: null }
+    return { bookings: [], tables: [], restaurant: null }
   }
 
-  const bookings = await prisma.booking.findMany({
-    include: {
-      guest: true,
-      table: true,
-    },
-    orderBy: {
-      bookingDate: 'desc',
-    },
-    take: 100,
-  })
+  const [bookings, tables] = await Promise.all([
+    prisma.booking.findMany({
+      include: {
+        guest: true,
+        table: true,
+      },
+      orderBy: {
+        bookingDate: 'desc',
+      },
+      take: 100, // Latest 100 bookings
+    }),
+    prisma.table.findMany({
+      where: {
+        restaurantId: restaurant.id,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    })
+  ])
 
-  return { bookings, restaurant }
+  return { bookings, tables, restaurant }
 }
 
 export const dynamic = 'force-dynamic'
 
 export default async function BookingsPage() {
-  const { bookings, restaurant } = await getData()
+  const { bookings, tables, restaurant } = await getData()
 
   // Serialize dates to strings for client component
   const serializedBookings = bookings.map(booking => ({
     ...booking,
     bookingDate: booking.bookingDate.toISOString(),
-    createdAt: booking.createdAt.toISOString(),
+    createdAt: booking.bookingDate.toISOString(),
     updatedAt: booking.updatedAt.toISOString(),
   }))
 
-  const handleUpdate = () => {
-    // This will be handled by router.refresh() in the client component
-  }
+  // Serialize table dates too (important for client components!)
+  const serializedTables = tables.map(table => ({
+    ...table,
+    createdAt: table.createdAt.toISOString(),
+    updatedAt: table.updatedAt.toISOString(),
+  }))
 
   return (
     <div>
@@ -46,13 +59,13 @@ export default async function BookingsPage() {
         <div>
           <h1 className="text-3xl font-bold">Foglalások</h1>
           <p className="text-muted-foreground">
-            Összes foglalás kezelése és megtekintése ({serializedBookings.length})
+            Összes foglalás kezelése és megtekintése
           </p>
         </div>
         {restaurant && <CreateBookingDialog restaurantId={restaurant.id} />}
       </div>
 
-      <BookingsList bookings={serializedBookings as any} onUpdate={handleUpdate} />
+      <BookingsView bookings={serializedBookings as any} tables={serializedTables as any} />
     </div>
   )
 }
