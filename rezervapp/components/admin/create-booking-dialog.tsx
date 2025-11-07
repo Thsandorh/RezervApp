@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus, Loader2 } from "lucide-react"
 import { format, addDays } from "date-fns"
+import { hu } from "date-fns/locale/hu"
 
 const createBookingSchema = z.object({
   firstName: z.string().min(2, "A keresztnév kötelező"),
@@ -89,7 +90,7 @@ export function CreateBookingDialog({ restaurantId }: CreateBookingDialogProps) 
     const date = addDays(new Date(), i)
     return {
       value: format(date, "yyyy-MM-dd"),
-      label: format(date, "yyyy. MM. dd. (EEEE)", { locale: require('date-fns/locale/hu') }),
+      label: format(date, "yyyy. MM. dd. (EEEE)", { locale: hu }),
     }
   })
 
