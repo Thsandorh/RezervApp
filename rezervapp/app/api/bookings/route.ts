@@ -178,9 +178,25 @@ export async function POST(request: Request) {
     }
 
     if (!availableTable) {
+      // Add to waitlist instead of returning error
+      const waitlistEntry = await prisma.waitlist.create({
+        data: {
+          restaurantId: data.restaurantId,
+          guestName: `${data.firstName} ${data.lastName}`,
+          guestPhone: data.phone,
+          partySize,
+          status: "WAITING",
+        },
+      })
+
       return NextResponse.json(
-        { error: "Ez az időpont már foglalt. Kérlek válassz másik időpontot!" },
-        { status: 400 }
+        {
+          error: "Ez az időpont már foglalt",
+          waitlist: true,
+          message: "Várólistára tettünk. Értesítünk, ha felszabadul hely!",
+          waitlistId: waitlistEntry.id,
+        },
+        { status: 409 } // Conflict status
       )
     }
 
