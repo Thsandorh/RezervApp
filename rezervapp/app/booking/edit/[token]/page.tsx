@@ -3,7 +3,7 @@ import { notFound } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { BookingEditForm } from "@/components/public/booking-edit-form"
 import { format } from "date-fns"
-import { hu } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
 
 async function getBookingByToken(token: string) {
   const booking = await prisma.booking.findFirst({

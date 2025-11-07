@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AnalyticsCharts } from "@/components/admin/analytics-charts"
 import { startOfMonth, endOfMonth, subMonths, format } from "date-fns"
-import { hu } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
 
 async function getAnalyticsData() {
   const now = new Date()

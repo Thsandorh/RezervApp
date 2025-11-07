@@ -2,7 +2,7 @@ import { Resend } from "resend"
 import { render } from "@react-email/components"
 import BookingConfirmationEmail from "@/emails/booking-confirmation"
 import { format } from "date-fns"
-import { hu } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
 import { prisma } from "@/lib/prisma"
 
 // Get Resend API key from Settings or environment variable

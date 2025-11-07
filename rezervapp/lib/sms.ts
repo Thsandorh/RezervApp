@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { format } from "date-fns"
-import { hu } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
 
 // Get Twilio credentials from Settings or environment variables
 async function getTwilioCredentials(restaurantId?: string): Promise<{
