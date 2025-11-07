@@ -45,7 +45,7 @@ export default async function TablesPage() {
   }
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Asztalok</h2>
@@ -53,7 +53,7 @@ export default async function TablesPage() {
             Összesen {data.tables.length} asztal
           </p>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2" disabled title="Coming soon: Új asztal funkció fejlesztés alatt">
           <Plus className="h-4 w-4" />
           Új asztal
         </Button>
