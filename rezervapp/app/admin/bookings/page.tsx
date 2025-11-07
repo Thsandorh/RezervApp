@@ -42,7 +42,7 @@ export default async function BookingsPage() {
   const serializedBookings = bookings.map(booking => ({
     ...booking,
     bookingDate: booking.bookingDate.toISOString(),
-    createdAt: booking.bookingDate.toISOString(),
+    createdAt: booking.createdAt.toISOString(),
     updatedAt: booking.updatedAt.toISOString(),
   }))
 
