@@ -8,8 +8,9 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  // For local development: Use PostgreSQL with Docker
-  // docker run --name rezervapp-db -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+  // For local development with SQLite:
+  // provider = "sqlite"
+  // url      = "file:./dev.db"
 }
 
 // === MODELLEK ===
