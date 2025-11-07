@@ -62,50 +62,50 @@ export default async function GuestsPage() {
               {data.guests.map((guest) => (
                 <div
                   key={guest.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition cursor-pointer"
+                  className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg hover:bg-accent/50 transition cursor-pointer"
                 >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary font-bold">
+                  <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                    <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/10 text-primary font-bold text-sm sm:text-base flex-shrink-0">
                       {guest.firstName[0]}{guest.lastName[0]}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-medium text-sm sm:text-base">
                           {guest.firstName} {guest.lastName}
                         </p>
                         {guest.vip && (
-                          <Badge variant="secondary" className="gap-1">
+                          <Badge variant="secondary" className="gap-1 text-xs">
                             <Star className="h-3 w-3 fill-current" />
                             VIP
                           </Badge>
                         )}
                       </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>{formatPhoneNumber(guest.phone)}</span>
-                        {guest.email && <span>{guest.email}</span>}
+                      <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground flex-wrap">
+                        <span className="truncate">{formatPhoneNumber(guest.phone)}</span>
+                        {guest.email && <span className="truncate hidden sm:inline">{guest.email}</span>}
                       </div>
                       {guest.notes && (
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
                           📝 {guest.notes}
                         </p>
                       )}
                     </div>
                   </div>
-                  <div className="flex items-center gap-6 text-center">
+                  <div className="flex items-center gap-4 sm:gap-6 text-center flex-shrink-0">
                     <div>
-                      <div className="text-2xl font-bold">
+                      <div className="text-xl sm:text-2xl font-bold">
                         {guest.totalBookings}
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-xs text-muted-foreground whitespace-nowrap">
                         foglalás
                       </div>
                     </div>
                     {guest.noShowCount > 0 && (
                       <div>
-                        <div className="text-2xl font-bold text-destructive">
+                        <div className="text-xl sm:text-2xl font-bold text-destructive">
                           {guest.noShowCount}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-muted-foreground whitespace-nowrap">
                           no-show
                         </div>
                       </div>
