@@ -38,31 +38,34 @@ export const dynamic = 'force-dynamic'
 export default async function BookingsPage() {
   const { bookings, tables, restaurant } = await getData()
 
-  // Serialize ALL dates including nested objects for client component
+  // Serialize dates for client component - only include fields needed by components
   const serializedBookings = bookings.map(booking => ({
-    ...booking,
+    id: booking.id,
     bookingDate: booking.bookingDate.toISOString(),
-    createdAt: booking.createdAt.toISOString(),
-    updatedAt: booking.updatedAt.toISOString(),
-    // Serialize nested guest dates
-    guest: booking.guest ? {
-      ...booking.guest,
-      createdAt: booking.guest.createdAt.toISOString(),
-      updatedAt: booking.guest.updatedAt.toISOString(),
-    } : null,
-    // Serialize nested table dates
+    partySize: booking.partySize,
+    duration: booking.duration,
+    status: booking.status,
+    specialRequests: booking.specialRequests,
+    internalNotes: booking.internalNotes,
+    guest: {
+      firstName: booking.guest.firstName,
+      lastName: booking.guest.lastName,
+      email: booking.guest.email,
+      phone: booking.guest.phone,
+    },
     table: booking.table ? {
-      ...booking.table,
-      createdAt: booking.table.createdAt.toISOString(),
-      updatedAt: booking.table.updatedAt.toISOString(),
+      id: booking.table.id,
+      name: booking.table.name,
     } : null,
   }))
 
-  // Serialize table dates too (important for client components!)
+  // Serialize tables - only include fields needed by components
   const serializedTables = tables.map(table => ({
-    ...table,
-    createdAt: table.createdAt.toISOString(),
-    updatedAt: table.updatedAt.toISOString(),
+    id: table.id,
+    name: table.name,
+    capacity: table.capacity,
+    location: table.location,
+    isActive: table.isActive,
   }))
 
   return (
@@ -77,7 +80,7 @@ export default async function BookingsPage() {
         {restaurant && <CreateBookingDialog restaurantId={restaurant.id} />}
       </div>
 
-      <BookingsView bookings={serializedBookings as any} tables={serializedTables as any} />
+      <BookingsView bookings={serializedBookings} tables={serializedTables} />
     </div>
   )
 }
