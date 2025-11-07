@@ -38,29 +38,12 @@ export const dynamic = 'force-dynamic'
 export default async function BookingsPage() {
   const { bookings, tables, restaurant } = await getData()
 
-  // Serialize ALL dates to strings for client component (including nested objects)
+  // Serialize dates to strings for client component
   const serializedBookings = bookings.map(booking => ({
     ...booking,
     bookingDate: booking.bookingDate.toISOString(),
     createdAt: booking.createdAt.toISOString(),
     updatedAt: booking.updatedAt.toISOString(),
-    guest: booking.guest ? {
-      ...booking.guest,
-      createdAt: booking.guest.createdAt.toISOString(),
-      updatedAt: booking.guest.updatedAt.toISOString(),
-    } : null,
-    table: booking.table ? {
-      ...booking.table,
-      createdAt: booking.table.createdAt.toISOString(),
-      updatedAt: booking.table.updatedAt.toISOString(),
-    } : null,
-  }))
-
-  // Serialize table dates too
-  const serializedTables = tables.map(table => ({
-    ...table,
-    createdAt: table.createdAt.toISOString(),
-    updatedAt: table.updatedAt.toISOString(),
   }))
 
   return (
@@ -75,7 +58,7 @@ export default async function BookingsPage() {
         {restaurant && <CreateBookingDialog restaurantId={restaurant.id} />}
       </div>
 
-      <BookingsView bookings={serializedBookings as any} tables={serializedTables} />
+      <BookingsView bookings={serializedBookings as any} tables={tables} />
     </div>
   )
 }
