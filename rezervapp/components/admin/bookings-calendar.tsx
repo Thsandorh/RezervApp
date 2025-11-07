@@ -5,6 +5,7 @@ import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
+import huLocale from "@fullcalendar/core/locales/hu"
 import { BookingDetailsModal } from "@/components/modals/booking-details-modal"
 
 interface Guest {
@@ -148,7 +149,7 @@ export function BookingsCalendar({ bookings, onUpdate }: BookingsCalendarProps) 
           eventClick={handleEventClick}
           height="auto"
           contentHeight={500}
-          locale="hu"
+          locale={huLocale}
           slotMinTime="08:00:00"
           slotMaxTime="23:00:00"
           allDaySlot={false}
