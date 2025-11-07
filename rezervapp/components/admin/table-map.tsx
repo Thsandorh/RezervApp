@@ -4,7 +4,7 @@ import { useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { format, isWithinInterval } from "date-fns"
-import { hu } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
 
 interface TableInfo {
   id: string

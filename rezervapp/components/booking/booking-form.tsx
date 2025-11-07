@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Calendar, Users, Clock, Loader2 } from "lucide-react"
 import { format, addDays, setHours, setMinutes } from "date-fns"
-import { hu, enUS } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
+import { enUS } from "date-fns/locale/en-US"
 import { translations, type Language } from "@/lib/translations"
 
 const createBookingSchema = (lang: Language) => z.object({

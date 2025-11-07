@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader2, Calendar as CalendarIcon, Users, Trash2 } from "lucide-react"
 import { format, addDays, setHours, setMinutes } from "date-fns"
-import { hu } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
 
 interface BookingEditFormProps {
   booking: {

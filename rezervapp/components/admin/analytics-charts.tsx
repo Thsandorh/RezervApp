@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BarChart3, Users, Table2, PieChart } from "lucide-react"
 import { format } from "date-fns"
-import { hu } from "date-fns/locale"
+import { hu } from "date-fns/locale/hu"
 
 interface AnalyticsChartsProps {
   monthlyStats: Array<{ month: string; count: number }>
