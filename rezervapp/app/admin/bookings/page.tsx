@@ -1,42 +1,32 @@
 import { prisma } from "@/lib/prisma"
-import { BookingsView } from "@/components/admin/bookings-view"
+import { BookingsList } from "@/components/admin/bookings-list"
 import { CreateBookingDialog } from "@/components/admin/create-booking-dialog"
 
 async function getData() {
   const restaurant = await prisma.restaurant.findFirst()
 
   if (!restaurant) {
-    return { bookings: [], tables: [], restaurant: null }
+    return { bookings: [], restaurant: null }
   }
 
-  const [bookings, tables] = await Promise.all([
-    prisma.booking.findMany({
-      include: {
-        guest: true,
-        table: true,
-      },
-      orderBy: {
-        bookingDate: 'desc',
-      },
-      take: 100, // Latest 100 bookings
-    }),
-    prisma.table.findMany({
-      where: {
-        restaurantId: restaurant.id,
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    })
-  ])
+  const bookings = await prisma.booking.findMany({
+    include: {
+      guest: true,
+      table: true,
+    },
+    orderBy: {
+      bookingDate: 'desc',
+    },
+    take: 100,
+  })
 
-  return { bookings, tables, restaurant }
+  return { bookings, restaurant }
 }
 
 export const dynamic = 'force-dynamic'
 
 export default async function BookingsPage() {
-  const { bookings, tables, restaurant } = await getData()
+  const { bookings, restaurant } = await getData()
 
   // Serialize dates to strings for client component
   const serializedBookings = bookings.map(booking => ({
@@ -46,19 +36,23 @@ export default async function BookingsPage() {
     updatedAt: booking.updatedAt.toISOString(),
   }))
 
+  const handleUpdate = () => {
+    // This will be handled by router.refresh() in the client component
+  }
+
   return (
     <div>
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">Foglalások</h1>
           <p className="text-muted-foreground">
-            Összes foglalás kezelése és megtekintése
+            Összes foglalás kezelése és megtekintése ({serializedBookings.length})
           </p>
         </div>
         {restaurant && <CreateBookingDialog restaurantId={restaurant.id} />}
       </div>
 
-      <BookingsView bookings={serializedBookings as any} tables={tables} />
+      <BookingsList bookings={serializedBookings as any} onUpdate={handleUpdate} />
     </div>
   )
 }
