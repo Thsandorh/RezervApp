@@ -20,6 +20,7 @@ interface BookingConfirmationEmailProps {
   tableName?: string
   specialRequests?: string
   cancelUrl: string
+  editUrl?: string
 }
 
 export default function BookingConfirmationEmail({
@@ -31,6 +32,7 @@ export default function BookingConfirmationEmail({
   tableName,
   specialRequests,
   cancelUrl,
+  editUrl,
 }: BookingConfirmationEmailProps) {
   return (
     <Html>
@@ -82,11 +84,19 @@ export default function BookingConfirmationEmail({
             <br />
             • Kérjük, pontosan érkezz!
             <br />
-            • Ha mégsem tudsz eljönni, kérjük, lemondod a foglalást
+            • Ha módosítani szeretnéd vagy mégsem tudsz eljönni, használd az alábbi gombokat
           </Text>
 
+          {editUrl && (
+            <Section style={buttonContainer}>
+              <Button style={editButton} href={editUrl}>
+                Foglalás módosítása
+              </Button>
+            </Section>
+          )}
+
           <Section style={buttonContainer}>
-            <Button style={button} href={cancelUrl}>
+            <Button style={cancelButton} href={cancelUrl}>
               Foglalás lemondása
             </Button>
           </Section>
@@ -170,7 +180,20 @@ const buttonContainer = {
   marginTop: "24px",
 }
 
-const button = {
+const editButton = {
+  backgroundColor: "#3b82f6",
+  borderRadius: "5px",
+  color: "#fff",
+  fontSize: "16px",
+  fontWeight: "bold",
+  textDecoration: "none",
+  textAlign: "center" as const,
+  display: "block",
+  width: "100%",
+  padding: "12px",
+}
+
+const cancelButton = {
   backgroundColor: "#ef4444",
   borderRadius: "5px",
   color: "#fff",

@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
+    "build:local": "npm run db:setup && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
+    "db:setup": "prisma db push --accept-data-loss && npm run db:seed:safe",
     "db:seed": "tsx prisma/seed.ts",
+    "db:seed:safe": "tsx prisma/seed.ts || echo '⚠️  Seed skipped or failed'",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio"
   },
@@ -29,6 +32,7 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toast": "^1.2.15",
     "@react-email/components": "^0.5.7",
@@ -45,7 +49,9 @@
     "react-email": "^4.3.2",
     "react-hook-form": "^7.66.0",
     "resend": "^6.4.1",
+    "stripe": "^19.3.0",
     "tailwind-merge": "^3.3.1",
+    "twilio": "^5.3.5",
     "zod": "^4.1.12"
   },
   "devDependencies": {

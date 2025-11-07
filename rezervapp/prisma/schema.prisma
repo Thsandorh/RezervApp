@@ -8,9 +8,9 @@ generator client {
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
-  // For production deployment (Vercel, Railway):
-  // Change provider to "postgresql" and use:
-  // DATABASE_URL="${POSTGRES_PRISMA_URL}"
+  // For production with PostgreSQL:
+  // provider = "postgresql"
+  // url      = env("DATABASE_URL")
 }
 
 // === MODELLEK ===
@@ -38,11 +38,16 @@ model Restaurant {
   maxAdvanceDays  Int      @default(60)  // Hány nappal előre lehet foglalni
   minAdvanceHours Int      @default(2)   // Min hány órával előre kell foglalni
 
+  // Stripe Integration (encrypted)
+  stripeSecretKey    String?  // Encrypted Stripe secret key
+  stripeWebhookSecret String? // Encrypted Stripe webhook secret
+
   // Kapcsolatok
   tables          Table[]
   bookings        Booking[]
   staff           Staff[]
   guests          Guest[]
+  settings        Settings?
 
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -142,6 +147,12 @@ model Staff {
 
   isActive      Boolean  @default(true)
 
+  // Security features
+  failedLoginAttempts Int      @default(0)
+  lockoutUntil        DateTime?
+  lastLoginAt         DateTime?
+  lastLoginIP         String?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -159,4 +170,37 @@ model Waitlist {
   createdAt     DateTime @default(now())
   notifiedAt    DateTime?
   seatedAt      DateTime?
+}
+
+model Settings {
+  id            String   @id @default(cuid())
+  restaurantId  String   @unique
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  // Email notifications (Resend)
+  resendApiKey  String?
+
+  // SMS notifications (Twilio)
+  twilioAccountSid  String?
+  twilioAuthToken   String?
+  twilioPhoneNumber String?
+
+  // Other integrations
+  stripeApiKey      String?
+  googleAnalyticsId String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model LoginAttempt {
+  id            String   @id @default(cuid())
+  ipAddress     String
+  email         String?
+  success       Boolean
+  userAgent     String?
+  createdAt     DateTime @default(now())
+
+  @@index([ipAddress, createdAt])
+  @@index([email, createdAt])
 }
