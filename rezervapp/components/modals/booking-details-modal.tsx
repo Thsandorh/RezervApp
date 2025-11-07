@@ -20,7 +20,7 @@ import { Calendar, Clock, Users, Utensils, Phone, Mail, MessageSquare, Trash2, S
 interface BookingDetailsModalProps {
   booking: {
     id: string
-    bookingDate: Date
+    bookingDate: Date | string
     partySize: number
     duration: number
     status: string
