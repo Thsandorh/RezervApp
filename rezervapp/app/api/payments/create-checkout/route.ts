@@ -40,9 +40,10 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create Stripe checkout session
+    // Create Stripe checkout session with Google Pay support
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+      payment_method_types: ["card", "link"],
+      // Google Pay is automatically enabled when available
       line_items: [
         {
           price_data: {

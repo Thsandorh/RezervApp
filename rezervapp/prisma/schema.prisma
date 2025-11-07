@@ -35,9 +35,13 @@ model Restaurant {
   maxAdvanceDays  Int      @default(60)  // Hány nappal előre lehet foglalni
   minAdvanceHours Int      @default(2)   // Min hány órával előre kell foglalni
 
-  // Stripe Integration (encrypted)
+  // Payment Integrations (encrypted)
   stripeSecretKey    String?  // Encrypted Stripe secret key
   stripeWebhookSecret String? // Encrypted Stripe webhook secret
+
+  // SimplePay Integration (encrypted)
+  simplePayMerchantId String?  // Encrypted SimplePay Merchant ID
+  simplePaySecretKey  String?  // Encrypted SimplePay Secret Key
 
   // Kapcsolatok
   tables          Table[]
