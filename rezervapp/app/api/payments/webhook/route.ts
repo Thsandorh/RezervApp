@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server"
 import { headers } from "next/headers"
-import { getStripeInstance, getStripeWebhookSecret } from "@/lib/stripe"
+import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import type Stripe from "stripe"
 
 export async function POST(request: Request) {
-  // Get Stripe instance (from env or database)
-  const stripe = await getStripeInstance()
-
+  // Check if Stripe is configured
   if (!stripe) {
     return NextResponse.json(
       { error: "Stripe is not configured" },
@@ -25,8 +23,8 @@ export async function POST(request: Request) {
     )
   }
 
-  // Get webhook secret (from env or database)
-  const webhookSecret = await getStripeWebhookSecret()
+  // Get webhook secret from environment
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 
   if (!webhookSecret) {
     return NextResponse.json(

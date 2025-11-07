@@ -8,6 +8,9 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // For local development with SQLite:
+  // provider = "sqlite"
+  // url      = "file:./dev.db"
 }
 
 // === MODELLEK ===
@@ -34,10 +37,6 @@ model Restaurant {
   slotDuration    Int      @default(30)  // perc
   maxAdvanceDays  Int      @default(60)  // Hány nappal előre lehet foglalni
   minAdvanceHours Int      @default(2)   // Min hány órával előre kell foglalni
-
-  // Stripe Integration (encrypted)
-  stripeSecretKey    String?  // Encrypted Stripe secret key
-  stripeWebhookSecret String? // Encrypted Stripe webhook secret
 
   // Kapcsolatok
   tables          Table[]
@@ -144,12 +143,6 @@ model Staff {
 
   isActive      Boolean  @default(true)
 
-  // Security features
-  failedLoginAttempts Int      @default(0)
-  lockoutUntil        DateTime?
-  lastLoginAt         DateTime?
-  lastLoginIP         String?
-
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -188,16 +181,4 @@ model Settings {
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-}
-
-model LoginAttempt {
-  id            String   @id @default(cuid())
-  ipAddress     String
-  email         String?
-  success       Boolean
-  userAgent     String?
-  createdAt     DateTime @default(now())
-
-  @@index([ipAddress, createdAt])
-  @@index([email, createdAt])
 }
