@@ -5,27 +5,30 @@ import FullCalendar from "@fullcalendar/react"
 import dayGridPlugin from "@fullcalendar/daygrid"
 import timeGridPlugin from "@fullcalendar/timegrid"
 import interactionPlugin from "@fullcalendar/interaction"
-import { format } from "date-fns"
-import { hu } from "date-fns/locale"
 import { BookingDetailsModal } from "@/components/modals/booking-details-modal"
+
+interface Guest {
+  firstName: string
+  lastName: string
+  email: string | null
+  phone: string
+}
+
+interface Table {
+  id: string
+  name: string
+}
 
 interface Booking {
   id: string
-  bookingDate: Date | string
+  bookingDate: string
   partySize: number
   duration: number
   status: string
-  specialRequests?: string | null
-  internalNotes?: string | null
-  guest: {
-    firstName: string
-    lastName: string
-    email?: string | null
-    phone: string
-  }
-  table?: {
-    name: string
-  } | null
+  specialRequests: string | null
+  internalNotes: string | null
+  guest: Guest
+  table: Table | null
 }
 
 interface BookingsCalendarProps {
@@ -90,13 +93,7 @@ export function BookingsCalendar({ bookings, onUpdate }: BookingsCalendarProps) 
 
   const handleEventClick = (info: any) => {
     const booking = info.event.extendedProps.booking
-    const bookingWithDate = {
-      ...booking,
-      bookingDate: typeof booking.bookingDate === 'string'
-        ? new Date(booking.bookingDate)
-        : booking.bookingDate
-    }
-    setSelectedBooking(bookingWithDate)
+    setSelectedBooking(booking)
     setIsModalOpen(true)
   }
 
