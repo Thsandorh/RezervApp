@@ -32,8 +32,7 @@ interface BookingsListProps {
   onUpdate: () => void
 }
 
-export function BookingsList({ bookings: initialBookings, onUpdate }: BookingsListProps) {
-  const [bookings, setBookings] = useState(initialBookings)
+export function BookingsList({ bookings, onUpdate }: BookingsListProps) {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
