@@ -384,3 +384,4 @@ If you find this project useful, please consider:
 **Ready to deploy to Vercel!** Follow the deployment guide above.
 
 **Questions?** Open an issue on GitHub or check `/rezervapp/README.md`
+
