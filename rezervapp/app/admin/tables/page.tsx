@@ -1,8 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Plus, Utensils } from "lucide-react"
+import { TablesView } from "@/components/admin/tables-view"
 
 async function getTables() {
   const restaurant = await prisma.restaurant.findFirst()
@@ -11,13 +8,57 @@ async function getTables() {
     return null
   }
 
-  const tables = await prisma.table.findMany({
-    where: {
-      restaurantId: restaurant.id,
-    },
-    orderBy: {
-      name: 'asc',
-    },
+  const now = new Date()
+  const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000)
+
+  const [tables, currentBookings] = await Promise.all([
+    prisma.table.findMany({
+      where: {
+        restaurantId: restaurant.id,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    }),
+    prisma.booking.findMany({
+      where: {
+        restaurantId: restaurant.id,
+        bookingDate: {
+          lte: oneHourFromNow,
+        },
+        status: {
+          in: ['CONFIRMED', 'SEATED'],
+        },
+      },
+      include: {
+        table: true,
+        guest: true,
+      },
+    }),
+  ])
+
+  // Calculate table statuses
+  const tableStatuses = new Map<string, { status: 'free' | 'occupied' | 'soon'; nextBooking?: typeof currentBookings[0] }>()
+
+  tables.forEach((table) => {
+    tableStatuses.set(table.id, { status: 'free' })
+  })
+
+  currentBookings.forEach((booking) => {
+    if (booking.table) {
+      const bookingEnd = new Date(booking.bookingDate.getTime() + booking.duration * 60 * 1000)
+
+      if (booking.bookingDate <= now && bookingEnd >= now) {
+        // Currently occupied
+        tableStatuses.set(booking.table.id, { status: 'occupied', nextBooking: booking })
+      } else if (booking.bookingDate > now && booking.bookingDate <= oneHourFromNow) {
+        // Occupied soon (within 1 hour)
+        const current = tableStatuses.get(booking.table.id)
+        if (current?.status === 'free') {
+          tableStatuses.set(booking.table.id, { status: 'soon', nextBooking: booking })
+        }
+      }
+    }
   })
 
   // Group tables by location
@@ -30,7 +71,7 @@ async function getTables() {
     return acc
   }, {} as Record<string, typeof tables>)
 
-  return { restaurant, tables, groupedTables }
+  return { restaurant, tables, groupedTables, tableStatuses }
 }
 
 export default async function TablesPage() {
@@ -44,75 +85,27 @@ export default async function TablesPage() {
     )
   }
 
+  // Convert Map to plain object for client component
+  const tableStatuses = Object.fromEntries(
+    Array.from(data.tableStatuses.entries()).map(([id, status]) => [
+      id,
+      {
+        status: status.status,
+        nextBooking: status.nextBooking ? {
+          ...status.nextBooking,
+          bookingDate: status.nextBooking.bookingDate.toISOString(),
+          createdAt: status.nextBooking.createdAt.toISOString(),
+          updatedAt: status.nextBooking.updatedAt.toISOString(),
+        } : undefined,
+      },
+    ])
+  )
+
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Asztalok</h2>
-          <p className="text-muted-foreground">
-            Összesen {data.tables.length} asztal
-          </p>
-        </div>
-        <Button className="gap-2" disabled title="Coming soon: Új asztal funkció fejlesztés alatt">
-          <Plus className="h-4 w-4" />
-          Új asztal
-        </Button>
-      </div>
-
-      <div className="space-y-6">
-        {Object.entries(data.groupedTables).map(([location, tables]) => (
-          <Card key={location}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Utensils className="h-5 w-5" />
-                {location}
-                <Badge variant="secondary" className="ml-2">
-                  {tables.length} asztal
-                </Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {tables.map((table) => (
-                  <div
-                    key={table.id}
-                    className="border rounded-lg p-4 hover:bg-accent/50 transition cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3 className="font-semibold text-lg">{table.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Max {table.capacity} fő
-                        </p>
-                      </div>
-                      <Badge
-                        variant={table.isActive ? 'success' : 'secondary'}
-                      >
-                        {table.isActive ? 'Aktív' : 'Inaktív'}
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {data.tables.length === 0 && (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <Utensils className="h-12 w-12 text-muted-foreground mb-4" />
-            <p className="text-muted-foreground mb-4">
-              Még nincs asztal hozzáadva
-            </p>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Első asztal hozzáadása
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+    <TablesView
+      tables={data.tables}
+      groupedTables={data.groupedTables}
+      tableStatuses={tableStatuses}
+    />
   )
 }

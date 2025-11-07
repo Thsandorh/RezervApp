@@ -16,11 +16,15 @@ async function getStats() {
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
 
+  const now = new Date()
+  const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000)
+
   const [
     todayBookings,
     totalBookings,
     totalGuests,
-    totalTables,
+    allTables,
+    currentBookings,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: {
@@ -44,17 +48,47 @@ async function getStats() {
     prisma.guest.count({
       where: { restaurantId: restaurant.id },
     }),
-    prisma.table.count({
+    prisma.table.findMany({
       where: { restaurantId: restaurant.id, isActive: true },
     }),
+    prisma.booking.findMany({
+      where: {
+        restaurantId: restaurant.id,
+        bookingDate: {
+          lte: oneHourFromNow,
+        },
+        status: {
+          in: ['CONFIRMED', 'SEATED'],
+        },
+      },
+      include: {
+        table: true,
+      },
+    }),
   ])
+
+  // Calculate available tables
+  const occupiedTableIds = new Set<string>()
+  currentBookings.forEach((booking) => {
+    if (booking.table) {
+      const bookingEnd = new Date(booking.bookingDate.getTime() + booking.duration * 60 * 1000)
+      if (booking.bookingDate <= now && bookingEnd >= now) {
+        occupiedTableIds.add(booking.table.id)
+      }
+    }
+  })
+
+  const availableTables = allTables.filter((table) => !occupiedTableIds.has(table.id))
 
   return {
     restaurant,
     todayBookings,
     totalBookings,
     totalGuests,
-    totalTables,
+    totalTables: allTables.length,
+    availableTables: availableTables.length,
+    allTables,
+    occupiedTableIds,
   }
 }
 
@@ -167,18 +201,59 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
-              Asztalok
+              Szabad asztalok
             </CardTitle>
             <Utensils className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalTables}</div>
+            <div className="text-2xl font-bold">
+              {stats.availableTables} / {stats.totalTables}
+            </div>
             <p className="text-xs text-muted-foreground">
-              Aktív asztalok
+              {stats.availableTables > 0 ? 'Jelenleg elérhető' : 'Minden foglalt'}
             </p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Table Availability */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Asztalok elérhetősége (most)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+            {stats.allTables.map((table) => {
+              const isOccupied = stats.occupiedTableIds.has(table.id)
+              return (
+                <div
+                  key={table.id}
+                  className={`p-3 rounded-lg border-2 transition ${
+                    isOccupied
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-green-500 bg-green-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold text-sm">{table.name}</span>
+                    <span className={`text-xs font-bold ${isOccupied ? 'text-red-600' : 'text-green-600'}`}>
+                      {isOccupied ? '🔴' : '🟢'}
+                    </span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {table.capacity} fő • {table.location || 'Egyéb'}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          {stats.allTables.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-4">
+              Nincsenek aktív asztalok
+            </p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Today's Bookings */}
       <Card>

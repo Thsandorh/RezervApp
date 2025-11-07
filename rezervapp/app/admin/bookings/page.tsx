@@ -1,24 +1,41 @@
 import { prisma } from "@/lib/prisma"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookingsView } from "@/components/admin/bookings-view"
 
-async function getBookings() {
-  return await prisma.booking.findMany({
-    include: {
-      guest: true,
-      table: true,
-    },
-    orderBy: {
-      bookingDate: 'desc',
-    },
-    take: 100, // Latest 100 bookings
-  })
+async function getData() {
+  const restaurant = await prisma.restaurant.findFirst()
+
+  if (!restaurant) {
+    return { bookings: [], tables: [] }
+  }
+
+  const [bookings, tables] = await Promise.all([
+    prisma.booking.findMany({
+      include: {
+        guest: true,
+        table: true,
+      },
+      orderBy: {
+        bookingDate: 'desc',
+      },
+      take: 100, // Latest 100 bookings
+    }),
+    prisma.table.findMany({
+      where: {
+        restaurantId: restaurant.id,
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    })
+  ])
+
+  return { bookings, tables }
 }
 
 export const dynamic = 'force-dynamic'
 
 export default async function BookingsPage() {
-  const bookings = await getBookings()
+  const { bookings, tables } = await getData()
 
   // Serialize dates to strings for client component
   const serializedBookings = bookings.map(booking => ({
@@ -37,7 +54,7 @@ export default async function BookingsPage() {
         </p>
       </div>
 
-      <BookingsView bookings={serializedBookings as any} />
+      <BookingsView bookings={serializedBookings as any} tables={tables} />
     </div>
   )
 }
