@@ -1,181 +1,148 @@
-import { prisma } from "@/lib/prisma"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Building2, MapPin, Phone, Mail, Clock } from "lucide-react"
-import { SettingsForm } from "@/components/admin/settings-form"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CreditCard, Check, X } from "lucide-react"
 
-async function getRestaurant() {
-  const restaurant = await prisma.restaurant.findFirst({
-    include: {
-      settings: true,
-    },
-  })
-  return restaurant
-}
-
-function getOpeningHoursDisplay(openingHoursStr: string) {
-  try {
-    const hours = JSON.parse(openingHoursStr)
-    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    const dayNames = ['Hétfő', 'Kedd', 'Szerda', 'Csütörtök', 'Péntek', 'Szombat', 'Vasárnap']
-
-    return days.map((day, index) => ({
-      day: dayNames[index],
-      ...hours[day]
-    }))
-  } catch {
-    return []
-  }
-}
-
-export default async function SettingsPage() {
-  const restaurant = await getRestaurant()
-
-  if (!restaurant) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-muted-foreground">Nincs étterem beállítva</p>
-      </div>
-    )
-  }
-
-  const openingHours = getOpeningHoursDisplay(restaurant.openingHours)
+export default function SettingsPage() {
+  const stripeConfigured = !!process.env.STRIPE_SECRET_KEY
+  const webhookConfigured = !!process.env.STRIPE_WEBHOOK_SECRET
 
   return (
-    <div>
-      <div className="mb-8">
+    <div className="space-y-6">
+      <div>
         <h2 className="text-3xl font-bold tracking-tight">Beállítások</h2>
         <p className="text-muted-foreground">
-          Étterem információk és API kulcsok kezelése
+          Rendszer beállítások és konfiguráció
         </p>
       </div>
 
-      <Tabs defaultValue="api-keys" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="api-keys">API Kulcsok</TabsTrigger>
-          <TabsTrigger value="restaurant">Étterem Info</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="api-keys" className="space-y-4">
-          <SettingsForm
-            restaurantId={restaurant.id}
-            initialSettings={restaurant.settings || undefined}
-          />
-        </TabsContent>
-
-        <TabsContent value="restaurant" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            {/* Restaurant Info */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  Étterem információk
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Név</p>
-                  <p className="text-lg font-semibold">{restaurant.name}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Slug (URL)</p>
-                  <p className="font-mono text-sm">/book/{restaurant.slug}</p>
-                </div>
-
-                <div className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 mt-1 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Cím</p>
-                    <p>{restaurant.address}</p>
-                    <p>{restaurant.postalCode} {restaurant.city}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Telefon</p>
-                    <p>{restaurant.phone}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">Email</p>
-                    <p>{restaurant.email}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Booking Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Foglalási beállítások</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Időablak hossza</p>
-                  <p className="text-lg font-semibold">{restaurant.slotDuration} perc</p>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Max előre foglalás</p>
-                  <p className="text-lg font-semibold">{restaurant.maxAdvanceDays} nap</p>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Min előre foglalás</p>
-                  <p className="text-lg font-semibold">{restaurant.minAdvanceHours} óra</p>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Időzóna</p>
-                  <p className="text-lg font-semibold">{restaurant.timeZone}</p>
-                </div>
-
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Pénznem</p>
-                  <p className="text-lg font-semibold">{restaurant.currency}</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Opening Hours */}
-            <Card className="md:col-span-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Nyitvatartás
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {openingHours.map((dayHours: any, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-3 border rounded-lg"
-                    >
-                      <span className="font-medium">{dayHours.day}</span>
-                      {dayHours.closed ? (
-                        <Badge variant="secondary">Zárva</Badge>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">
-                          {dayHours.open} - {dayHours.close}
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+      {/* Stripe Payment Configuration */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <CreditCard className="h-6 w-6" />
+              <div>
+                <CardTitle>Stripe Fizetési Integráció</CardTitle>
+                <CardDescription>Online bankkártyás fizetés kezelése</CardDescription>
+              </div>
+            </div>
+            <Badge variant={stripeConfigured ? "success" : "secondary"}>
+              {stripeConfigured ? "Aktív" : "Nincs beállítva"}
+            </Badge>
           </div>
-        </TabsContent>
-      </Tabs>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* API Keys Status */}
+          <div className="space-y-3">
+            <h3 className="font-semibold">API Kulcsok Állapota</h3>
+            <div className="grid gap-3">
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <span className="text-sm font-medium">STRIPE_SECRET_KEY</span>
+                {stripeConfigured ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <Check className="h-4 w-4" />
+                    <span className="text-sm">Beállítva</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <X className="h-4 w-4" />
+                    <span className="text-sm">Nincs beállítva</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <span className="text-sm font-medium">STRIPE_WEBHOOK_SECRET</span>
+                {webhookConfigured ? (
+                  <div className="flex items-center gap-2 text-green-600">
+                    <Check className="h-4 w-4" />
+                    <span className="text-sm">Beállítva</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <X className="h-4 w-4" />
+                    <span className="text-sm">Nincs beállítva</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Setup Instructions */}
+          <div className="space-y-3">
+            <h3 className="font-semibold">Beállítási Útmutató</h3>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p><strong>1. Stripe Account létrehozása:</strong></p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>Regisztrálj a stripe.com oldalon</li>
+                <li>Állítsd be a fiókod (cégadatok, banki információk)</li>
+              </ul>
+
+              <p className="pt-2"><strong>2. API Kulcsok megszerzése:</strong></p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>Lépj be a Stripe Dashboard-ra</li>
+                <li>Developers → API keys menüpont</li>
+                <li>Másold ki a Secret key értéket</li>
+              </ul>
+
+              <p className="pt-2"><strong>3. Környezeti változók beállítása:</strong></p>
+              <div className="bg-gray-100 p-3 rounded-md font-mono text-xs overflow-x-auto">
+                STRIPE_SECRET_KEY=sk_test_... vagy sk_live_...<br/>
+                STRIPE_WEBHOOK_SECRET=whsec_...
+              </div>
+
+              <p className="pt-2"><strong>4. Webhook beállítása:</strong></p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>Stripe Dashboard → Developers → Webhooks</li>
+                <li>Add endpoint: yoursite.com/api/payments/webhook</li>
+                <li>Válaszd ki: checkout.session.completed</li>
+                <li>Másold ki a webhook signing secret-et</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* API Endpoints */}
+          <div className="space-y-3">
+            <h3 className="font-semibold">API Endpointok</h3>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <span className="font-mono text-xs">POST /api/payments/create-checkout</span>
+                <Badge variant="outline" className="text-xs">Checkout létrehozás</Badge>
+              </div>
+              <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                <span className="font-mono text-xs">POST /api/payments/webhook</span>
+                <Badge variant="outline" className="text-xs">Stripe webhook</Badge>
+              </div>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-3">
+            <h3 className="font-semibold">Funkciók</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Bankkártyás fizetés (Visa, Mastercard, Amex)</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Automatikus foglalás megerősítés sikeres fizetés után</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Biztonságos fizetés SSL titkosítással</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Webhook integráció valós idejű státusz frissítéshez</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Foglalás belső jegyzetekben rögzített fizetési információk</span>
+              </li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
