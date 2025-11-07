@@ -42,8 +42,15 @@ export default async function BookingsPage() {
   const serializedBookings = bookings.map(booking => ({
     ...booking,
     bookingDate: booking.bookingDate.toISOString(),
-    createdAt: booking.createdAt.toISOString(),
+    createdAt: booking.bookingDate.toISOString(),
     updatedAt: booking.updatedAt.toISOString(),
+  }))
+
+  // Serialize table dates too (important for client components!)
+  const serializedTables = tables.map(table => ({
+    ...table,
+    createdAt: table.createdAt.toISOString(),
+    updatedAt: table.updatedAt.toISOString(),
   }))
 
   return (
@@ -58,7 +65,7 @@ export default async function BookingsPage() {
         {restaurant && <CreateBookingDialog restaurantId={restaurant.id} />}
       </div>
 
-      <BookingsView bookings={serializedBookings as any} tables={tables} />
+      <BookingsView bookings={serializedBookings as any} tables={serializedTables as any} />
     </div>
   )
 }
