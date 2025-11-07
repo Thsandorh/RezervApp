@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma"
 import { incrementFailedAttempts, resetFailedAttempts, checkAccountLockout } from "@/lib/rate-limit"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       name: "credentials",
