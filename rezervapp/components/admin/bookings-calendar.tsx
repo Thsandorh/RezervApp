@@ -112,18 +112,45 @@ export function BookingsCalendar({ bookings, onUpdate }: BookingsCalendarProps) 
 
   return (
     <>
-      <div className="bg-white rounded-lg p-4">
+      <style jsx global>{`
+        .fc {
+          font-size: 0.85rem;
+        }
+        @media (max-width: 640px) {
+          .fc {
+            font-size: 0.75rem;
+          }
+          .fc-toolbar-title {
+            font-size: 1rem !important;
+          }
+          .fc-button {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.75rem !important;
+          }
+          .fc-col-header-cell {
+            padding: 0.25rem !important;
+          }
+          .fc-timegrid-slot {
+            height: 2rem !important;
+          }
+        }
+      `}</style>
+      <div className="bg-white rounded-lg p-2 sm:p-4 overflow-x-auto">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView="timeGridWeek"
+          initialView={typeof window !== 'undefined' && window.innerWidth < 640 ? "timeGridDay" : "timeGridWeek"}
           headerToolbar={{
-            left: "prev,next today",
+            left: "prev,next",
             center: "title",
+            right: "today",
+          }}
+          footerToolbar={{
             right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
           events={events}
           eventClick={handleEventClick}
           height="auto"
+          contentHeight={500}
           locale="hu"
           slotMinTime="08:00:00"
           slotMaxTime="23:00:00"
@@ -139,6 +166,16 @@ export function BookingsCalendar({ bookings, onUpdate }: BookingsCalendarProps) 
             hour: "2-digit",
             minute: "2-digit",
             hour12: false,
+          }}
+          dayHeaderFormat={{
+            weekday: 'short',
+            day: 'numeric',
+            omitCommas: true
+          }}
+          titleFormat={{
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
           }}
         />
       </div>

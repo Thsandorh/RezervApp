@@ -67,9 +67,9 @@ export function BookingsView({ bookings, tables = [] }: BookingsViewProps) {
     <Card>
       <CardHeader>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <CardTitle>{getTitle()}</CardTitle>
+          <CardTitle className="text-lg sm:text-2xl break-words">{getTitle()}</CardTitle>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant={view === "list" ? "default" : "outline"}
               size="sm"
