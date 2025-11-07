@@ -113,10 +113,10 @@ export async function incrementFailedAttempts(email: string): Promise<void> {
 
   if (!staff) return
 
-  const failedAttempts = staff.failedLoginAttempts + 1
+  const failedLoginAttempts = staff.failedLoginAttempts + 1
 
   // Lock account if max attempts reached
-  const lockoutUntil = failedAttempts >= RATE_LIMIT_CONFIG.maxFailedAttemptsPerEmail
+  const lockoutUntil = failedLoginAttempts >= RATE_LIMIT_CONFIG.maxFailedAttemptsPerEmail
     ? new Date(Date.now() + RATE_LIMIT_CONFIG.lockoutDuration * 60 * 1000)
     : null
 
