@@ -1,9 +1,25 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CreditCard, Check, Shield } from "lucide-react"
 import { StripeConfigForm } from "@/components/admin/stripe-config-form"
+import { SettingsForm } from "@/components/admin/settings-form"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
+import { prisma } from "@/lib/prisma"
+
+async function getSettings() {
+  const restaurant = await prisma.restaurant.findFirst()
+
+  if (!restaurant) {
+    return { restaurant: null, settings: null }
+  }
+
+  const settings = await prisma.settings.findUnique({
+    where: { restaurantId: restaurant.id },
+  })
+
+  return { restaurant, settings }
+}
 
 export default async function SettingsPage() {
   const session = await auth()
@@ -11,6 +27,16 @@ export default async function SettingsPage() {
   // Only OWNER can access settings
   if (!session?.user || session.user.role !== "OWNER") {
     redirect("/admin")
+  }
+
+  const { restaurant, settings } = await getSettings()
+
+  if (!restaurant) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground">Nincs étterem beállítva</p>
+      </div>
+    )
   }
 
   return (
@@ -146,6 +172,19 @@ export default async function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Email, SMS, Analytics Settings */}
+      <SettingsForm
+        restaurantId={restaurant.id}
+        initialSettings={{
+          resendApiKey: settings?.resendApiKey,
+          twilioAccountSid: settings?.twilioAccountSid,
+          twilioAuthToken: settings?.twilioAuthToken,
+          twilioPhoneNumber: settings?.twilioPhoneNumber,
+          stripeApiKey: settings?.stripeApiKey,
+          googleAnalyticsId: settings?.googleAnalyticsId,
+        }}
+      />
     </div>
   )
 }
