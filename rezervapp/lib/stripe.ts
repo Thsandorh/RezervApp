@@ -1,10 +1,11 @@
 import Stripe from "stripe"
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error("STRIPE_SECRET_KEY is not set in environment variables")
-}
+// Stripe is optional - only initialize if secret key is provided
+export const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-10-29.clover",
+      typescript: true,
+    })
+  : null
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-10-29.clover",
-  typescript: true,
-})
+export const isStripeConfigured = !!process.env.STRIPE_SECRET_KEY

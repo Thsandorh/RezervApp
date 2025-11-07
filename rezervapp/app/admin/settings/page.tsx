@@ -23,7 +23,7 @@ export default function SettingsPage() {
               <CreditCard className="h-6 w-6" />
               <div>
                 <CardTitle>Stripe Fizetési Integráció</CardTitle>
-                <CardDescription>Online bankkártyás fizetés kezelése</CardDescription>
+                <CardDescription>Online bankkártyás fizetés kezelése (opcionális)</CardDescription>
               </div>
             </div>
             <Badge variant={stripeConfigured ? "success" : "secondary"}>
@@ -32,6 +32,11 @@ export default function SettingsPage() {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
+          {!stripeConfigured && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+              <p><strong>Megjegyzés:</strong> A Stripe integráció teljesen opcionális. Az alkalmazás Stripe nélkül is működik, ilyenkor a foglalások standard módon kerülnek rögzítésre fizetési funkció nélkül.</p>
+            </div>
+          )}
           {/* API Keys Status */}
           <div className="space-y-3">
             <h3 className="font-semibold">API Kulcsok Állapota</h3>
