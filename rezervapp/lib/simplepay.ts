@@ -82,29 +82,16 @@ export async function getSimplePayConfig(): Promise<SimplePayConfig | null> {
 
 /**
  * Generate SimplePay signature
+ * The signature is base64-encoded HMAC SHA384 hash of the entire JSON body
  */
 export function generateSimplePaySignature(
-  data: Record<string, any>,
+  jsonBody: string,
   secretKey: string
 ): string {
-  // Sort keys alphabetically
-  const sortedKeys = Object.keys(data).sort()
-
-  // Concatenate values
-  const dataString = sortedKeys
-    .map((key) => {
-      const value = data[key]
-      if (Array.isArray(value)) {
-        return value.join("")
-      }
-      return value
-    })
-    .join("")
-
-  // Create HMAC SHA384 hash
+  // Create HMAC SHA384 hash of the entire JSON body
   const signature = crypto
     .createHmac("sha384", secretKey)
-    .update(dataString)
+    .update(jsonBody)
     .digest("base64")
 
   return signature
@@ -134,7 +121,7 @@ export async function createSimplePayPayment(
     currency: transaction.currency,
     customerEmail: transaction.customerEmail,
     language: transaction.language,
-    sdkVersion: "SimplePay_PHP_SDK_2.0",
+    sdkVersion: "SimplePay_NodeJS_SDK_2.0",
     methods: transaction.methods,
     total: transaction.amount,
     timeout: transaction.timeout.toISOString(),
@@ -145,20 +132,22 @@ export async function createSimplePayPayment(
     invoice: transaction.invoice,
   }
 
-  // Generate signature
-  const signature = generateSimplePaySignature(requestData, config.secretKey)
+  // Convert to JSON (IMPORTANT: This exact JSON will be hashed)
+  const jsonBody = JSON.stringify(requestData)
 
-  // Make API request
+  // Generate signature from the entire JSON body
+  const signature = generateSimplePaySignature(jsonBody, config.secretKey)
+
+  // Make API request with signature in header
   try {
     const response = await fetch(baseUrl, {
       method: "POST",
       headers: {
+        "Accept-language": "HU",
         "Content-Type": "application/json",
+        "Signature": signature, // Signature goes in header, not body!
       },
-      body: JSON.stringify({
-        ...requestData,
-        signature,
-      }),
+      body: jsonBody,
     })
 
     const result = await response.json()
@@ -180,13 +169,14 @@ export async function createSimplePayPayment(
 
 /**
  * Verify SimplePay IPN (Instant Payment Notification)
+ * The IPN data comes as JSON, and we need to verify the signature
  */
 export function verifySimplePayIPN(
-  data: Record<string, any>,
+  jsonBody: string,
   receivedSignature: string,
   secretKey: string
 ): boolean {
-  const calculatedSignature = generateSimplePaySignature(data, secretKey)
+  const calculatedSignature = generateSimplePaySignature(jsonBody, secretKey)
   return calculatedSignature === receivedSignature
 }
 

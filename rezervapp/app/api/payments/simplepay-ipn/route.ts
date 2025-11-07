@@ -4,8 +4,17 @@ import { prisma } from "@/lib/prisma"
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const { signature, ...data } = body
+    // Get raw body text for signature verification
+    const bodyText = await request.text()
+    const body = JSON.parse(bodyText)
+
+    // Get signature from header (SimplePay sends it in the Signature header)
+    const signature = request.headers.get("Signature")
+
+    if (!signature) {
+      console.error("SimplePay IPN: No signature in header")
+      return NextResponse.json({ receiveDate: new Date().toISOString() })
+    }
 
     // Get SimplePay config for verification
     const config = await getSimplePayConfig()
@@ -15,8 +24,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ receiveDate: new Date().toISOString() })
     }
 
-    // Verify signature
-    const isValid = verifySimplePayIPN(data, signature, config.secretKey)
+    // Verify signature using the raw body text
+    const isValid = verifySimplePayIPN(bodyText, signature, config.secretKey)
 
     if (!isValid) {
       console.error("SimplePay IPN: Invalid signature")
@@ -24,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     // Extract booking ID from orderRef
-    const orderRef = data.orderRef as string
+    const orderRef = body.orderRef as string
     const bookingId = orderRef.replace("BOOKING-", "")
 
     // Get booking
@@ -38,7 +47,7 @@ export async function POST(request: Request) {
     }
 
     // Update booking status based on payment status
-    const status = data.status as string
+    const status = body.status as string
 
     if (status === "FINISHED" || status === "SUCCESS") {
       // Payment successful
@@ -47,8 +56,8 @@ export async function POST(request: Request) {
         data: {
           status: "CONFIRMED",
           internalNotes: booking.internalNotes
-            ? `${booking.internalNotes}\nSimplePay Payment: SUCCESS (${data.transactionId})`
-            : `SimplePay Payment: SUCCESS (${data.transactionId})`,
+            ? `${booking.internalNotes}\nSimplePay Payment: SUCCESS (${body.transactionId})`
+            : `SimplePay Payment: SUCCESS (${body.transactionId})`,
         },
       })
 
@@ -59,8 +68,8 @@ export async function POST(request: Request) {
         where: { id: bookingId },
         data: {
           internalNotes: booking.internalNotes
-            ? `${booking.internalNotes}\nSimplePay Payment: ${status} (${data.transactionId})`
-            : `SimplePay Payment: ${status} (${data.transactionId})`,
+            ? `${booking.internalNotes}\nSimplePay Payment: ${status} (${body.transactionId})`
+            : `SimplePay Payment: ${status} (${body.transactionId})`,
         },
       })
 
