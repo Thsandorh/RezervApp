@@ -55,13 +55,13 @@ export async function GET() {
 
     // Return masked versions if configured
     if (envMerchantId) {
-      response.merchantId = maskSecret(envMerchantId, 4, 4)
+      response.merchantId = maskSecret(envMerchantId)
       response.secretKey = "****"
       response.sandboxMode = envSandboxMode
     } else if (restaurant.simplePayMerchantId) {
       try {
         const decryptedMerchantId = decrypt(restaurant.simplePayMerchantId)
-        response.merchantId = maskSecret(decryptedMerchantId, 4, 4)
+        response.merchantId = maskSecret(decryptedMerchantId)
         response.secretKey = "****"
         response.sandboxMode = restaurant.simplePaySandboxMode ?? true
       } catch (error) {
@@ -121,7 +121,7 @@ export async function POST(request: Request) {
       success: true,
       message: "SimplePay konfiguráció sikeresen mentve",
       masked: {
-        merchantId: maskSecret(merchantId, 4, 4),
+        merchantId: maskSecret(merchantId),
         secretKey: "****",
         sandboxMode,
       },
