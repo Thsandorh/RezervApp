@@ -35,16 +35,45 @@ npx prisma generate && npm run build
 
 Add these environment variables in Vercel dashboard:
 
+**Required:**
 ```env
-DATABASE_URL=file:./dev.db
+# Database (use Vercel Postgres for production)
+DATABASE_URL=${POSTGRES_PRISMA_URL}
+
+# Authentication
 NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
 NEXTAUTH_URL=https://your-app.vercel.app
 AUTH_TRUST_HOST=true
+
+# Encryption for payment credentials
+ENCRYPTION_KEY=<generate-with-openssl-rand-hex-32>
 ```
 
-Optional (for email notifications):
+**Optional - Email Notifications:**
 ```env
 RESEND_API_KEY=re_xxxxxxxxxxxx
+EMAIL_FROM=noreply@yourdomain.com
+```
+
+**Optional - Payment Providers:**
+```env
+# Stripe (Card + Google Pay)
+STRIPE_SECRET_KEY=sk_live_xxxxxxxxxxxx
+STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxx
+
+# SimplePay (Hungarian OTP)
+SIMPLEPAY_MERCHANT_ID=MERCHANT-12345678
+SIMPLEPAY_SECRET_KEY=your-secret-key
+SIMPLEPAY_SANDBOX=false
+```
+
+**Generate secrets:**
+```bash
+# NextAuth secret
+openssl rand -base64 32
+
+# Encryption key
+openssl rand -hex 32
 ```
 
 ### Step 4: Deploy
@@ -137,6 +166,59 @@ Demo credentials (after seed):
 2. Create an API key
 3. Add `RESEND_API_KEY` environment variable in Vercel
 4. Redeploy the project
+
+### 4. Configure Payment Providers (Optional)
+
+#### Stripe (International Cards + Google Pay)
+
+1. **Create Stripe Account:**
+   - Sign up at [stripe.com](https://stripe.com)
+   - Complete business verification
+
+2. **Get API Keys:**
+   - Dashboard → Developers → API keys
+   - Copy Secret key (sk_live_xxx)
+
+3. **Setup Webhook:**
+   - Dashboard → Developers → Webhooks
+   - Add endpoint: `https://your-app.vercel.app/api/payments/webhook`
+   - Select event: `checkout.session.completed`
+   - Copy webhook secret (whsec_xxx)
+
+4. **Enable Google Pay:**
+   - Dashboard → Settings → Payment methods
+   - Wallets section → Enable Google Pay
+   - No code changes needed!
+
+5. **Add to Vercel:**
+   ```env
+   STRIPE_SECRET_KEY=sk_live_xxxxxxxxxxxx
+   STRIPE_WEBHOOK_SECRET=whsec_xxxxxxxxxxxx
+   ```
+   OR configure via Admin UI after deployment
+
+#### SimplePay (Hungarian OTP Gateway)
+
+1. **Get SimplePay Account:**
+   - Contact OTP SimplePay for merchant account
+   - Receive Merchant ID and Secret Key
+
+2. **Configure IPN:**
+   - SimplePay Admin → Settings → IPN
+   - Add URL: `https://your-app.vercel.app/api/payments/simplepay-ipn`
+
+3. **Add to Vercel:**
+   ```env
+   SIMPLEPAY_MERCHANT_ID=MERCHANT-12345678
+   SIMPLEPAY_SECRET_KEY=your-secret-key
+   SIMPLEPAY_SANDBOX=false
+   ```
+   OR configure via Admin UI after deployment
+
+4. **Test in Sandbox First:**
+   - Use sandbox credentials for testing
+   - Set `SIMPLEPAY_SANDBOX=true`
+   - Switch to production when ready
 
 ## Database Notes
 
