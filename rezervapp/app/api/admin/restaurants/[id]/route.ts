@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 // GET single restaurant
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -13,8 +13,10 @@ export async function GET(
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
+    const { id } = await params
+
     const restaurant = await prisma.restaurant.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         _count: {
           select: {
@@ -41,13 +43,15 @@ export async function GET(
 // UPDATE restaurant
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
     if (!session) {
       return new NextResponse("Unauthorized", { status: 401 })
     }
+
+    const { id } = await params
 
     const body = await request.json()
     const {
@@ -67,7 +71,7 @@ export async function PATCH(
       const existingRestaurant = await prisma.restaurant.findFirst({
         where: {
           slug,
-          NOT: { id: params.id },
+          NOT: { id },
         },
       })
 
@@ -77,7 +81,7 @@ export async function PATCH(
     }
 
     const restaurant = await prisma.restaurant.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(name && { name }),
         ...(slug && { slug }),
@@ -101,7 +105,7 @@ export async function PATCH(
 // DELETE restaurant
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -109,9 +113,11 @@ export async function DELETE(
       return new NextResponse("Unauthorized", { status: 401 })
     }
 
+    const { id } = await params
+
     // Check if restaurant exists
     const restaurant = await prisma.restaurant.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!restaurant) {
@@ -120,7 +126,7 @@ export async function DELETE(
 
     // Delete restaurant (cascade will handle related records)
     await prisma.restaurant.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true })
