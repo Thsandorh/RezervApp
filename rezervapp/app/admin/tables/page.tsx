@@ -23,12 +23,21 @@ async function getTables() {
     prisma.booking.findMany({
       where: {
         restaurantId: restaurant.id,
-        bookingDate: {
-          lte: oneHourFromNow,
-        },
-        status: {
-          in: ['CONFIRMED', 'SEATED'],
-        },
+        OR: [
+          {
+            // Get bookings within 1 hour
+            bookingDate: {
+              lte: oneHourFromNow,
+            },
+            status: {
+              in: ['CONFIRMED', 'SEATED'],
+            },
+          },
+          {
+            // Always get SEATED bookings regardless of time
+            status: 'SEATED',
+          },
+        ],
       },
       include: {
         table: true,
