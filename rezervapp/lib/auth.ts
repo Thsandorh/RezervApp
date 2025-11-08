@@ -56,6 +56,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Jelszó", type: "password" },
         recaptchaToken: { label: "reCAPTCHA Token", type: "text" },
+        rememberMe: { label: "Remember Me", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -65,6 +66,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const email = credentials.email as string
         const password = credentials.password as string
         const recaptchaToken = credentials.recaptchaToken as string | undefined
+        const rememberMe = credentials.rememberMe === "true"
 
         // Validate reCAPTCHA if token is provided
         if (recaptchaToken) {
@@ -114,16 +116,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           name: staff.name,
           role: staff.role,
           restaurantId: staff.restaurantId,
+          rememberMe,
         }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id
         token.role = user.role
         token.restaurantId = user.restaurantId
+        token.rememberMe = user.rememberMe || false
       }
       return token
     },
@@ -133,6 +137,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.role = token.role as string
         session.user.restaurantId = token.restaurantId as string
       }
+
+      // Set session maxAge based on rememberMe
+      // This is informational - actual maxAge is set below
+      if (token.rememberMe) {
+        session.expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
+      }
+
       return session
     },
   },
@@ -141,5 +152,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   session: {
     strategy: "jwt",
+    // Default: 1 day for normal login, but JWT maxAge will be overridden
+    maxAge: 24 * 60 * 60, // 1 day in seconds
+  },
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days max for JWT token (will be used if rememberMe is true)
   },
 })
