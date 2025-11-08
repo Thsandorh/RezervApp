@@ -1,8 +1,8 @@
 # 🍽️ RezervApp - Restaurant Reservation System
 
-> **Status: ✅ v2.0.0 - All Core Features Complete with Payment Integration!**
+> **Status: ✅ v2.1.0 - Production Ready with Staff Management & Enhanced Security!**
 
-Modern, full-stack SaaS application for restaurant reservation management with integrated payment processing, built for Hungarian restaurants.
+Modern, full-stack SaaS application for restaurant reservation management with integrated payment processing, comprehensive staff management, and advanced security features - built for Hungarian restaurants.
 
 ## ☁️ Deploy (Choose Your Way!)
 
@@ -51,38 +51,54 @@ All source code, documentation, and deployment configuration is located in the `
 
 ---
 
-## ✅ All Core Features Complete! (v2.0.0)
+## ✅ All Core Features Complete! (v2.1.0)
 
 ### 1. 🔐 Authentication & Authorization
 - ✅ NextAuth.js v5 with email/password
 - ✅ Protected admin routes with middleware
 - ✅ Secure session management
+- ✅ **Google reCAPTCHA v3** - Bot protection on login
+- ✅ **Account lockout** - 5 failed attempts = 30 min lock
+- ✅ **IP-based rate limiting** - Login attempt tracking
 
 ### 2. 📊 Admin Dashboard
 - ✅ Real-time statistics (today's bookings, revenue, guests)
 - ✅ Quick overview of pending/confirmed bookings
 - ✅ **Collapsible sidebar** - Icon-only & expanded modes
 - ✅ **Mobile-friendly** - Overlay sidebar, no content blocking
+- ✅ **Interactive table cards** - Click for detailed booking info
+- ✅ **Table info modal** - Current & next bookings, guest details
+- ✅ **Mobile touch support** - Optimized for touch devices
 
-### 3. 📅 Booking Management
+### 3. 👥 Staff Management (NEW in v2.1.0)
+- ✅ **Complete staff CRUD** - Add, edit, delete staff members
+- ✅ **Role-based access control** - OWNER, MANAGER, STAFF
+- ✅ **Staff list page** - All members with status and roles
+- ✅ **Active/inactive toggle** - Manage staff account status
+- ✅ **Last login tracking** - Security and activity monitoring
+- ✅ **Email uniqueness** - Prevent duplicate accounts
+- ✅ **Self-deletion prevention** - Safety check
+- ✅ **OWNER-only access** - Secure staff management
+
+### 4. 📅 Booking Management
 - ✅ List view with filtering (status, date)
 - ✅ Calendar view (FullCalendar with Hungarian locale)
 - ✅ Full booking details modal with status updates
 - ✅ Internal notes for staff
 
-### 4. 🍴 Table Management
+### 5. 🍴 Table Management
 - ✅ Full CRUD operations
 - ✅ Location/area grouping (Terasz, Belső terem, etc.)
 - ✅ Capacity management (2-12 guests)
 - ✅ Visual table arrangement
 
-### 5. 👥 Guest Management
+### 6. 👤 Guest Management
 - ✅ Automatic guest profile creation
 - ✅ VIP status tracking
 - ✅ No-show tracking
 - ✅ Booking history per guest
 
-### 6. 🌐 Public Booking System
+### 7. 🌐 Public Booking System
 - ✅ Guest-facing booking form
 - ✅ Real-time availability checking
 - ✅ Smart table assignment by party size
@@ -90,25 +106,33 @@ All source code, documentation, and deployment configuration is located in the `
 - ✅ Min/max advance booking limits
 - ✅ Success page with booking details
 
-### 7. ✉️ Email Notifications
+### 8. ✉️ Email Notifications
 - ✅ Resend API integration
 - ✅ Beautiful React Email templates
 - ✅ Booking confirmation emails
 - ✅ Cancellation emails
 - ✅ Hungarian localization
 
-### 8. 📱 SMS Notifications (Twilio)
+### 9. 📱 SMS Notifications (Twilio)
 - ✅ SMS confirmation messages
 - ✅ SMS reminders
 - ✅ Hungarian language support
 - ✅ Configurable via admin settings
 
-### 9. 📈 Analytics & Reports
+### 10. 📈 Analytics & Reports
 - ✅ Revenue tracking
 - ✅ Booking trends (daily, weekly)
 - ✅ Popular time slots analysis
 - ✅ Table utilization metrics
 - ✅ No-show statistics
+
+### 11. ⚙️ Admin Tools & Settings (OWNER-only)
+- ✅ **Payment configuration** - Stripe & SimplePay setup
+- ✅ **reCAPTCHA configuration** - Bot protection settings
+- ✅ **Encrypted credential storage** - Secure API key storage
+- ✅ **Dangerous operations** - Delete all bookings/tables
+- ✅ **Double confirmation dialogs** - Prevent accidental data loss
+- ✅ **Restaurant settings API** - Centralized configuration
 
 ### 💳 NEW in v2.0.0: Payment Integration
 - ✅ **Stripe Checkout** - International card payments
@@ -136,26 +160,30 @@ All source code, documentation, and deployment configuration is located in the `
 - **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, shadcn/ui
 - **Backend:** Next.js API Routes, Prisma ORM
 - **Database:** PostgreSQL (production), SQLite (dev)
-- **Auth:** NextAuth.js v5
+- **Auth:** NextAuth.js v5, bcryptjs password hashing
+- **Security:** Google reCAPTCHA v3, AES-256 encryption, HMAC-SHA384 signatures, rate limiting
 - **Payments:** Stripe (Cards + Google Pay), SimplePay (Hungarian OTP)
 - **Email:** Resend + React Email
 - **SMS:** Twilio
 - **Calendar:** FullCalendar with Hungarian localization
-- **Security:** AES-256 encryption, HMAC-SHA384 signatures
 
 ---
 
-## 🎯 Production Ready! (v2.0.0)
+## 🎯 Production Ready! (v2.1.0)
 
-All core features including payment integration are complete and tested. The system is ready for deployment to production environments.
+All core features including payment integration, staff management, and enhanced security are complete and tested. The system is ready for deployment to production environments.
 
-**Included in v2.0.0:**
+**Included in v2.1.0:**
 - ✅ Complete reservation management system
+- ✅ **Staff management with role-based access control**
+- ✅ **Google reCAPTCHA v3 bot protection**
+- ✅ **Enhanced security features** (account lockout, rate limiting)
 - ✅ Payment processing (Stripe, Google Pay, SimplePay)
 - ✅ Email & SMS notifications
 - ✅ Analytics & reporting
-- ✅ Responsive mobile design
+- ✅ Responsive mobile design with interactive table cards
 - ✅ PCI-DSS compliant payment handling
+- ✅ OWNER-only admin tools and dangerous operations
 
 **Future enhancements:**
 - [ ] Multi-tenant SaaS support (subdomain-based)
@@ -236,15 +264,28 @@ rezervapp/                    # Main application folder
 │   ├── admin/               # ✅ Admin dashboard (COMPLETE)
 │   │   ├── page.tsx         # ✅ Dashboard homepage
 │   │   ├── bookings/        # ✅ List + calendar views
-│   │   └── tables/          # ✅ Table management
+│   │   ├── tables/          # ✅ Table management
+│   │   ├── staff/           # ✅ Staff management (OWNER-only)
+│   │   ├── settings/        # ✅ Settings (OWNER-only)
+│   │   └── analytics/       # ✅ Analytics & reports
 │   ├── api/                 # ✅ API endpoints (COMPLETE)
 │   │   ├── bookings/        # ✅ Booking CRUD
-│   │   └── tables/          # ✅ Table CRUD
+│   │   ├── tables/          # ✅ Table CRUD
+│   │   ├── admin/           # ✅ Admin-only endpoints
+│   │   │   ├── staff/       # ✅ Staff CRUD
+│   │   │   ├── restaurant/  # ✅ Restaurant settings
+│   │   │   └── delete-all-* # ✅ Dangerous operations
+│   │   └── recaptcha-config/# ✅ Public reCAPTCHA config
 │   ├── booking/
 │   │   └── cancel/[token]   # ✅ Public cancellation (COMPLETE)
 │   └── login/               # ✅ Login page (COMPLETE)
 ├── components/
 │   ├── admin/               # ✅ Admin components
+│   │   ├── staff-form.tsx   # ✅ Add/edit staff
+│   │   ├── staff-list.tsx   # ✅ Staff list page
+│   │   ├── recaptcha-settings.tsx # ✅ reCAPTCHA config
+│   │   ├── dangerous-actions.tsx  # ✅ Bulk delete
+│   │   └── table-info-modal.tsx   # ✅ Table details
 │   ├── modals/              # ✅ Booking/Table modals
 │   └── ui/                  # ✅ shadcn/ui components
 ├── emails/                   # ✅ Email templates
@@ -321,8 +362,10 @@ Add these in **Vercel Dashboard → Settings → Environment Variables**:
 | `STRIPE_WEBHOOK_SECRET` | (optional) | From Stripe webhook setup |
 | `SIMPLEPAY_MERCHANT_ID` | (optional) | For SimplePay (Hungarian) |
 | `SIMPLEPAY_SECRET_KEY` | (optional) | From SimplePay account |
+| `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | (optional) | Google reCAPTCHA site key |
+| `RECAPTCHA_SECRET_KEY` | (optional) | Google reCAPTCHA secret key |
 
-**Payment providers can also be configured via Admin UI after deployment.**
+**Payment providers and reCAPTCHA can also be configured via Admin UI after deployment (OWNER-only access).**
 
 **After adding variables:** Click "Redeploy" for changes to take effect.
 
@@ -344,10 +387,16 @@ Add these in **Vercel Dashboard → Settings → Environment Variables**:
 | Feature | Status |
 |---------|--------|
 | Admin Authentication | ✅ Complete |
+| **Google reCAPTCHA v3** | ✅ Complete (v2.1.0) |
+| **Account Lockout Protection** | ✅ Complete (v2.1.0) |
 | Collapsible Sidebar (Mobile) | ✅ Complete |
+| **Staff Management (CRUD)** | ✅ Complete (v2.1.0) |
+| **Role-based Access Control** | ✅ Complete (v2.1.0) |
 | Booking Management (Admin) | ✅ Complete |
 | Calendar View | ✅ Complete |
 | Table Management | ✅ Complete |
+| **Interactive Table Cards** | ✅ Complete (v2.1.0) |
+| **Table Info Modal** | ✅ Complete (v2.1.0) |
 | Guest Tracking | ✅ Complete |
 | Email Notifications | ✅ Complete |
 | **SMS Notifications (Twilio)** | ✅ Complete |
@@ -358,13 +407,16 @@ Add these in **Vercel Dashboard → Settings → Environment Variables**:
 | **Analytics Dashboard** | ✅ Complete |
 | **Waitlist Management** | ✅ Complete |
 | **Payment Integration (Stripe, Google Pay, SimplePay)** | ✅ Complete (v2.0.0) |
+| **Admin Tools & Dangerous Operations** | ✅ Complete (v2.1.0) |
 | Deployment Config | ✅ Complete |
 | Multi-tenant SaaS | ⏳ Future Enhancement |
 
-**✅ v2.0.0 - All Core Features + Payments:** COMPLETE - Production Ready!
-**✅ Responsive Design:** Desktop + Mobile optimized with collapsible sidebar
+**✅ v2.1.0 - Staff Management & Enhanced Security:** COMPLETE - Production Ready!
+**✅ v2.0.0 - Payment Integration:** COMPLETE - Production Ready!
+**✅ Responsive Design:** Desktop + Mobile optimized with collapsible sidebar & touch support
 **✅ Full Hungarian Localization:** Email templates, SMS, UI text
 **✅ Payment Processing:** Stripe (Cards + Google Pay) & SimplePay (Hungarian OTP)
+**✅ Security Features:** reCAPTCHA v3, Account Lockout, Rate Limiting, AES-256 Encryption
 
 ---
 
@@ -402,19 +454,24 @@ If you find this project useful, please consider:
 
 ---
 
-**🎉 v2.0.0 - All Features Complete!** The system is fully production-ready with:
+**🎉 v2.1.0 - All Features Complete!** The system is fully production-ready with:
+- ✅ **Staff management** with role-based access control (OWNER/MANAGER/STAFF)
+- ✅ **Google reCAPTCHA v3** bot protection on login
+- ✅ **Enhanced security** (account lockout, rate limiting, encrypted storage)
 - ✅ Admin management (collapsible sidebar, mobile-friendly)
+- ✅ **Interactive dashboard** with clickable table cards
 - ✅ Public booking system with real-time availability
 - ✅ **Payment processing** (Stripe, Google Pay, SimplePay)
 - ✅ Email & SMS notifications
 - ✅ Analytics & reporting dashboard
 - ✅ Waitlist management
-- ✅ Responsive design for all devices
+- ✅ Responsive design for all devices with mobile touch support
 - ✅ PCI-DSS compliant payment handling
+- ✅ **OWNER-only admin tools** and dangerous operations
 
 **Ready to deploy to Vercel!** Follow the deployment guide above.
 
 **Questions?** Open an issue on GitHub or check `/rezervapp/README.md` for detailed documentation.
 
-**See full changelog and detailed payment setup:** `/rezervapp/README.md`
+**See full changelog and detailed setup guides:** `/rezervapp/README.md`
 
