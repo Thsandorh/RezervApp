@@ -4,6 +4,36 @@ import { compare } from "bcryptjs"
 import { prisma } from "@/lib/prisma"
 import { incrementFailedAttempts, resetFailedAttempts, checkAccountLockout } from "@/lib/rate-limit"
 
+// Validate reCAPTCHA token
+async function validateRecaptcha(token: string): Promise<boolean> {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY
+
+  // If reCAPTCHA is not configured, skip validation
+  if (!secretKey) {
+    return true
+  }
+
+  try {
+    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${secretKey}&response=${token}`,
+    })
+
+    const data = await response.json()
+
+    // For reCAPTCHA v3, check score (0.0 - 1.0, higher is better)
+    // 0.5 is a reasonable threshold
+    return data.success && (!data.score || data.score >= 0.5)
+  } catch (error) {
+    console.error('reCAPTCHA validation error:', error)
+    // On error, allow login (fail open) to avoid blocking legitimate users
+    return true
+  }
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
   providers: [
@@ -12,6 +42,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Jelszó", type: "password" },
+        recaptchaToken: { label: "reCAPTCHA Token", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -20,6 +51,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const email = credentials.email as string
         const password = credentials.password as string
+        const recaptchaToken = credentials.recaptchaToken as string | undefined
+
+        // Validate reCAPTCHA if token is provided
+        if (recaptchaToken) {
+          const isValidRecaptcha = await validateRecaptcha(recaptchaToken)
+          if (!isValidRecaptcha) {
+            throw new Error("reCAPTCHA validáció sikertelen. Kérlek próbáld újra.")
+          }
+        }
 
         const staff = await prisma.staff.findUnique({
           where: { email },
