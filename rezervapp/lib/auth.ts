@@ -6,7 +6,20 @@ import { incrementFailedAttempts, resetFailedAttempts, checkAccountLockout } fro
 
 // Validate reCAPTCHA token
 async function validateRecaptcha(token: string): Promise<boolean> {
-  const secretKey = process.env.RECAPTCHA_SECRET_KEY
+  // Try to get reCAPTCHA secret key from database first, then fallback to env
+  let secretKey = process.env.RECAPTCHA_SECRET_KEY
+
+  try {
+    const restaurant = await prisma.restaurant.findFirst()
+    if (restaurant?.recaptchaSecretKey) {
+      // Decrypt the secret key from database
+      const { decrypt } = await import("@/lib/encryption")
+      secretKey = decrypt(restaurant.recaptchaSecretKey)
+    }
+  } catch (error) {
+    console.error("Error fetching reCAPTCHA config from database:", error)
+    // Continue with env variable
+  }
 
   // If reCAPTCHA is not configured, skip validation
   if (!secretKey) {

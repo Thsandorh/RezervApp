@@ -43,6 +43,10 @@ model Restaurant {
   simplePayMerchantId String?  // Encrypted SimplePay Merchant ID
   simplePaySecretKey  String?  // Encrypted SimplePay Secret Key
 
+  // Google reCAPTCHA Integration
+  recaptchaSiteKey    String?  // Public site key (not encrypted)
+  recaptchaSecretKey  String?  // Encrypted secret key
+
   // Kapcsolatok
   tables          Table[]
   bookings        Booking[]
