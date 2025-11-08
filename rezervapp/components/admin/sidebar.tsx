@@ -13,6 +13,7 @@ import {
   LogOut,
   BarChart3,
   Clock,
+  UserCog,
 } from "lucide-react"
 
 const routes = [
@@ -39,6 +40,12 @@ const routes = [
     icon: Users,
     href: "/admin/guests",
     color: "text-orange-700",
+  },
+  {
+    label: "Munkatársak",
+    icon: UserCog,
+    href: "/admin/staff",
+    color: "text-blue-600",
   },
   {
     label: "Analytics",

@@ -3,6 +3,7 @@ import { CreditCard, Check, Shield, AlertTriangle } from "lucide-react"
 import { StripeConfigForm } from "@/components/admin/stripe-config-form"
 import { SettingsForm } from "@/components/admin/settings-form"
 import { DangerousActions } from "@/components/admin/dangerous-actions"
+import { RecaptchaSettings } from "@/components/admin/recaptcha-settings"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
@@ -173,6 +174,13 @@ export default async function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Google reCAPTCHA Configuration */}
+      <RecaptchaSettings
+        restaurantId={restaurant.id}
+        initialSiteKey={restaurant.recaptchaSiteKey}
+        initialSecretKey={restaurant.recaptchaSecretKey}
+      />
 
       {/* Email, SMS, Analytics Settings */}
       <SettingsForm
