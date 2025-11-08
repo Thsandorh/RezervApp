@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Lock, Shield } from "lucide-react"
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from "react-google-recaptcha-v3"
 
@@ -15,6 +16,7 @@ function LoginForm() {
   const { executeRecaptcha } = useGoogleReCaptcha()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
@@ -37,6 +39,7 @@ function LoginForm() {
         email,
         password,
         recaptchaToken: token,
+        rememberMe: rememberMe.toString(),
         redirect: false,
       })
 
@@ -106,6 +109,21 @@ function LoginForm() {
               />
             </div>
 
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="rememberMe"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                disabled={isLoading}
+              />
+              <label
+                htmlFor="rememberMe"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Bejelentkezve maradok
+              </label>
+            </div>
+
             <Button
               type="submit"
               className="w-full"
@@ -154,6 +172,7 @@ function LoginFormWithoutRecaptcha() {
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
@@ -166,6 +185,7 @@ function LoginFormWithoutRecaptcha() {
       const result = await signIn("credentials", {
         email,
         password,
+        rememberMe: rememberMe.toString(),
         redirect: false,
       })
 
@@ -232,6 +252,21 @@ function LoginFormWithoutRecaptcha() {
                 required
                 disabled={isLoading}
               />
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="rememberMe2"
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                disabled={isLoading}
+              />
+              <label
+                htmlFor="rememberMe2"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Bejelentkezve maradok
+              </label>
             </div>
 
             <Button
