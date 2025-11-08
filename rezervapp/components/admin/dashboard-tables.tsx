@@ -49,6 +49,10 @@ export function DashboardTables({
   const currentBooking = currentBookings.find((b) => b.tableId === selectedTable)
   const nextBooking = upcomingBookings.find((b) => b.tableId === selectedTable)
 
+  const handleTableClick = (tableId: string) => {
+    setSelectedTable(tableId)
+  }
+
   return (
     <>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
@@ -56,12 +60,17 @@ export function DashboardTables({
           const isOccupied = occupiedTableIds.has(table.id)
           return (
             <button
+              type="button"
               key={table.id}
-              onClick={() => setSelectedTable(table.id)}
-              className={`p-3 rounded-lg border-2 transition hover:scale-105 hover:shadow-md ${
+              onClick={() => handleTableClick(table.id)}
+              onTouchEnd={(e) => {
+                e.preventDefault()
+                handleTableClick(table.id)
+              }}
+              className={`p-3 rounded-lg border-2 transition touch-manipulation select-none cursor-pointer active:scale-95 ${
                 isOccupied
-                  ? 'border-red-500 bg-red-50 hover:bg-red-100'
-                  : 'border-green-500 bg-green-50 hover:bg-green-100'
+                  ? 'border-red-500 bg-red-50 hover:bg-red-100 active:bg-red-200'
+                  : 'border-green-500 bg-green-50 hover:bg-green-100 active:bg-green-200'
               }`}
             >
               <div className="flex items-center justify-between mb-1">

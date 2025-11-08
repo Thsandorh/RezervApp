@@ -67,6 +67,14 @@ SIMPLEPAY_SECRET_KEY=your-secret-key
 SIMPLEPAY_SANDBOX=false
 ```
 
+**Optional - Google reCAPTCHA v3 (Login Protection):**
+```env
+# Get keys from: https://www.google.com/recaptcha/admin
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI
+RECAPTCHA_SECRET_KEY=6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe
+# Note: Above are test keys, get your own for production
+```
+
 **Generate secrets:**
 ```bash
 # NextAuth secret
