@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CreditCard, Check, Shield } from "lucide-react"
+import { CreditCard, Check, Shield, AlertTriangle } from "lucide-react"
 import { StripeConfigForm } from "@/components/admin/stripe-config-form"
 import { SettingsForm } from "@/components/admin/settings-form"
+import { DangerousActions } from "@/components/admin/dangerous-actions"
 import { auth } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
@@ -185,6 +186,24 @@ export default async function SettingsPage() {
           googleAnalyticsId: settings?.googleAnalyticsId,
         }}
       />
+
+      {/* Dangerous Actions */}
+      <Card className="border-red-300">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="h-6 w-6 text-red-600" />
+            <div>
+              <CardTitle className="text-red-900">Veszélyes Műveletek</CardTitle>
+              <CardDescription className="text-red-700">
+                Ezek a műveletek nem vonhatók vissza! Használd óvatosan.
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <DangerousActions />
+        </CardContent>
+      </Card>
     </div>
   )
 }

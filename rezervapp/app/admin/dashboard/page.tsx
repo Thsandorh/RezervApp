@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { formatTime, formatDate } from "@/lib/utils"
 import { Calendar, Users, Utensils, TrendingUp } from "lucide-react"
+import { DashboardTables } from "@/components/admin/dashboard-tables"
 
 async function getStats() {
   const restaurant = await prisma.restaurant.findFirst()
@@ -25,6 +26,7 @@ async function getStats() {
     totalGuests,
     allTables,
     currentBookings,
+    upcomingBookings,
   ] = await Promise.all([
     prisma.booking.findMany({
       where: {
@@ -63,6 +65,24 @@ async function getStats() {
       },
       include: {
         table: true,
+        guest: true,
+      },
+    }),
+    prisma.booking.findMany({
+      where: {
+        restaurantId: restaurant.id,
+        bookingDate: {
+          gte: now,
+        },
+        status: {
+          in: ['CONFIRMED', 'PENDING'],
+        },
+      },
+      include: {
+        guest: true,
+      },
+      orderBy: {
+        bookingDate: 'asc',
       },
     }),
   ])
@@ -89,6 +109,8 @@ async function getStats() {
     availableTables: availableTables.length,
     allTables,
     occupiedTableIds,
+    currentBookings,
+    upcomingBookings,
   }
 }
 
@@ -219,39 +241,28 @@ export default async function DashboardPage() {
       {/* Table Availability */}
       <Card>
         <CardHeader>
-          <CardTitle>Asztalok elérhetősége (most)</CardTitle>
+          <CardTitle>Asztalok elérhetősége (most) - Kattints az asztalra a részletekért</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-            {stats.allTables.map((table) => {
-              const isOccupied = stats.occupiedTableIds.has(table.id)
-              return (
-                <div
-                  key={table.id}
-                  className={`p-3 rounded-lg border-2 transition ${
-                    isOccupied
-                      ? 'border-red-500 bg-red-50'
-                      : 'border-green-500 bg-green-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-sm">{table.name}</span>
-                    <span className={`text-xs font-bold ${isOccupied ? 'text-red-600' : 'text-green-600'}`}>
-                      {isOccupied ? '🔴' : '🟢'}
-                    </span>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {table.capacity} fő • {table.location || 'Egyéb'}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-          {stats.allTables.length === 0 && (
-            <p className="text-sm text-muted-foreground text-center py-4">
-              Nincsenek aktív asztalok
-            </p>
-          )}
+          <DashboardTables
+            tables={stats.allTables}
+            occupiedTableIds={stats.occupiedTableIds}
+            currentBookings={stats.currentBookings.map((b) => ({
+              id: b.id,
+              bookingDate: b.bookingDate,
+              duration: b.duration,
+              partySize: b.partySize,
+              specialRequests: b.specialRequests,
+              tableId: b.tableId,
+              guest: b.guest,
+            }))}
+            upcomingBookings={stats.upcomingBookings.map((b) => ({
+              bookingDate: b.bookingDate,
+              partySize: b.partySize,
+              tableId: b.tableId,
+              guest: b.guest,
+            }))}
+          />
         </CardContent>
       </Card>
 
