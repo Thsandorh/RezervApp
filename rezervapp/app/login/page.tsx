@@ -132,24 +132,10 @@ function LoginForm() {
   )
 }
 
-export default async function LoginPage() {
-  // Fetch reCAPTCHA config from database (with env fallback)
-  let siteKey = null
-
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/recaptcha-config`,
-      { cache: 'no-store' }
-    )
-    if (response.ok) {
-      const data = await response.json()
-      siteKey = data.siteKey
-    }
-  } catch (error) {
-    console.error('Error fetching reCAPTCHA config:', error)
-    // Fallback to env variable
-    siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-  }
+export default function LoginPage() {
+  // Use env variable for reCAPTCHA site key
+  // The database config will be checked server-side during authentication
+  const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 
   if (!siteKey) {
     // Fallback without reCAPTCHA if not configured
