@@ -138,11 +138,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.restaurantId = token.restaurantId as string
       }
 
-      // Set session maxAge based on rememberMe
-      // This is informational - actual maxAge is set below
-      if (token.rememberMe) {
-        session.expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
-      }
+      // Session expiration is handled by maxAge configuration below
+      // The rememberMe flag influences the JWT maxAge
 
       return session
     },
