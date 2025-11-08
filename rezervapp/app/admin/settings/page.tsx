@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { CreditCard, Check, Shield, AlertTriangle } from "lucide-react"
+import { CreditCard, Check, Shield, AlertTriangle, Wallet } from "lucide-react"
 import { StripeConfigForm } from "@/components/admin/stripe-config-form"
+import { SimplePayConfigForm } from "@/components/admin/simplepay-config-form"
 import { SettingsForm } from "@/components/admin/settings-form"
 import { DangerousActions } from "@/components/admin/dangerous-actions"
 import { RecaptchaSettings } from "@/components/admin/recaptcha-settings"
@@ -169,6 +170,81 @@ export default async function SettingsPage() {
               <li className="flex items-start gap-2">
                 <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                 <span>Titkosított kulcs tárolás az adatbázisban</span>
+              </li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* SimplePay Payment Configuration */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Wallet className="h-6 w-6" />
+            <div>
+              <CardTitle>SimplePay Fizetési Integráció</CardTitle>
+              <CardDescription>Magyar online fizetési megoldás (opcionális)</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-800">
+            <p><strong>Megjegyzés:</strong> A SimplePay integráció teljesen opcionális. Az alkalmazás SimplePay nélkül is működik.</p>
+          </div>
+
+          {/* SimplePay Configuration Form */}
+          <SimplePayConfigForm />
+
+          {/* Setup Instructions */}
+          <div className="space-y-3 border-t pt-6">
+            <h3 className="font-semibold">Beállítási Útmutató</h3>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p><strong>1. SimplePay Fiók létrehozása:</strong></p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>Regisztrálj a simplepay.hu oldalon</li>
+                <li>Töltsd ki a kereskedői adatlapot</li>
+                <li>Várj a SimplePay jóváhagyására</li>
+              </ul>
+
+              <p className="pt-2"><strong>2. API Kulcsok megszerzése:</strong></p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>Lépj be a SimplePay Admin felületre</li>
+                <li>Beállítások → Merchant azonosító</li>
+                <li>Beállítások → Titkosítási kulcs</li>
+              </ul>
+
+              <p className="pt-2"><strong>3. Teszt mód:</strong></p>
+              <ul className="list-disc list-inside ml-4 space-y-1">
+                <li>Teszt módban használd a teszt kártyaszámokat</li>
+                <li>Teszt: 4444 3333 2222 1111</li>
+                <li>Éles üzembe állítás előtt kapcsold ki a teszt módot</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="space-y-3 border-t pt-6">
+            <h3 className="font-semibold">Funkciók</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Magyar bankkártyás fizetés</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>OTP, K&H, Erste, Raiffeisen támogatás</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Automatikus foglalás megerősítés</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Teszt és éles üzemmód</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Titkosított kulcs tárolás</span>
               </li>
             </ul>
           </div>

@@ -1,54 +1,133 @@
 import { NextResponse } from "next/server"
+import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
-import { encrypt, decrypt } from "@/lib/encryption"
+import { encrypt, decrypt, maskSecret } from "@/lib/encryption"
 import { z } from "zod"
 
 const simplePayConfigSchema = z.object({
-  restaurantId: z.string(),
-  merchantId: z.string().min(1),
-  secretKey: z.string().min(1),
+  merchantId: z.string().min(1, "Merchant ID kötelező"),
+  secretKey: z.string().min(1, "Secret Key kötelező"),
+  sandboxMode: z.boolean().default(true),
 })
 
-// POST - Save SimplePay configuration
-export async function POST(request: Request) {
+/**
+ * GET /api/admin/simplepay-config
+ * Fetch current SimplePay configuration (masked)
+ */
+export async function GET() {
   try {
-    const body = await request.json()
-    const { restaurantId, merchantId, secretKey } = simplePayConfigSchema.parse(body)
+    const session = await auth()
 
-    // Skip encryption if it's the masked value (user didn't change it)
-    const shouldEncryptSecret = !secretKey.includes("•")
-
-    // Encrypt sensitive data
-    const encryptedMerchantId = encrypt(merchantId)
-    const encryptedSecretKey = shouldEncryptSecret
-      ? encrypt(secretKey)
-      : (await prisma.restaurant.findUnique({
-          where: { id: restaurantId },
-          select: { simplePaySecretKey: true },
-        }))?.simplePaySecretKey
-
-    if (!encryptedSecretKey) {
+    if (!session?.user || session.user.role !== "OWNER") {
       return NextResponse.json(
-        { error: "Secret key megadása kötelező" },
-        { status: 400 }
+        { error: "Unauthorized - csak tulajdonos" },
+        { status: 403 }
       )
     }
 
-    // Update restaurant with SimplePay config
+    const restaurant = await prisma.restaurant.findFirst({
+      where: {
+        id: session.user.restaurantId,
+      },
+      select: {
+        simplePayMerchantId: true,
+        simplePaySecretKey: true,
+        simplePaySandboxMode: true,
+      },
+    })
+
+    if (!restaurant) {
+      return NextResponse.json(
+        { error: "Étterem nem található" },
+        { status: 404 }
+      )
+    }
+
+    // Check if environment variables are set (they take priority)
+    const envMerchantId = process.env.SIMPLEPAY_MERCHANT_ID
+    const envSecretKey = process.env.SIMPLEPAY_SECRET_KEY
+    const envSandboxMode = process.env.SIMPLEPAY_SANDBOX_MODE === "true"
+
+    const response: any = {
+      configured: !!(envMerchantId || restaurant.simplePayMerchantId),
+      source: envMerchantId ? "environment" : restaurant.simplePayMerchantId ? "database" : "none",
+    }
+
+    // Return masked versions if configured
+    if (envMerchantId) {
+      response.merchantId = maskSecret(envMerchantId, 4, 4)
+      response.secretKey = "****"
+      response.sandboxMode = envSandboxMode
+    } else if (restaurant.simplePayMerchantId) {
+      try {
+        const decryptedMerchantId = decrypt(restaurant.simplePayMerchantId)
+        response.merchantId = maskSecret(decryptedMerchantId, 4, 4)
+        response.secretKey = "****"
+        response.sandboxMode = restaurant.simplePaySandboxMode ?? true
+      } catch (error) {
+        console.error("Failed to decrypt SimplePay keys:", error)
+        return NextResponse.json(
+          { error: "SimplePay kulcsok visszafejtése sikertelen" },
+          { status: 500 }
+        )
+      }
+    }
+
+    return NextResponse.json(response)
+  } catch (error) {
+    console.error("Error fetching SimplePay config:", error)
+    return NextResponse.json(
+      { error: "Hiba történt" },
+      { status: 500 }
+    )
+  }
+}
+
+/**
+ * POST /api/admin/simplepay-config
+ * Save SimplePay configuration (encrypted)
+ */
+export async function POST(request: Request) {
+  try {
+    const session = await auth()
+
+    if (!session?.user || session.user.role !== "OWNER") {
+      return NextResponse.json(
+        { error: "Unauthorized - csak tulajdonos módosíthatja" },
+        { status: 403 }
+      )
+    }
+
+    const body = await request.json()
+    const { merchantId, secretKey, sandboxMode } = simplePayConfigSchema.parse(body)
+
+    // Encrypt the keys
+    const encryptedMerchantId = encrypt(merchantId)
+    const encryptedSecretKey = encrypt(secretKey)
+
+    // Save to database
     await prisma.restaurant.update({
-      where: { id: restaurantId },
+      where: {
+        id: session.user.restaurantId,
+      },
       data: {
         simplePayMerchantId: encryptedMerchantId,
         simplePaySecretKey: encryptedSecretKey,
+        simplePaySandboxMode: sandboxMode,
       },
     })
 
     return NextResponse.json({
       success: true,
-      message: "SimplePay konfiguráció mentve",
+      message: "SimplePay konfiguráció sikeresen mentve",
+      masked: {
+        merchantId: maskSecret(merchantId, 4, 4),
+        secretKey: "****",
+        sandboxMode,
+      },
     })
   } catch (error) {
-    console.error("SimplePay config save error:", error)
+    console.error("Error saving SimplePay config:", error)
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
@@ -58,24 +137,35 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { error: "Hiba történt a konfiguráció mentésekor" },
+      { error: "Hiba történt a mentés során" },
       { status: 500 }
     )
   }
 }
 
-// DELETE - Remove SimplePay configuration
-export async function DELETE(request: Request) {
+/**
+ * DELETE /api/admin/simplepay-config
+ * Remove SimplePay configuration from database
+ */
+export async function DELETE() {
   try {
-    const body = await request.json()
-    const { restaurantId } = z.object({ restaurantId: z.string() }).parse(body)
+    const session = await auth()
 
-    // Remove SimplePay config
+    if (!session?.user || session.user.role !== "OWNER") {
+      return NextResponse.json(
+        { error: "Unauthorized - csak tulajdonos törölheti" },
+        { status: 403 }
+      )
+    }
+
     await prisma.restaurant.update({
-      where: { id: restaurantId },
+      where: {
+        id: session.user.restaurantId,
+      },
       data: {
         simplePayMerchantId: null,
         simplePaySecretKey: null,
+        simplePaySandboxMode: null,
       },
     })
 
@@ -84,68 +174,9 @@ export async function DELETE(request: Request) {
       message: "SimplePay konfiguráció törölve",
     })
   } catch (error) {
-    console.error("SimplePay config delete error:", error)
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Hibás adatok", details: error.issues },
-        { status: 400 }
-      )
-    }
-
+    console.error("Error deleting SimplePay config:", error)
     return NextResponse.json(
-      { error: "Hiba történt a konfiguráció törlésekor" },
-      { status: 500 }
-    )
-  }
-}
-
-// GET - Get SimplePay configuration status
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const restaurantId = searchParams.get("restaurantId")
-
-    if (!restaurantId) {
-      return NextResponse.json(
-        { error: "Restaurant ID kötelező" },
-        { status: 400 }
-      )
-    }
-
-    const restaurant = await prisma.restaurant.findUnique({
-      where: { id: restaurantId },
-      select: {
-        simplePayMerchantId: true,
-        simplePaySecretKey: true,
-      },
-    })
-
-    if (!restaurant) {
-      return NextResponse.json({ error: "Étterem nem található" }, { status: 404 })
-    }
-
-    const isConfigured = !!(restaurant.simplePayMerchantId && restaurant.simplePaySecretKey)
-
-    let merchantId = ""
-    if (restaurant.simplePayMerchantId) {
-      try {
-        merchantId = decrypt(restaurant.simplePayMerchantId)
-      } catch (error) {
-        console.error("Failed to decrypt merchant ID:", error)
-      }
-    }
-
-    return NextResponse.json({
-      isConfigured,
-      merchantId: merchantId || undefined,
-      // Don't return the secret key for security
-    })
-  } catch (error) {
-    console.error("SimplePay config get error:", error)
-
-    return NextResponse.json(
-      { error: "Hiba történt a konfiguráció lekérésekor" },
+      { error: "Hiba történt a törlés során" },
       { status: 500 }
     )
   }
