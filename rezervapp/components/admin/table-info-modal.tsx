@@ -7,9 +7,13 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Users, Clock, MapPin, MessageSquare } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Calendar, Users, Clock, MapPin, MessageSquare, CheckCircle } from "lucide-react"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface TableInfoModalProps {
   table: {
@@ -42,6 +46,7 @@ interface TableInfoModalProps {
   }
   open: boolean
   onOpenChange: (open: boolean) => void
+  onSuccess?: () => void
 }
 
 export function TableInfoModal({
@@ -51,7 +56,46 @@ export function TableInfoModal({
   nextBooking,
   open,
   onOpenChange,
+  onSuccess,
 }: TableInfoModalProps) {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+
+  const handleClearTable = async () => {
+    if (!currentBooking) return
+
+    if (!confirm(`Biztosan lezárod a foglalást és felszabadítod az asztalt?\n\nVendég: ${currentBooking.guest.firstName} ${currentBooking.guest.lastName}`)) {
+      return
+    }
+
+    setLoading(true)
+    try {
+      const response = await fetch(`/api/bookings/${currentBooking.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "COMPLETED" }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Hiba történt a foglalás lezárásakor")
+      }
+
+      toast.success("Asztal sikeresen felszabadítva!")
+      onOpenChange(false)
+
+      if (onSuccess) {
+        onSuccess()
+      } else {
+        router.refresh()
+      }
+    } catch (error) {
+      console.error("Error clearing table:", error)
+      toast.error("Hiba történt a művelet során")
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const formatTime = (date: Date) => {
     return new Date(date).toLocaleTimeString('hu-HU', {
       hour: '2-digit',
@@ -186,6 +230,21 @@ export function TableInfoModal({
             </div>
           )}
         </div>
+
+        {/* Footer with Clear Table button */}
+        {isOccupied && currentBooking && (
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={handleClearTable}
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              {loading ? "Felszabadítás..." : "Asztal felszabadítása"}
+            </Button>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   )

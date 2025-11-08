@@ -4,8 +4,9 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Plus, Utensils } from "lucide-react"
+import { Plus, Utensils, Info } from "lucide-react"
 import { AddTableModal } from "@/components/modals/add-table-modal"
+import { TableInfoModal } from "./table-info-modal"
 import { useRouter } from "next/navigation"
 import { formatTime } from "@/lib/utils"
 
@@ -17,15 +18,22 @@ interface Table {
   isActive: boolean
 }
 
+interface Guest {
+  firstName: string
+  lastName: string
+  email: string | null
+  phone: string
+}
+
 interface Booking {
   id: string
   bookingDate: string
   duration: number
   partySize: number
-  guest: {
-    firstName: string
-    lastName: string
-  }
+  status: string
+  specialRequests: string | null
+  table: Table | null
+  guest: Guest
 }
 
 interface TableStatus {
@@ -41,6 +49,7 @@ interface TablesViewProps {
 
 export function TablesView({ tables, groupedTables, tableStatuses }: TablesViewProps) {
   const [addModalOpen, setAddModalOpen] = useState(false)
+  const [selectedTable, setSelectedTable] = useState<string | null>(null)
   const router = useRouter()
 
   const handleSuccess = () => {
@@ -84,7 +93,7 @@ export function TablesView({ tables, groupedTables, tableStatuses }: TablesViewP
                     return (
                       <div
                         key={table.id}
-                        className={`border-2 rounded-lg p-4 hover:bg-accent/50 transition cursor-pointer ${
+                        className={`border-2 rounded-lg p-4 transition ${
                           !table.isActive
                             ? 'border-gray-300 bg-gray-50'
                             : statusInfo === 'occupied'
@@ -132,6 +141,16 @@ export function TablesView({ tables, groupedTables, tableStatuses }: TablesViewP
                             </p>
                           </div>
                         )}
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedTable(table.id)}
+                          className="w-full mt-2 h-7 text-xs hover:bg-black/5"
+                        >
+                          <Info className="h-3 w-3 mr-1" />
+                          Info
+                        </Button>
                       </div>
                     )
                   })}
@@ -162,6 +181,41 @@ export function TablesView({ tables, groupedTables, tableStatuses }: TablesViewP
         onOpenChange={setAddModalOpen}
         onSuccess={handleSuccess}
       />
+
+      {selectedTable && (() => {
+        const table = tables.find(t => t.id === selectedTable)
+        if (!table) return null
+
+        const status = tableStatuses[selectedTable]
+        const isOccupied = status?.status === 'occupied'
+
+        // Transform the booking data for the modal
+        const currentBooking = isOccupied && status?.nextBooking ? {
+          ...status.nextBooking,
+          bookingDate: new Date(status.nextBooking.bookingDate),
+          table: table,
+        } : undefined
+
+        const upcomingBooking = !isOccupied && status?.nextBooking ? {
+          ...status.nextBooking,
+          bookingDate: new Date(status.nextBooking.bookingDate),
+          table: table,
+        } : undefined
+
+        return (
+          <TableInfoModal
+            table={table}
+            isOccupied={isOccupied}
+            currentBooking={currentBooking}
+            nextBooking={upcomingBooking}
+            open={true}
+            onOpenChange={(open) => {
+              if (!open) setSelectedTable(null)
+            }}
+            onSuccess={handleSuccess}
+          />
+        )
+      })()}
     </>
   )
 }
