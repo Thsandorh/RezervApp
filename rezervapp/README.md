@@ -1,8 +1,10 @@
 # RezervApp
 
-> **Status: ✅ Production Ready with Payment Integration**
+> **Status: ✅ Production Ready - v2.1.0**
+>
+> Complete restaurant management system with payment integration, staff management, and security features.
 
-Professional restaurant reservation and management system for Hungarian restaurants with integrated online payment support.
+Professional restaurant reservation and management system for Hungarian restaurants with integrated online payment support, comprehensive staff management, and advanced security.
 
 ## Overview
 
@@ -10,12 +12,21 @@ RezervApp is a full-stack SaaS application that simplifies restaurant booking ma
 
 ## Features
 
-### ✅ User Authentication
+### ✅ User Authentication & Security
 - Secure login with NextAuth.js v5
 - JWT session management
-- Role-based access control (admin/staff/manager)
+- Role-based access control (OWNER/MANAGER/STAFF)
 - Protected admin routes with middleware
 - Session security with proper token rotation
+- **Google reCAPTCHA v3 integration:**
+  - Bot protection on login page
+  - Configurable via admin panel or environment variables
+  - Score-based validation (0.5 threshold)
+  - Automatic fallback if not configured
+- **Account lockout protection:**
+  - 5 failed attempts = 30-minute account lock
+  - IP-based rate limiting
+  - Login attempt tracking
 
 ### ✅ Booking Management
 - **Multiple View Modes:**
@@ -107,6 +118,48 @@ RezervApp is a full-stack SaaS application that simplifies restaurant booking ma
 - Guest and table summaries
 - Upcoming bookings widget
 - Payment status overview
+- **Interactive table cards:**
+  - Click any table to see detailed information
+  - Current booking details for occupied tables
+  - Next booking info for free tables
+  - Guest contact details and special requests
+  - Mobile-optimized touch support
+
+### ✅ Staff Management
+- **Complete staff CRUD system:**
+  - Add, edit, and delete staff members
+  - Email-based authentication
+  - Secure password hashing with bcryptjs
+- **Role-based permissions:**
+  - OWNER - Full system access
+  - MANAGER - Booking and table management
+  - STAFF - Basic booking operations
+- **Staff features:**
+  - Active/inactive status toggle
+  - Last login tracking
+  - Prevent self-deletion safety check
+  - Email uniqueness validation
+  - Multi-tenant support (staff tied to restaurants)
+- **OWNER-only access:**
+  - Only restaurant owners can manage staff
+  - Secure staff member isolation per restaurant
+
+### ✅ Admin Tools & Settings (OWNER only)
+- **Payment configuration:**
+  - Stripe setup (API keys, webhook)
+  - SimplePay setup (Merchant ID, Secret Key)
+  - Encrypted credential storage
+  - Only OWNER can view/edit API keys
+- **Security settings:**
+  - Google reCAPTCHA configuration
+  - Site key and secret key management
+  - Database or environment variable storage
+  - Only OWNER can modify security settings
+- **Dangerous operations:**
+  - Delete all bookings (with double confirmation)
+  - Delete all tables (with double confirmation)
+  - Warning messages and irreversible action notices
+  - Only OWNER can perform destructive actions
 
 ## Tech Stack
 
@@ -130,6 +183,7 @@ RezervApp is a full-stack SaaS application that simplifies restaurant booking ma
 - **NextAuth.js v5** - Complete authentication solution
 - **bcryptjs** - Secure password hashing
 - **Encryption** - AES-256-CBC for sensitive data
+- **Google reCAPTCHA v3** - Bot protection and spam prevention
 
 ### Payment Processing
 - **Stripe** - International payments with Google Pay
@@ -197,6 +251,12 @@ STRIPE_WEBHOOK_SECRET="whsec_xxxxxxxxxxxx"
 SIMPLEPAY_MERCHANT_ID="MERCHANT-12345678"
 SIMPLEPAY_SECRET_KEY="your-simplepay-secret"
 SIMPLEPAY_SANDBOX="true"  # Set to false for production
+
+# Google reCAPTCHA v3 (Optional - for bot protection)
+# Get keys from: https://www.google.com/recaptcha/admin
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+RECAPTCHA_SECRET_KEY="6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+# Can also be configured via Admin UI → Settings → reCAPTCHA
 ```
 
 **Generate secrets:**
@@ -236,6 +296,7 @@ rezervapp/
 │   ├── admin/                       # Admin dashboard pages
 │   │   ├── bookings/                # Booking management
 │   │   ├── tables/                  # Table management
+│   │   ├── staff/                   # Staff management (OWNER only)
 │   │   ├── analytics/               # Analytics dashboard
 │   │   ├── settings/                # Restaurant settings
 │   │   └── waitlist/                # Waitlist management
@@ -250,7 +311,12 @@ rezervapp/
 │   │   │   └── webhook/            # Stripe webhook
 │   │   ├── admin/                   # Admin-only endpoints
 │   │   │   ├── stripe-config/      # Stripe configuration
-│   │   │   └── simplepay-config/   # SimplePay configuration
+│   │   │   ├── simplepay-config/   # SimplePay configuration
+│   │   │   ├── staff/              # Staff CRUD operations
+│   │   │   ├── restaurant/         # Restaurant settings
+│   │   │   ├── delete-all-bookings/ # Dangerous: delete all
+│   │   │   └── delete-all-tables/  # Dangerous: delete all
+│   │   ├── recaptcha-config/        # Public reCAPTCHA config
 │   │   └── settings/                # Settings API
 │   ├── booking/                     # Public booking pages
 │   │   ├── cancel/[token]/         # Cancel booking
@@ -262,9 +328,15 @@ rezervapp/
 │   │   ├── bookings-list.tsx       # List view
 │   │   ├── bookings-calendar.tsx   # Calendar view
 │   │   ├── table-map.tsx           # Table map view
+│   │   ├── dashboard-tables.tsx    # Interactive table cards
+│   │   ├── table-info-modal.tsx    # Table details modal
 │   │   ├── create-booking-dialog.tsx
+│   │   ├── staff-form.tsx          # Add/edit staff
+│   │   ├── staff-list.tsx          # Staff member list
 │   │   ├── stripe-config-form.tsx  # Stripe setup
-│   │   └── simplepay-config-form.tsx # SimplePay setup
+│   │   ├── simplepay-config-form.tsx # SimplePay setup
+│   │   ├── recaptcha-settings.tsx  # reCAPTCHA config
+│   │   └── dangerous-actions.tsx   # Bulk delete operations
 │   ├── payment/                    # Payment components
 │   │   └── payment-method-selector.tsx
 │   ├── modals/                     # Modal dialogs
@@ -368,6 +440,25 @@ npm run lint
 - `DELETE /api/admin/simplepay-config` - Remove SimplePay config
 - `GET /api/admin/simplepay-config` - Get SimplePay config status
 
+### Staff Management (OWNER only)
+- `GET /api/admin/staff` - List all staff members
+- `POST /api/admin/staff` - Create new staff member
+- `GET /api/admin/staff/[id]` - Get staff member details
+- `PATCH /api/admin/staff/[id]` - Update staff member
+- `DELETE /api/admin/staff/[id]` - Delete staff member
+
+### Restaurant Settings (OWNER only)
+- `GET /api/admin/restaurant/[id]` - Get restaurant settings
+- `PATCH /api/admin/restaurant/[id]` - Update restaurant settings (incl. reCAPTCHA)
+- `DELETE /api/admin/restaurant/[id]` - Delete restaurant
+
+### Dangerous Operations (OWNER only)
+- `DELETE /api/admin/delete-all-bookings` - Delete all bookings for current restaurant
+- `DELETE /api/admin/delete-all-tables` - Delete all tables for current restaurant
+
+### Public Configuration
+- `GET /api/recaptcha-config` - Get public reCAPTCHA site key
+
 ### Settings
 - `GET /api/settings` - Get restaurant settings
 - `PATCH /api/settings` - Update restaurant settings
@@ -435,6 +526,41 @@ If no API key is set, emails will be logged to console in development mode.
    - SimplePay provides test card numbers
    - Switch to production when ready
 
+### Google reCAPTCHA v3 Setup (Optional)
+
+1. **Create reCAPTCHA Account:**
+   - Go to [Google reCAPTCHA Admin](https://www.google.com/recaptcha/admin)
+   - Create a new site with reCAPTCHA v3
+   - Add your domain(s)
+
+2. **Get API Keys:**
+   - Copy the **Site Key** (public key)
+   - Copy the **Secret Key** (private key)
+
+3. **Configure reCAPTCHA:**
+   - **Option 1: Environment Variables** (recommended for dev)
+     ```env
+     NEXT_PUBLIC_RECAPTCHA_SITE_KEY=your_site_key_here
+     RECAPTCHA_SECRET_KEY=your_secret_key_here
+     ```
+   - **Option 2: Admin UI** (recommended for production)
+     - Go to Admin → Settings → Google reCAPTCHA v3
+     - Paste Site Key and Secret Key
+     - Click "Save Settings"
+     - Keys are encrypted in the database
+
+4. **How it Works:**
+   - Login page automatically loads reCAPTCHA if configured
+   - Server validates score (threshold: 0.5)
+   - Low scores may indicate bot activity
+   - Automatic fallback if not configured
+
+5. **Testing:**
+   - reCAPTCHA v3 is invisible (no checkbox)
+   - Test with your login page
+   - Check browser console for reCAPTCHA badge
+   - Valid login should work seamlessly
+
 ### Security & Encryption
 
 **Generate Encryption Key:**
@@ -488,6 +614,19 @@ All core admin features are **complete and production-ready**:
 - ✅ Secure credential encryption (AES-256)
 - ✅ Admin configuration UI
 - ✅ Sandbox & production modes
+
+### ✅ Phase 2.5: Staff Management & Security (COMPLETE)
+**Staff management and enhanced security:**
+- ✅ Complete staff CRUD system
+- ✅ Role-based access control (OWNER/MANAGER/STAFF)
+- ✅ Staff member list and forms
+- ✅ Active/inactive status management
+- ✅ Google reCAPTCHA v3 integration
+- ✅ Bot protection on login
+- ✅ Account lockout protection
+- ✅ Dashboard table info modal
+- ✅ Dangerous bulk operations (delete all)
+- ✅ OWNER-only sensitive settings access
 
 ### 🚧 Phase 3: Public Booking System (NEXT)
 **Priority features to implement:**
@@ -581,6 +720,35 @@ Any future expiry date, any 3-digit CVC
 - Test card numbers provided by SimplePay documentation
 
 ## Changelog
+
+### v2.1.0 - Staff Management & Security (2025-01)
+- ✅ **Staff Management System:**
+  - Complete CRUD for staff members
+  - Role-based access control (OWNER/MANAGER/STAFF)
+  - Staff list page with filtering and search
+  - Add/edit staff form with password management
+  - Active/inactive status toggle
+  - Last login tracking
+  - Email uniqueness validation
+  - Self-deletion prevention
+- ✅ **Google reCAPTCHA v3 Integration:**
+  - Bot protection on login page
+  - Configurable via Admin UI or environment variables
+  - Encrypted secret key storage in database
+  - Score-based validation (0.5 threshold)
+  - Automatic fallback if not configured
+- ✅ **Dashboard Enhancements:**
+  - Interactive table cards (click for details)
+  - Table info modal showing current bookings
+  - Next booking preview for free tables
+  - Mobile-optimized touch support
+- ✅ **Admin Tools:**
+  - Dangerous actions: Delete all bookings/tables
+  - Double confirmation dialogs
+  - Restaurant settings API
+- ✅ **Bug Fixes:**
+  - Fixed AlertDialog z-index conflict with sidebar
+  - Fixed async function in client component (login page)
 
 ### v2.0.0 - Payment Integration (2025-01)
 - ✅ Added Stripe payment integration
