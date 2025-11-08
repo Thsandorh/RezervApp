@@ -92,7 +92,11 @@ async function getStats() {
   currentBookings.forEach((booking) => {
     if (booking.table) {
       const bookingEnd = new Date(booking.bookingDate.getTime() + booking.duration * 60 * 1000)
-      if (booking.bookingDate <= now && bookingEnd >= now) {
+      // Table is occupied if:
+      // 1. Guest has been seated (SEATED status) - regardless of time
+      // 2. Booking is within the time window (for CONFIRMED bookings)
+      if (booking.status === 'SEATED' ||
+          (booking.bookingDate <= now && bookingEnd >= now)) {
         occupiedTableIds.add(booking.table.id)
       }
     }

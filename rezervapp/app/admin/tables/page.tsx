@@ -48,7 +48,11 @@ async function getTables() {
     if (booking.table) {
       const bookingEnd = new Date(booking.bookingDate.getTime() + booking.duration * 60 * 1000)
 
-      if (booking.bookingDate <= now && bookingEnd >= now) {
+      // Table is occupied if:
+      // 1. Guest has been seated (SEATED status) - regardless of time
+      // 2. Booking is within the time window (for CONFIRMED bookings)
+      if (booking.status === 'SEATED' ||
+          (booking.bookingDate <= now && bookingEnd >= now)) {
         // Currently occupied
         tableStatuses.set(booking.table.id, { status: 'occupied', nextBooking: booking })
       } else if (booking.bookingDate > now && booking.bookingDate <= oneHourFromNow) {
