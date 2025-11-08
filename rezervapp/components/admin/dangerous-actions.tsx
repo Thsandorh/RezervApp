@@ -22,7 +22,7 @@ export function DangerousActions() {
   const [deleteBookingsDialogOpen, setDeleteBookingsDialogOpen] = useState(false)
   const [deleteTablesDialogOpen, setDeleteTablesDialogOpen] = useState(false)
 
-  const handleDeleteAllBookings = async () => {
+  async function handleDeleteAllBookings() {
     setLoading(true)
     try {
       const response = await fetch("/api/admin/delete-all-bookings", {
@@ -44,7 +44,7 @@ export function DangerousActions() {
     }
   }
 
-  const handleDeleteAllTables = async () {
+  async function handleDeleteAllTables() {
     setLoading(true)
     try {
       const response = await fetch("/api/admin/delete-all-tables", {
