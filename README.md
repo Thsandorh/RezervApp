@@ -1,8 +1,8 @@
 # 🍽️ RezervApp - Restaurant Reservation System
 
-> **Status: ✅ All 9 Core Features Complete - Production Ready!**
+> **Status: ✅ v2.0.0 - All Core Features Complete with Payment Integration!**
 
-Modern, full-stack SaaS application for restaurant reservation management, built for Hungarian restaurants.
+Modern, full-stack SaaS application for restaurant reservation management with integrated payment processing, built for Hungarian restaurants.
 
 ## ☁️ Deploy (Choose Your Way!)
 
@@ -51,7 +51,7 @@ All source code, documentation, and deployment configuration is located in the `
 
 ---
 
-## ✅ All 9 Core Features Complete!
+## ✅ All Core Features Complete! (v2.0.0)
 
 ### 1. 🔐 Authentication & Authorization
 - ✅ NextAuth.js v5 with email/password
@@ -110,6 +110,16 @@ All source code, documentation, and deployment configuration is located in the `
 - ✅ Table utilization metrics
 - ✅ No-show statistics
 
+### 💳 NEW in v2.0.0: Payment Integration
+- ✅ **Stripe Checkout** - International card payments
+- ✅ **Google Pay** - One-click mobile payments
+- ✅ **SimplePay** - Hungarian OTP bank gateway
+- ✅ Multi-provider support (choose Stripe or SimplePay)
+- ✅ Secure credential encryption (AES-256)
+- ✅ Webhook/IPN payment verification
+- ✅ Admin configuration UI for payment providers
+- ✅ PCI-DSS compliant (hosted payment pages)
+
 ### 🎁 BONUS: Waitlist System
 - ✅ Waitlist management UI
 - ✅ Notify guests when tables available
@@ -123,27 +133,37 @@ All source code, documentation, and deployment configuration is located in the `
 - ✅ **Smooth animations** - Transitions for all interactive elements
 
 ### Technical Stack
-- **Frontend:** Next.js 16 (App Router), TypeScript, Tailwind CSS v4, shadcn/ui
+- **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4, shadcn/ui
 - **Backend:** Next.js API Routes, Prisma ORM
 - **Database:** PostgreSQL (production), SQLite (dev)
 - **Auth:** NextAuth.js v5
+- **Payments:** Stripe (Cards + Google Pay), SimplePay (Hungarian OTP)
 - **Email:** Resend + React Email
 - **SMS:** Twilio
 - **Calendar:** FullCalendar with Hungarian localization
+- **Security:** AES-256 encryption, HMAC-SHA384 signatures
 
 ---
 
-## 🎯 Production Ready!
+## 🎯 Production Ready! (v2.0.0)
 
-All core features are complete and tested. The system is ready for deployment to production environments like Vercel.
+All core features including payment integration are complete and tested. The system is ready for deployment to production environments.
 
-**What's NOT included (future enhancements):**
-- [ ] Multi-tenant support (multiple restaurants)
-- [ ] Payment integration (Stripe)
-- [ ] Advanced AI-powered recommendations
+**Included in v2.0.0:**
+- ✅ Complete reservation management system
+- ✅ Payment processing (Stripe, Google Pay, SimplePay)
+- ✅ Email & SMS notifications
+- ✅ Analytics & reporting
+- ✅ Responsive mobile design
+- ✅ PCI-DSS compliant payment handling
+
+**Future enhancements:**
+- [ ] Multi-tenant SaaS support (subdomain-based)
+- [ ] Advanced AI-powered table optimization
 - [ ] Mobile apps (iOS/Android)
+- [ ] Advanced reporting & exports
 
-**Full roadmap:** See `rezervapp/README.md`
+**Full roadmap & changelog:** See `rezervapp/README.md`
 
 ---
 
@@ -291,11 +311,18 @@ Add these in **Vercel Dashboard → Settings → Environment Variables**:
 
 | Variable | Value | Notes |
 |----------|-------|-------|
-| `DATABASE_URL` | `file:./dev.db` | Use SQLite initially, upgrade to Postgres later |
-| `NEXTAUTH_SECRET` | (random string) | Click "Generate" button in Vercel |
+| `DATABASE_URL` | `${POSTGRES_PRISMA_URL}` | Use Vercel Postgres for production |
+| `NEXTAUTH_SECRET` | (random string) | Generate with: `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | (leave empty) | Vercel auto-detects this |
 | `AUTH_TRUST_HOST` | `true` | Required for NextAuth |
-| `RESEND_API_KEY` | (optional) | Only if you want email notifications |
+| `ENCRYPTION_KEY` | (random string) | Generate with: `openssl rand -hex 32` |
+| `RESEND_API_KEY` | (optional) | For email notifications |
+| `STRIPE_SECRET_KEY` | (optional) | For Stripe + Google Pay |
+| `STRIPE_WEBHOOK_SECRET` | (optional) | From Stripe webhook setup |
+| `SIMPLEPAY_MERCHANT_ID` | (optional) | For SimplePay (Hungarian) |
+| `SIMPLEPAY_SECRET_KEY` | (optional) | From SimplePay account |
+
+**Payment providers can also be configured via Admin UI after deployment.**
 
 **After adding variables:** Click "Redeploy" for changes to take effect.
 
@@ -330,21 +357,23 @@ Add these in **Vercel Dashboard → Settings → Environment Variables**:
 | Operating Hours Validation | ✅ Complete |
 | **Analytics Dashboard** | ✅ Complete |
 | **Waitlist Management** | ✅ Complete |
+| **Payment Integration (Stripe, Google Pay, SimplePay)** | ✅ Complete (v2.0.0) |
 | Deployment Config | ✅ Complete |
-| Multi-tenant | ⏳ Future Enhancement |
-| Payment Integration | ⏳ Future Enhancement |
+| Multi-tenant SaaS | ⏳ Future Enhancement |
 
-**✅ All 9 Core Features:** COMPLETE - Production Ready!
+**✅ v2.0.0 - All Core Features + Payments:** COMPLETE - Production Ready!
 **✅ Responsive Design:** Desktop + Mobile optimized with collapsible sidebar
 **✅ Full Hungarian Localization:** Email templates, SMS, UI text
+**✅ Payment Processing:** Stripe (Cards + Google Pay) & SimplePay (Hungarian OTP)
 
 ---
 
 ## 🛠️ Tech Stack Summary
 
-**Frontend:** Next.js 14 • TypeScript • Tailwind CSS • shadcn/ui • FullCalendar
-**Backend:** Prisma ORM • NextAuth.js • Resend Email • React Email
-**Database:** SQLite (dev) • PostgreSQL ready (prod)
+**Frontend:** Next.js 16 • React 19 • TypeScript • Tailwind CSS v4 • shadcn/ui • FullCalendar
+**Backend:** Prisma ORM • NextAuth.js v5 • Resend Email • React Email
+**Payments:** Stripe (Cards + Google Pay) • SimplePay (Hungarian OTP)
+**Database:** PostgreSQL (production) • SQLite (dev)
 **Deployment:** Vercel • Auto-deploy on push
 
 ---
@@ -373,15 +402,19 @@ If you find this project useful, please consider:
 
 ---
 
-**🎉 All Features Complete!** The system is fully production-ready with:
+**🎉 v2.0.0 - All Features Complete!** The system is fully production-ready with:
 - ✅ Admin management (collapsible sidebar, mobile-friendly)
 - ✅ Public booking system with real-time availability
+- ✅ **Payment processing** (Stripe, Google Pay, SimplePay)
 - ✅ Email & SMS notifications
 - ✅ Analytics & reporting dashboard
 - ✅ Waitlist management
 - ✅ Responsive design for all devices
+- ✅ PCI-DSS compliant payment handling
 
 **Ready to deploy to Vercel!** Follow the deployment guide above.
 
-**Questions?** Open an issue on GitHub or check `/rezervapp/README.md`
+**Questions?** Open an issue on GitHub or check `/rezervapp/README.md` for detailed documentation.
+
+**See full changelog and detailed payment setup:** `/rezervapp/README.md`
 
