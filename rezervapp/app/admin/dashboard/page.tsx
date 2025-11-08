@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { formatTime, formatDate } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
 import { Calendar, Users, Utensils, TrendingUp } from "lucide-react"
 import { DashboardTables } from "@/components/admin/dashboard-tables"
+import { TodayTimeline } from "@/components/admin/today-timeline"
 
 async function getStats() {
   const restaurant = await prisma.restaurant.findFirst()
@@ -111,43 +111,6 @@ async function getStats() {
     occupiedTableIds,
     currentBookings,
     upcomingBookings,
-  }
-}
-
-function getStatusColor(status: string) {
-  switch (status) {
-    case 'CONFIRMED':
-      return 'success'
-    case 'PENDING':
-      return 'warning'
-    case 'SEATED':
-      return 'default'
-    case 'COMPLETED':
-      return 'secondary'
-    case 'CANCELLED':
-    case 'NO_SHOW':
-      return 'destructive'
-    default:
-      return 'default'
-  }
-}
-
-function getStatusLabel(status: string) {
-  switch (status) {
-    case 'CONFIRMED':
-      return 'Megerősítve'
-    case 'PENDING':
-      return 'Függőben'
-    case 'SEATED':
-      return 'Megérkezett'
-    case 'COMPLETED':
-      return 'Lezárva'
-    case 'CANCELLED':
-      return 'Lemondva'
-    case 'NO_SHOW':
-      return 'Nem jelent meg'
-    default:
-      return status
   }
 }
 
@@ -266,53 +229,24 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Today's Bookings */}
+      {/* Today's Bookings Timeline */}
       <Card>
         <CardHeader>
-          <CardTitle>Mai foglalások</CardTitle>
+          <CardTitle>Mai foglalások - Időrend</CardTitle>
         </CardHeader>
         <CardContent>
-          {stats.todayBookings.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Nincs foglalás a mai napra
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {stats.todayBookings.map((booking) => (
-                <div
-                  key={booking.id}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="text-center">
-                      <div className="text-lg font-bold">
-                        {formatTime(booking.bookingDate)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {booking.duration} perc
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">
-                        {booking.guest.firstName} {booking.guest.lastName}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {booking.table?.name || 'Nincs asztal hozzárendelve'} • {booking.partySize} fő
-                      </p>
-                      {booking.specialRequests && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          💬 {booking.specialRequests}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <Badge variant={getStatusColor(booking.status) as any}>
-                    {getStatusLabel(booking.status)}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          )}
+          <TodayTimeline
+            bookings={stats.todayBookings.map((b) => ({
+              id: b.id,
+              bookingDate: b.bookingDate,
+              duration: b.duration,
+              partySize: b.partySize,
+              status: b.status,
+              specialRequests: b.specialRequests,
+              guest: b.guest,
+              table: b.table,
+            }))}
+          />
         </CardContent>
       </Card>
     </div>
