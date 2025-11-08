@@ -42,6 +42,7 @@ model Restaurant {
   // SimplePay Integration (encrypted)
   simplePayMerchantId String?  // Encrypted SimplePay Merchant ID
   simplePaySecretKey  String?  // Encrypted SimplePay Secret Key
+  simplePaySandboxMode Boolean? @default(true)  // Test mode flag
 
   // Google reCAPTCHA Integration
   recaptchaSiteKey    String?  // Public site key (not encrypted)
