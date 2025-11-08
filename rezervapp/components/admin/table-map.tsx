@@ -68,7 +68,11 @@ export function TableMap({ tables, bookings }: TableMapProps) {
       const bookingDate = new Date(booking.bookingDate)
       const bookingEnd = new Date(bookingDate.getTime() + booking.duration * 60000)
 
-      if (isWithinInterval(now, { start: bookingDate, end: bookingEnd })) {
+      // Table is occupied if:
+      // 1. Guest has been seated (SEATED status) - regardless of time
+      // 2. Booking is within the time window (for CONFIRMED bookings)
+      if (booking.status === "SEATED" ||
+          isWithinInterval(now, { start: bookingDate, end: bookingEnd })) {
         return { status: "occupied", nextBooking: booking }
       }
     }

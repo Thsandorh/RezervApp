@@ -120,9 +120,9 @@ export function TableInfoModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <DialogTitle className="text-2xl">{table.name}</DialogTitle>
-            <Badge variant={isOccupied ? "destructive" : "default"}>
+            <Badge variant={isOccupied ? "destructive" : "default"} className="shrink-0">
               {isOccupied ? "🔴 Foglalt" : "🟢 Szabad"}
             </Badge>
           </div>
