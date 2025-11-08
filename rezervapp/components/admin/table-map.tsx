@@ -1,10 +1,13 @@
 "use client"
 
-import { useMemo } from "react"
+import { useState, useMemo } from "react"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Info } from "lucide-react"
 import { format, isWithinInterval } from "date-fns"
 import { hu } from "date-fns/locale/hu"
+import { TableInfoModal } from "./table-info-modal"
 
 interface TableInfo {
   id: string
@@ -19,12 +22,22 @@ interface Table {
   name: string
 }
 
+interface Guest {
+  firstName: string
+  lastName: string
+  email: string | null
+  phone: string
+}
+
 interface Booking {
   id: string
   bookingDate: string
   duration: number
+  partySize: number
   status: string
+  specialRequests: string | null
   table: Table | null
+  guest: Guest
 }
 
 interface TableMapProps {
@@ -36,6 +49,7 @@ type TableStatus = "free" | "occupied" | "soon" | "inactive"
 
 export function TableMap({ tables, bookings }: TableMapProps) {
   const now = new Date()
+  const [selectedTable, setSelectedTable] = useState<string | null>(null)
 
   const getTableStatus = (table: TableInfo): { status: TableStatus; nextBooking?: Booking } => {
     if (!table.isActive) {
@@ -204,7 +218,7 @@ export function TableMap({ tables, bookings }: TableMapProps) {
               return (
                 <Card
                   key={table.id}
-                  className="p-4 hover:shadow-lg transition-shadow cursor-pointer relative overflow-hidden"
+                  className="p-4 hover:shadow-lg transition-shadow relative overflow-hidden"
                 >
                   {/* Status indicator bar */}
                   <div className={`absolute top-0 left-0 right-0 h-1 ${getStatusColor(status)}`}></div>
@@ -233,6 +247,16 @@ export function TableMap({ tables, bookings }: TableMapProps) {
                         </p>
                       </div>
                     )}
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedTable(table.id)}
+                      className="w-full mt-2 h-7 text-xs"
+                    >
+                      <Info className="h-3 w-3 mr-1" />
+                      Info
+                    </Button>
                   </div>
                 </Card>
               )
@@ -246,6 +270,48 @@ export function TableMap({ tables, bookings }: TableMapProps) {
           <p>Még nincs asztal hozzáadva</p>
         </div>
       )}
+
+      {/* Table Info Modal */}
+      {selectedTable && (() => {
+        const table = tables.find(t => t.id === selectedTable)
+        if (!table) return null
+
+        const { status, nextBooking } = getTableStatus(table)
+        const isOccupied = status === "occupied"
+        const currentBooking = isOccupied && nextBooking ? {
+          id: nextBooking.id,
+          bookingDate: new Date(nextBooking.bookingDate),
+          duration: nextBooking.duration,
+          partySize: nextBooking.partySize,
+          specialRequests: nextBooking.specialRequests,
+          guest: nextBooking.guest,
+        } : undefined
+
+        const upcomingBooking = !isOccupied && nextBooking ? {
+          bookingDate: new Date(nextBooking.bookingDate),
+          partySize: nextBooking.partySize,
+          guest: {
+            firstName: nextBooking.guest.firstName,
+            lastName: nextBooking.guest.lastName,
+          },
+        } : undefined
+
+        return (
+          <TableInfoModal
+            table={{
+              id: table.id,
+              name: table.name,
+              capacity: table.capacity,
+              location: table.location,
+            }}
+            isOccupied={isOccupied}
+            currentBooking={currentBooking}
+            nextBooking={upcomingBooking}
+            open={true}
+            onOpenChange={(open) => !open && setSelectedTable(null)}
+          />
+        )
+      })()}
     </div>
   )
 }

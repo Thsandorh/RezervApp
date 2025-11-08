@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { Info } from "lucide-react"
 import { TableInfoModal } from "./table-info-modal"
+import { Button } from "@/components/ui/button"
 
 interface DashboardTablesProps {
   tables: Array<{
@@ -59,18 +61,12 @@ export function DashboardTables({
         {tables.map((table) => {
           const isOccupied = occupiedTableIds.has(table.id)
           return (
-            <button
-              type="button"
+            <div
               key={table.id}
-              onClick={() => handleTableClick(table.id)}
-              onTouchEnd={(e) => {
-                e.preventDefault()
-                handleTableClick(table.id)
-              }}
-              className={`p-3 rounded-lg border-2 transition touch-manipulation select-none cursor-pointer active:scale-95 ${
+              className={`relative p-3 rounded-lg border-2 transition ${
                 isOccupied
-                  ? 'border-red-500 bg-red-50 hover:bg-red-100 active:bg-red-200'
-                  : 'border-green-500 bg-green-50 hover:bg-green-100 active:bg-green-200'
+                  ? 'border-red-500 bg-red-50'
+                  : 'border-green-500 bg-green-50'
               }`}
             >
               <div className="flex items-center justify-between mb-1">
@@ -79,10 +75,19 @@ export function DashboardTables({
                   {isOccupied ? '🔴' : '🟢'}
                 </span>
               </div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-muted-foreground mb-2">
                 {table.capacity} fő • {table.location || 'Egyéb'}
               </div>
-            </button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleTableClick(table.id)}
+                className="w-full h-7 text-xs hover:bg-black/5"
+              >
+                <Info className="h-3 w-3 mr-1" />
+                Info
+              </Button>
+            </div>
           )
         })}
       </div>
