@@ -16,6 +16,7 @@ import {
   Clock,
   Menu,
   X,
+  Building2,
 } from "lucide-react"
 
 const routes = [
@@ -24,6 +25,12 @@ const routes = [
     icon: LayoutDashboard,
     href: "/admin/dashboard",
     color: "text-sky-500",
+  },
+  {
+    label: "Éttermek",
+    icon: Building2,
+    href: "/admin/restaurants",
+    color: "text-blue-600",
   },
   {
     label: "Foglalások",
